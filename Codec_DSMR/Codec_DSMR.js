@@ -36,15 +36,15 @@ var CONFIG_MEASUREMENT = {
     "0x0E" : {SIZE : 2, NAME : "TariffIndicator",},
     "0x10" : {SIZE : 4, NAME : "ElectricityPowerDelivered", UNIT : "W", SIGNED : true,},
     "0x12" : {SIZE : 4, NAME : "ElectricityPowerReceived", UNIT : "W", SIGNED : true,},
-	"0x14" : {SIZE : 4, NAME : "NumberOfPowerFailuresInAnyPhase",},
-	"0x18" : {SIZE : 0, NAME : "PowerFailureEventLog", SINGLE_EVENT_SIZE:8,},
-	"0x1A" : {SIZE : 4, NAME : "NumberOfVoltageSagsL1",},
-	"0x1C" : {SIZE : 4, NAME : "NumberOfVoltageSagsL2",},
-	"0x1E" : {SIZE : 4, NAME : "NumberOfVoltageSagsL3",},
-	"0x1F" : {SIZE : 4, NAME : "NumberOfVoltageSwellsL1",},
-	"0x20" : {SIZE : 4, NAME : "NumberOfVoltageSwellsL2",},
-	"0x21" : {SIZE : 4, NAME : "NumberOfVoltageSwellsL3",},
-	"0x22" : {SIZE : 2, NAME : "VoltageL1", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
+    "0x14" : {SIZE : 4, NAME : "NumberOfPowerFailuresInAnyPhase",},
+    "0x18" : {SIZE : 0, NAME : "PowerFailureEventLog", SINGLE_EVENT_SIZE:8,},
+    "0x1A" : {SIZE : 4, NAME : "NumberOfVoltageSagsL1",},
+    "0x1C" : {SIZE : 4, NAME : "NumberOfVoltageSagsL2",},
+    "0x1E" : {SIZE : 4, NAME : "NumberOfVoltageSagsL3",},
+    "0x1F" : {SIZE : 4, NAME : "NumberOfVoltageSwellsL1",},
+    "0x20" : {SIZE : 4, NAME : "NumberOfVoltageSwellsL2",},
+    "0x21" : {SIZE : 4, NAME : "NumberOfVoltageSwellsL3",},
+    "0x22" : {SIZE : 2, NAME : "VoltageL1", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
     "0x23" : {SIZE : 2, NAME : "VoltageL2", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
     "0x24" : {SIZE : 2, NAME : "VoltageL3", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
     "0x26" : {SIZE : 2, NAME : "CurrentL1", UNIT : "A", SIGNED : true,},
@@ -53,18 +53,18 @@ var CONFIG_MEASUREMENT = {
     "0x2C" : {SIZE : 4, NAME : "ActivePowerDeliveredL1", UNIT : "W", SIGNED : true,},
     "0x2E" : {SIZE : 4, NAME : "ActivePowerDeliveredL2", UNIT : "W", SIGNED : true,},
     "0x30" : {SIZE : 4, NAME : "ActivePowerDeliveredL3", UNIT : "W", SIGNED : true,},
-	"0x32" : {SIZE : 4, NAME : "ActivePowerReceivedL1", UNIT : "W", SIGNED : true,},
+    "0x32" : {SIZE : 4, NAME : "ActivePowerReceivedL1", UNIT : "W", SIGNED : true,},
     "0x33" : {SIZE : 4, NAME : "ActivePowerReceivedL2", UNIT : "W", SIGNED : true,},
     "0x34" : {SIZE : 4, NAME : "ActivePowerReceivedL3", UNIT : "W", SIGNED : true,},
-	"0x46" : {SIZE : 2, NAME : "DeviceTypeOnChannel1",},
-	"0x50" : {SIZE : 8, NAME : "LastReadingOnChannel1",},
-	"0x56" : {SIZE : 2, NAME : "DeviceTypeOnChannel2",},
-	"0x60" : {SIZE : 8, NAME : "LastReadingOnChannel2",},
-	"0x66" : {SIZE : 2, NAME : "DeviceTypeOnChannel3",},
-	"0x70" : {SIZE : 8, NAME : "LastReadingOnChannel3",},
-	"0x76" : {SIZE : 2, NAME : "DeviceTypeOnChannel4",},
-	"0x80" : {SIZE : 8, NAME : "LastReadingOnChannel4",},
-	CHANNEL : parseInt("0xDD", 16),
+    "0x46" : {SIZE : 2, NAME : "DeviceTypeOnChannel1",},
+    "0x50" : {SIZE : 8, NAME : "LastReadingOnChannel1",},
+    "0x56" : {SIZE : 2, NAME : "DeviceTypeOnChannel2",},
+    "0x60" : {SIZE : 8, NAME : "LastReadingOnChannel2",},
+    "0x66" : {SIZE : 2, NAME : "DeviceTypeOnChannel3",},
+    "0x70" : {SIZE : 8, NAME : "LastReadingOnChannel3",},
+    "0x76" : {SIZE : 2, NAME : "DeviceTypeOnChannel4",},
+    "0x80" : {SIZE : 8, NAME : "LastReadingOnChannel4",},
+    CHANNEL : parseInt("0xDD", 16),
     WARNING_NAME   : "Warning",
     ERROR_NAME     : "Error",
     INFO_NAME      : "Info"
@@ -96,72 +96,72 @@ function decodeBasicInformation(bytes)
             size = info["SIZE"];
             // Decoding
             var value = 0;
-			if(type == "0x06" || info["NAME"] == "Battery")
-			{
-				decoded[info["NAME"]] = {};
-				decoded[info["NAME"]]["percentage"] = getValueFromBytesBigEndianFormat(bytes, index, 1);
-				index = index + 1;
-				value = getValueFromBytesBigEndianFormat(bytes, index, 1) * 0.1;
-				index = index + 1;
-				decoded[info["NAME"]]["voltage"] = parseFloat(value.toFixed(1));
-				continue;
-			}
-			if(type == "0x08" || info["NAME"] == "Settings")
-			{
-				decoded[info["NAME"]] = {};
-				value = getValueFromBytesBigEndianFormat(bytes, index, 1);
-				decoded[info["NAME"]] = decodeSettingsInfo(value);
-				index = index + 1;
-				decoded[info["NAME"]]["BatteryAlarmThreshold"] = getValueFromBytesBigEndianFormat(bytes, index, 1);
-				index = index + 1;
-				decoded[info["NAME"]]["TransmitInterval"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
-				index = index + 2;
-				decoded[info["NAME"]]["CollectionInterval"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
-				index = index + 2;
-				decoded[info["NAME"]]["GasLeakageAlarmThreshold"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
-				index = index + 2;
-				continue;
-			}
-			if("DIGIT" in info)
-			{
-				if(info["DIGIT"] == false)
-				{
-					// Decode into "V" + DIGIT STRING + "." DIGIT STRING format
-					value = getDigitStringArrayNoFormat(bytes, index, size);
-					value = "V" + value[0] + "." + value[1];
-				}else
-				{
-					// Decode into DIGIT STRING format
-					value = getDigitStringArrayEvenFormat(bytes, index, size);
-					value = value.toString();
-				}
-			}
-			else if("VALUES" in info)
-			{
-				// Decode into STRING (VALUES specified in CONFIG_INFO)
-				value = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
-				value = info["VALUES"][value];
-			}else
-			{
-				// Decode into DECIMAL format
-				value = getValueFromBytesBigEndianFormat(bytes, index, size);
-			}
-			if("RESOLUTION" in info)
-			{
-				value = value * info["RESOLUTION"];
-				value = parseFloat(value.toFixed(2));
-			}
-			if("UNIT" in info)
-			{
-				decoded[info["NAME"]] = {}
-				decoded[info["NAME"]]["data"] = value;
-				decoded[info["NAME"]]["unit"] = info["UNIT"];
-			}else
-			{
-				decoded[info["NAME"]] = value;
-			}
-			index = index + size;
-		
+            if(type == "0x06" || info["NAME"] == "Battery")
+            {
+                decoded[info["NAME"]] = {};
+                decoded[info["NAME"]]["percentage"] = getValueFromBytesBigEndianFormat(bytes, index, 1);
+                index = index + 1;
+                value = getValueFromBytesBigEndianFormat(bytes, index, 1) * 0.1;
+                index = index + 1;
+                decoded[info["NAME"]]["voltage"] = parseFloat(value.toFixed(1));
+                continue;
+            }
+            if(type == "0x08" || info["NAME"] == "Settings")
+            {
+                decoded[info["NAME"]] = {};
+                value = getValueFromBytesBigEndianFormat(bytes, index, 1);
+                decoded[info["NAME"]] = decodeSettingsInfo(value);
+                index = index + 1;
+                decoded[info["NAME"]]["BatteryAlarmThreshold"] = getValueFromBytesBigEndianFormat(bytes, index, 1);
+                index = index + 1;
+                decoded[info["NAME"]]["TransmitInterval"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
+                index = index + 2;
+                decoded[info["NAME"]]["CollectionInterval"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
+                index = index + 2;
+                decoded[info["NAME"]]["GasLeakageAlarmThreshold"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
+                index = index + 2;
+                continue;
+            }
+            if("DIGIT" in info)
+            {
+                if(info["DIGIT"] == false)
+                {
+                    // Decode into "V" + DIGIT STRING + "." DIGIT STRING format
+                    value = getDigitStringArrayNoFormat(bytes, index, size);
+                    value = "V" + value[0] + "." + value[1];
+                }else
+                {
+                    // Decode into DIGIT STRING format
+                    value = getDigitStringArrayEvenFormat(bytes, index, size);
+                    value = value.toString();
+                }
+            }
+            else if("VALUES" in info)
+            {
+                // Decode into STRING (VALUES specified in CONFIG_INFO)
+                value = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
+                value = info["VALUES"][value];
+            }else
+            {
+                // Decode into DECIMAL format
+                value = getValueFromBytesBigEndianFormat(bytes, index, size);
+            }
+            if("RESOLUTION" in info)
+            {
+                value = value * info["RESOLUTION"];
+                value = parseFloat(value.toFixed(2));
+            }
+            if("UNIT" in info)
+            {
+                decoded[info["NAME"]] = {}
+                decoded[info["NAME"]]["data"] = value;
+                decoded[info["NAME"]]["unit"] = info["UNIT"];
+            }else
+            {
+                decoded[info["NAME"]] = value;
+            }
+            index = index + size;
+        
         }
     }catch(error)
     {
@@ -198,32 +198,32 @@ function decodeDeviceData(bytes)
             // Decoding
             var value = 0;
 
-			if(size == 0)
-			{
-				// PowerFailureEventLog decoding
-				value = getValueFromBytesBigEndianFormat(bytes, index, 4);
-				index = index + 4;
-				size =  measurement["SINGLE_EVENT_SIZE"] * value;
-				decoded[measurement["NAME"]] = getPowerFailureEventLog(bytes, index, size);
-				index = index + size;
-				continue;
-			}
-			if(size == 8)
-			{
-				// Slave last reading decoding
-				value = getValueFromBytesBigEndianFormat(bytes, index, 4);
-				index = index + 4;
+            if(size == 0)
+            {
+                // PowerFailureEventLog decoding
+                value = getValueFromBytesBigEndianFormat(bytes, index, 4);
+                index = index + 4;
+                size =  measurement["SINGLE_EVENT_SIZE"] * value;
+                decoded[measurement["NAME"]] = getPowerFailureEventLog(bytes, index, size);
+                index = index + size;
+                continue;
+            }
+            if(size == 8)
+            {
+                // Slave last reading decoding
+                value = getValueFromBytesBigEndianFormat(bytes, index, 4);
+                index = index + 4;
                 decoded[measurement["NAME"]] = {};
                 decoded[measurement["NAME"]]["timestamp"] = value;
-				value = getValueFromBytesBigEndianFormat(bytes, index, 4);
-				index = index + 4;
+                value = getValueFromBytesBigEndianFormat(bytes, index, 4);
+                index = index + 4;
                 decoded[measurement["NAME"]]["value"] = value;
-				continue;
-			}
+                continue;
+            }
 
-			// Decode into DECIMAL format
-			value = getValueFromBytesBigEndianFormat(bytes, index, size);
-		
+            // Decode into DECIMAL format
+            value = getValueFromBytesBigEndianFormat(bytes, index, size);
+        
             if("SIGNED" in measurement)
             {
                 value = getSignedIntegerFromInteger(value, size);
@@ -267,11 +267,11 @@ function getBitValue(byte, indexOfBitInByte)
 
 function decodeSettingsInfo(byte)
 {
-	var decoded = {};
-	decoded["UplinkConfirmation"] = getBitValue(byte, 0);
-	decoded["ADR"] = getBitValue(byte, 1);
-	decoded["DutyCycle"] = getBitValue(byte, 2);
-	return decoded;
+    var decoded = {};
+    decoded["UplinkConfirmation"] = getBitValue(byte, 0);
+    decoded["ADR"] = getBitValue(byte, 1);
+    decoded["DutyCycle"] = getBitValue(byte, 2);
+    return decoded;
 }
 
 
@@ -361,15 +361,15 @@ function getSignedIntegerFromInteger(integer, size)
 
 function getPowerFailureEventLog(bytes, index, size)
 {
-	var decoded = [];
-	for(var i=index; i<(index + size); i=i+8)
-	{
-		var eventLog = {};
-		eventLog.timestamp = getValueFromBytesBigEndianFormat(bytes, i, 4);
-		eventLog.duration = getValueFromBytesBigEndianFormat(bytes, i+4, 4);
-		decoded.push(eventLog);
-	}
-	return decoded;
+    var decoded = [];
+    for(var i=index; i<(index + size); i=i+8)
+    {
+        var eventLog = {};
+        eventLog.timestamp = getValueFromBytesBigEndianFormat(bytes, i, 4);
+        eventLog.duration = getValueFromBytesBigEndianFormat(bytes, i+4, 4);
+        decoded.push(eventLog);
+    }
+    return decoded;
 }
 
 /************************************************************************************************************/
