@@ -113,7 +113,7 @@ var CONFIG_ALARM = {
         "0x02" : {SIZE: 1, NAME : "Channel2State",
             VALUES     : CHANNEL_STATES,
         },
-        "0x04" : {SIZE: 1, NAME : "CommunicationWatchdogAlarm",
+        "0x03" : {SIZE: 1, NAME : "CommunicationWatchdogAlarm",
             VALUES     : {
                 "0x00" : "normal",
                 "0x01" : "alarm",
