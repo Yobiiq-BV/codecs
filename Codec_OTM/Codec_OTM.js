@@ -274,7 +274,6 @@ function decodeBasicInformation(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
-    var security = Object.keys(CONFIG_INFO.TYPES).length;
     if(LENGTH == 1)
     {
         if(bytes[0] == 0)
@@ -289,9 +288,8 @@ function decodeBasicInformation(bytes)
     }
     try
     {
-        while(index < LENGTH && security != 0)
+        while(index < LENGTH)
         {
-            security = security - 1;
             channel = bytes[index];
             index = index + 1;
             // Channel checking
@@ -367,7 +365,6 @@ function decodeDeviceData(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
-    var security = Object.keys(CONFIG_OPENTHERM.TYPES).length;
     if(LENGTH == 1)
     {
         if(bytes[0] == 0)
@@ -382,9 +379,8 @@ function decodeDeviceData(bytes)
     }
     try
     {
-        while(index < LENGTH && security != 0)
+        while(index < LENGTH)
         {
-            security = security - 1;
             channel = bytes[index];
             index = index + 1;
             // Channel checking
@@ -399,7 +395,6 @@ function decodeDeviceData(bytes)
             if(info == null)
             {
                 info = {TYPE: "UNKNOWN", NAME : "DataPointID"+parseInt(type)};
-                security = security + 1;
             }
             size = info.SIZE ? info.SIZE : 0;
             if(size == 0)
@@ -533,7 +528,6 @@ function decodeAlarmPacket(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
-    var security = Object.keys(CONFIG_ALARM.TYPES).length;
     if(LENGTH == 1)
     {
         if(bytes[0] == 0)
@@ -548,9 +542,8 @@ function decodeAlarmPacket(bytes)
     }
     try
     {
-        while(index < LENGTH && security != 0)
+        while(index < LENGTH)
         {
-            security = security - 1;
             channel = bytes[index];
             index = index + 1;
             // Channel checking
@@ -590,7 +583,6 @@ function decodeParameters(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
-    var security = Object.keys(CONFIG_PARAMETER.TYPES).length;
     if(LENGTH == 1)
     {
         if(bytes[0] == 0)
@@ -605,9 +597,8 @@ function decodeParameters(bytes)
     }
     try
     {
-        while(index < LENGTH && security != 0)
+        while(index < LENGTH)
         {
-            security = security - 1;
             channel = bytes[index];
             index = index + 1;
             // Channel checking
