@@ -483,8 +483,13 @@ function decodeMessageWithConfig(bytes, config)
                 decoded[WARNING_NAME] = "Can't decode message " + id + " correctly";
                 size = 0;
             }
-            index = index + size;
-            dibReverseIndex = dibReverseIndex - 1;
+            if(size > 0)
+            {
+                index = index + size;
+                dibReverseIndex = dibReverseIndex - 1;
+            }else{ // skip unknown dib
+                index = index + 1;
+            }
         }
     }catch(error)
     {
