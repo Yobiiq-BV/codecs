@@ -22,6 +22,7 @@ var ERROR_NAME  = "Error";
 var INFO_NAME = "Info";
 
 var UNIT_ENERGY_E1_E3 = {
+    "0x3403" : {UNIT: "Wh", RESOLUTION : 1},
     "0x0400" : {UNIT: "Wh", RESOLUTION : 0.001},
     "0x0401" : {UNIT: "Wh", RESOLUTION : 0.01},
     "0x0402" : {UNIT: "Wh", RESOLUTION : 0.1},
@@ -38,6 +39,7 @@ var UNIT_ENERGY_E1_E3 = {
 }
 
 var UNIT_ENERGY_ACC = {
+    "0x3403" : {UNIT: "Wh", RESOLUTION : 1},
     "0x4400" : {UNIT: "Wh", RESOLUTION : 0.001},
     "0x4401" : {UNIT: "Wh", RESOLUTION : 0.01},
     "0x4402" : {UNIT: "Wh", RESOLUTION : 0.1},
@@ -54,6 +56,7 @@ var UNIT_ENERGY_ACC = {
 }
 
 var UNIT_ENERGY_E3_ONLY = {
+    "0x3403" : {UNIT: "Wh", RESOLUTION : 1},
     "0x0480" : {UNIT: "Wh", RESOLUTION : 0.001},
     "0x0481" : {UNIT: "Wh", RESOLUTION : 0.01},
     "0x0482" : {UNIT: "Wh", RESOLUTION : 0.1},
@@ -70,6 +73,7 @@ var UNIT_ENERGY_E3_ONLY = {
 }
 
 var UNIT_VOLUME = {
+    "0x0410" : {UNIT: "m3", RESOLUTION : 0.000001},
     "0x0411" : {UNIT: "m3", RESOLUTION : 0.00001},
     "0x0412" : {UNIT: "m3", RESOLUTION : 0.0001},
     "0x0413" : {UNIT: "m3", RESOLUTION : 0.001},
@@ -80,6 +84,7 @@ var UNIT_VOLUME = {
 }
 
 var UNIT_POWER = {
+    "0x022A" : {UNIT: "W", RESOLUTION : 0.1},
     "0x022B" : {UNIT: "W", RESOLUTION : 1},
     "0x022C" : {UNIT: "W", RESOLUTION : 10},
     "0x022D" : {UNIT: "W", RESOLUTION : 100},
@@ -100,7 +105,6 @@ var UNIT_FORWARD_TEMPERATURE = {
     "0x0259" : {UNIT: "°C", RESOLUTION : 0.01},
     "0x025A" : {UNIT: "°C", RESOLUTION : 0.1},
     "0x025B" : {UNIT: "°C", RESOLUTION : 1}
-
 }
 
 var UNIT_RETURN_TEMPERATURE = {
@@ -108,7 +112,6 @@ var UNIT_RETURN_TEMPERATURE = {
     "0x025D" : {UNIT: "°C", RESOLUTION : 0.01},
     "0x025E" : {UNIT: "°C", RESOLUTION : 0.1},
     "0x025F" : {UNIT: "°C", RESOLUTION : 1}
-
 }
 
 var CONFIG_MESSAGE_STANDARD = {
@@ -898,6 +901,8 @@ function encodeDeviceConfiguration(obj, variables)
     }
     return encoded;
 }
+
+
 
 
 
