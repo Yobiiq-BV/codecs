@@ -37,7 +37,7 @@ Note :
 }
 
 
-3. To Sets the Tx interval to 30 minutes
+3. To set the Tx interval to 30 minutes
 
 { 
     "Type": "Config",
