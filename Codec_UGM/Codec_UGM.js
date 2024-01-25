@@ -140,15 +140,17 @@ function decodeBasicInformation(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
-    var security = Object.keys(CONFIG_INFO.TYPES).length;
     try
     {
-        while(index < LENGTH && security != 0)
+        while(index < LENGTH)
         {
-            security = security - 1;
             channel = bytes[index];
             index = index + 1;
-            // No channel checking
+            // channel checking
+            if(channel != CONFIG_INFO.CHANNEL)
+            {
+                continue;
+            }
             // Type of basic information
             type = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
             index = index + 1;
@@ -273,7 +275,6 @@ function decodeStatusPacket(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
-    var security = Object.keys(CONFIG_STATUS.TYPES).length;
     try
     {
 		channel = bytes[index];
@@ -286,9 +287,8 @@ function decodeStatusPacket(bytes)
 			decoded["DeviceTimestamp"] = getValueFromBytesBigEndianFormat(bytes, index, CONFIG_STATUS.HEADER_SIZE);
 			index = index + CONFIG_STATUS.HEADER_SIZE;
 		}
-        while(index < LENGTH && security != 0)
+        while(index < LENGTH)
         {
-            security = security - 1;
             channel = bytes[index];
             index = index + 1;
             // No channel checking
