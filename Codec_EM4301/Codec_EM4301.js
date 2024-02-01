@@ -1,7 +1,7 @@
 /**
  * Codec for EM4301 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 11 June 2023
- * Update  Date : 19 July 2023
+ * Update  Date : 01 February 2024
  */
 
 // Configuration constants for device basic info
@@ -11,7 +11,7 @@ var CONFIG_INFO = {
     TYPES    : {
         "0x09" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
         "0x0A" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x16" : {SIZE : 7, NAME : "DeviceSerialNumber", DIGIT: true},
+        "0x16" : {SIZE : 4, NAME : "DeviceSerialNumber"},
         "0x0F" : {SIZE : 1, NAME : "DeviceClass",
             VALUES     : {
                 "0x00" : "Class A",
@@ -240,9 +240,10 @@ function decodeDeviceData(bytes)
             }
             if("UNIT" in measurement)
             {
-                decoded[measurement.NAME] = {};
-                decoded[measurement.NAME]["data"] = value;
-                decoded[measurement.NAME]["unit"] = measurement["UNIT"];
+                // decoded[measurement.NAME] = {};
+                // decoded[measurement.NAME]["data"] = value;
+                // decoded[measurement.NAME]["unit"] = measurement["UNIT"];
+                decoded[measurement.NAME] = value;
             }else
             {
                 decoded[measurement.NAME] = value;
