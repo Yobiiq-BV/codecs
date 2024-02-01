@@ -225,9 +225,10 @@ function decodeBasicInformation(bytes)
                 }
                 if("UNIT" in info)
                 {
-                    decoded[info.NAME] = {};
-                    decoded[info.NAME]["data"] = value;
-                    decoded[info.NAME]["unit"] = info.UNIT;
+                    // decoded[info.NAME] = {};
+                    // decoded[info.NAME]["data"] = value;
+                    // decoded[info.NAME]["unit"] = info.UNIT;
+                    decoded[info.NAME] = value;
                 }else
                 {
                     decoded[info.NAME] = value;
@@ -316,12 +317,13 @@ function decodeDeviceData(bytes)
             }
             if("UNIT" in measurement)
             {
-                decoded[measurement["NAME"]] = {};
-                decoded[measurement["NAME"]]["data"] = value;
-                decoded[measurement["NAME"]]["unit"] = measurement.UNIT;
+                // decoded[measurement.NAME] = {};
+                // decoded[measurement.NAME]["data"] = value;
+                // decoded[measurement.NAME]["unit"] = measurement.UNIT;
+                decoded[measurement.NAME] = value;
             }else
             {
-                decoded[measurement["NAME"]] = value;
+                decoded[measurement.NAME] = value;
             }
             index = index + size;
 
@@ -379,7 +381,7 @@ function decodeChangeState(bytes)
                 }
                 index = index + size;
             }
-            decoded[state["NAME"]] = value;
+            decoded[state.NAME] = value;
         }
     }catch(error)
     {
@@ -439,7 +441,7 @@ function decodeEventLogging(bytes)
                 }
                 index = index + size;
             }
-            decoded[logging["NAME"]] = value;
+            decoded[logging.NAME] = value;
         }
     }catch(error)
     {
@@ -954,6 +956,4 @@ function encodeRequestSettings(obj, variables){
 
     return encoded;
 }
-
-
 
