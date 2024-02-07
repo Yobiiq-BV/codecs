@@ -1,7 +1,7 @@
 /**
  * Codec for EM2101 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 16 June 2023
- * Update  Date : 01 February 2024
+ * Update  Date : 07 February 2024
  */
 
 // Configuration constants for device basic info and current settings
