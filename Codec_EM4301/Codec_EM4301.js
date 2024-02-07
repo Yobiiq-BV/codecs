@@ -240,10 +240,10 @@ function decodeDeviceData(bytes)
             }
             if("UNIT" in measurement)
             {
-                // decoded[measurement.NAME] = {};
-                // decoded[measurement.NAME]["data"] = value;
-                // decoded[measurement.NAME]["unit"] = measurement["UNIT"];
-                decoded[measurement.NAME] = value;
+                decoded[measurement.NAME] = {};
+                decoded[measurement.NAME]["data"] = value;
+                decoded[measurement.NAME]["unit"] = measurement["UNIT"];
+                // decoded[measurement.NAME] = value;
             }else
             {
                 decoded[measurement.NAME] = value;

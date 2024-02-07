@@ -225,10 +225,10 @@ function decodeBasicInformation(bytes)
                 }
                 if("UNIT" in info)
                 {
-                    // decoded[info.NAME] = {};
-                    // decoded[info.NAME]["data"] = value;
-                    // decoded[info.NAME]["unit"] = info.UNIT;
-                    decoded[info.NAME] = value;
+                    decoded[info.NAME] = {};
+                    decoded[info.NAME]["data"] = value;
+                    decoded[info.NAME]["unit"] = info.UNIT;
+                    // decoded[info.NAME] = value;
                 }else
                 {
                     decoded[info.NAME] = value;
@@ -317,10 +317,10 @@ function decodeDeviceData(bytes)
             }
             if("UNIT" in measurement)
             {
-                // decoded[measurement.NAME] = {};
-                // decoded[measurement.NAME]["data"] = value;
-                // decoded[measurement.NAME]["unit"] = measurement.UNIT;
-                decoded[measurement.NAME] = value;
+                decoded[measurement.NAME] = {};
+                decoded[measurement.NAME]["data"] = value;
+                decoded[measurement.NAME]["unit"] = measurement.UNIT;
+                // decoded[measurement.NAME] = value;
             }else
             {
                 decoded[measurement.NAME] = value;
