@@ -466,10 +466,10 @@ function decodeMessageWithConfig(bytes, config)
             }
             if(unitInfo && "UNIT" in unitInfo)
             {
-                // decoded[dib.NAME] = {};
-                // decoded[dib.NAME].data = value;
-                // decoded[dib.NAME].unit = unitInfo.UNIT;
-                decoded[dib.NAME] = value;
+                decoded[dib.NAME] = {};
+                decoded[dib.NAME].data = value;
+                decoded[dib.NAME].unit = unitInfo.UNIT;
+                // decoded[dib.NAME] = value;
             }else if(dib.DIF)
             {
                 if(dib.NAME)
@@ -510,10 +510,10 @@ function decodeMessageJSON(bytes)
     {
         bytes.shift();
         message = JSON.parse(getStringFromBytesBigEndianFormat(bytes, 0, bytes.length));
-        // decoded.EnergyConsumption = {}
-        // decoded.EnergyConsumption.data = message.E;
-        // decoded.EnergyConsumption.unit = message.U;
-        decoded.EnergyConsumption = message.E;
+        decoded.EnergyConsumption = {}
+        decoded.EnergyConsumption.data = message.E;
+        decoded.EnergyConsumption.unit = message.U;
+        // decoded.EnergyConsumption = message.E;
         decoded.MeterID = message.ID.toString();
     }catch(error)
     {
@@ -562,22 +562,22 @@ function getMultipleValues(bytes, index, type)
         flow = getSignedIntegerFromInteger(flow, 2) * Math.pow(10, flowScale - 3);
         var power = getValueFromBytesLittleEndianFormat(bytes, index + 10, 2);
         power = getSignedIntegerFromInteger(power, 2) * Math.pow(10, powerScale - 3);
-        // decoded.ForwardTemperature = {};
-        // decoded.ForwardTemperature.data = parseFloat(fwTemperature.toFixed(2));
-        // decoded.ForwardTemperature.unit = "°C";
-        decoded.ForwardTemperature = parseFloat(fwTemperature.toFixed(2));
-        // decoded.ReturnTemperature = {};
-        // decoded.ReturnTemperature.data = parseFloat(rtTemperature.toFixed(2));
-        // decoded.ReturnTemperature.unit = "°C";
-        decoded.ReturnTemperature = parseFloat(rtTemperature.toFixed(2));
-        // decoded.Flow = {};
-        // decoded.Flow.data = parseFloat(flow.toFixed(3));
-        // decoded.Flow.unit = "m3/h";
-        decoded.Flow = parseFloat(flow.toFixed(3));
-        // decoded.Power = {};
-        // decoded.Power.data = parseFloat(power.toFixed(3));
-        // decoded.Power.unit = "W";
-        decoded.Power = parseFloat(power.toFixed(3));
+        decoded.ForwardTemperature = {};
+        decoded.ForwardTemperature.data = parseFloat(fwTemperature.toFixed(2));
+        decoded.ForwardTemperature.unit = "°C";
+        // decoded.ForwardTemperature = parseFloat(fwTemperature.toFixed(2));
+        decoded.ReturnTemperature = {};
+        decoded.ReturnTemperature.data = parseFloat(rtTemperature.toFixed(2));
+        decoded.ReturnTemperature.unit = "°C";
+        // decoded.ReturnTemperature = parseFloat(rtTemperature.toFixed(2));
+        decoded.Flow = {};
+        decoded.Flow.data = parseFloat(flow.toFixed(3));
+        decoded.Flow.unit = "m3/h";
+        // decoded.Flow = parseFloat(flow.toFixed(3));
+        decoded.Power = {};
+        decoded.Power.data = parseFloat(power.toFixed(3));
+        decoded.Power.unit = "W";
+        // decoded.Power = parseFloat(power.toFixed(3));
     }
     return decoded;
 }
