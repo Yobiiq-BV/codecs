@@ -1,7 +1,7 @@
 /**
  * Codec for CMi4140 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 21 October 2023
- * Update  Date : 25 January 2024
+ * Update  Date : 08 February 2024
 */
 
 
