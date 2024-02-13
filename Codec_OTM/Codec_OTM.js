@@ -1,10 +1,10 @@
 /**
- * Codec for OT device : compatible with TTN, ChirpStack v4 and v3, etc...
+ * Codec for OTM device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 04 November 2023
  * Update  Date : 19 December 2023
  */
 
-// Configuration constants for device basic info and current settings
+// Configuration constants for device basic info
 var CONFIG_INFO = {
     FPORT    : 50,
     CHANNEL  : parseInt("0xFF", 16),
