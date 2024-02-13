@@ -1,10 +1,10 @@
 /**
- * Codec for OT device : compatible with TTN, ChirpStack v4 and v3, etc...
+ * Codec for RM200 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 11 January 2024
  * Update  Date : 12 January 2024
  */
 
-// Configuration constants for device basic info and current settings
+// Configuration constants for device basic info
 var CONFIG_INFO = {
     FPORT    : 50,
     CHANNEL  : parseInt("0xFF", 16),
