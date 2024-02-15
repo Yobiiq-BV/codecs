@@ -1,0 +1,39 @@
+1. To restart the LoRaWAN Interface
+
+{
+    "Type" : "Config",
+    "Config" : [{
+        "Param" : "Restart",
+        "Value" : 1
+    }]
+}
+
+2. To read device parameters
+
+{
+    "Type" : "Reading",
+    "Reading" : [
+		"CalculatedHeatingCurveValue",
+		"CalculatedSetpointBoiler",
+		"ExternalHeatDemand",
+		"HeatcurveMinimumTemperature",
+		"HeatcurveMaximumTemperature",
+		"OutsideTemperature1",
+		"SupplyTemperature1",
+		"OutsideTemperature2",
+		"BoilerCentralHeating2"
+	]
+}
+
+3. To configure OT periodic package (DataIds = list of OT data id)
+
+{
+    "Type": "Opentherm",
+    "Opentherm": {
+        "BufferInterval": 5,
+        "UplinkInterval": 15,
+        "Mode": 1,
+        "Status": 1,
+        "DataIds": [12, 15, 10, 5]
+    }
+}
