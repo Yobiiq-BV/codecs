@@ -1,0 +1,148 @@
+Downlink fPort  : 50
+
+1. To reset Relay Control
+
+{
+    "Type" : "Relay",
+    "Relay" : {
+        "Param" : "Reset",
+        "Value" : 1
+    }
+}
+
+2. To set Relay Control Mode to automatic
+
+{
+    "Type" : "Relay",
+    "Relay" : {
+        "Param" : "ControlMode",
+        "Value" : 0
+    }
+}
+
+3. To set Relay Control Mode to manual
+
+{
+    "Type" : "Relay",
+    "Relay" : {
+        "Param" : "ControlMode",
+        "Value" : 1
+    }
+}
+
+4. To disable Relay Command
+
+{
+    "Type" : "Relay",
+    "Relay" : {
+        "Param" : "RelayCommand",
+        "Value" : 0
+    }
+}
+
+5. To enable Relay Command
+
+{
+    "Type" : "Relay",
+    "Relay" : {
+        "Param" : "RelayCommand",
+        "Value" : 1
+    }
+}
+
+
+
+
+6. To set Current Limit to 20 A ==> Value = 20 x 10 = 200 (Value = CurrentLimit/RESOLUTION = CurrentLimit x 10)
+
+{
+    "Type" : "Dynamic",
+    "Dynamic" : {
+        "Param" : "CurrentLimit",
+        "Value" : 200
+    }
+}
+
+
+7. To set Voltage Limit to 240 
+
+{
+    "Type" : "Dynamic",
+    "Dynamic" : {
+        "Param" : "VoltageLimit",
+        "Value" : 240
+    }
+}
+
+8. To set Desactivation Delay to 250
+
+{
+    "Type" : "Dynamic",
+    "Dynamic" : {
+        "Param" : "DeactivationDelay",
+        "Value" : 250
+    }
+}
+
+9. To set Reset Time to 500
+
+{
+    "Type" : "Dynamic",
+    "Dynamic" : {
+        "Param" : "ResetTime",
+        "Value" : 500
+    }
+}
+
+
+10. To set Reset Amount to 10
+
+{
+    "Type" : "Dynamic",
+    "Dynamic" : {
+        "Param" : "ResetAmount",
+        "Value" : 10
+    }
+}
+
+
+11. To request settings
+
+{
+    "Type" : "RequestSettings",
+    "RequestSettings" : [
+        "CurrentLimitFallback",
+        "VoltageLimitFallback",
+        "PowerLimitFallback",
+        "DeactivationDelayFallback",
+        "ActivationDelayFallback",
+        "OffsetCurrentFallback",
+        "OffsetDelayFallback",
+        "ResetTimeFallback",
+        "ResetAmountFallback",
+        "CurrentLimitDynamic"
+    ]
+}
+
+Note : Please limit to 10 settings per request
+
+******************  List of settings ********************
+
+CurrentLimitFallback
+VoltageLimitFallback
+PowerLimitFallback
+DeactivationDelayFallback
+ActivationDelayFallback
+OffsetCurrentFallback
+OffsetDelayFallback
+ResetTimeFallback
+ResetAmountFallback
+CurrentLimitDynamic
+VoltageLimitDynamic
+PowerLimitDynamic
+DeactivationDelayDynamic
+ActivationDelayDynamic
+OffsetCurrentDynamic
+OffsetDelayDynamic
+ResetTimeDynamic
+ResetAmountDynamic
