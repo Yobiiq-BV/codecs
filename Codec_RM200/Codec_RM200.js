@@ -1,7 +1,7 @@
 /**
  * Codec for RM200 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 11 January 2024
- * Update  Date : 12 January 2024
+ * Update  Date : 15 February 2024
  */
 
 // Configuration constants for device basic info
@@ -768,21 +768,18 @@ function encodeUplinkConfiguration(obj, variables)
         index = index + 1;
         encoded[index] = firstType + fieldIndex;
         index = index + 1;
-        var savedIndex = index;
         var config = {};
         for(var i=0; i<registers.length; i=i+1)
         {
             register = registers[i];
-            config = CONFIG_DEVICE.REGISTERS[register];
-            if(value in CONFIG_DEVICE.REGISTERS)
+            if(register in CONFIG_DEVICE.REGISTERS)
             {
+                config = CONFIG_DEVICE.REGISTERS[register];
                 encoded[index] =  config.TYPE;
                 index = index + 1;
+            }else{
+                return [];  // error (registers not supported)
             }
-        }
-        if(savedIndex == index)
-        {
-            return [];  // error (registers not supported)
         }
     }catch(error)
     {
@@ -831,3 +828,16 @@ function encodeParamtersReading(obj, variables)
 
 
 
+
+
+
+config = {
+    "Type": "Periodic",
+    "Periodic": {
+        "UplinkInterval": 15,
+        "Mode": 1,
+        "Status": 1,
+        "Registers": ["InternalCircuitTemperature", "InternalCircuitHumidity", ""]
+    }
+}
+console.log(Encode(null, config))
