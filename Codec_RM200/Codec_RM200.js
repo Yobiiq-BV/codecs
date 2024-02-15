@@ -827,17 +827,3 @@ function encodeParamtersReading(obj, variables)
 
 
 
-
-
-
-
-config = {
-    "Type": "Periodic",
-    "Periodic": {
-        "UplinkInterval": 15,
-        "Mode": 1,
-        "Status": 1,
-        "Registers": ["InternalCircuitTemperature", "InternalCircuitHumidity", ""]
-    }
-}
-console.log(Encode(null, config))
