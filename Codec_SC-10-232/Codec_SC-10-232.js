@@ -1,7 +1,7 @@
 /**
  * Codec for SC-10-232 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 13 February 2024
- * Update  Date : 13 February 2024
+ * Update  Date : 20 February 2024
  */
 
 // Configuration constants for device basic info and current settings
@@ -45,7 +45,7 @@ var CONFIG_INFO = {
     FPORT_MIN : 1,
     FPORT_MAX : 10,
     MEASUREMENT_LIST_NAME: "ListOfMeasurements",
-	MODBUS_DATA_POINT_LENGTH : 21,
+	MODBUS_DATA_POINT_LENGTH : 9,
     MODBUS_CHANNEL_DATA_TYPE_OFFSET: 200,
     MODBUS_CHANNEL_DATA_TYPE_TOTAL: 50,
     MODBUS_CHANNEL_DATA_TYPES:{
@@ -65,8 +65,8 @@ var CONFIG_INFO = {
     MODBUS_BYTE_ORDERS:{
        BYTE_ORDER_ABCD : 0,
        BYTE_ORDER_CDBA : 1,
-       DATA_ORDER_BADC : 2,
-       DATA_ORDER_DCBA : 3
+       BYTE_ORDER_BADC : 2,
+       BYTE_ORDER_DCBA : 3
     },
     WARNING_NAME   : "Warning",
     ERROR_NAME     : "Error",
@@ -77,13 +77,24 @@ var CONFIG_INFO = {
 var CONFIG_ALARM = {
     FPORT : 11,
     CHANNEL : parseInt("0xAA", 16),
-    MODBUS_CHANNEL_ALARM_TYPE_OFFSET: 3,
-    MODBUS_CHANNEL_ALARM_NAME_GENERIC: "Channel",
+    MODBUS_CHANNEL_ALARM_TYPE_MIN: 3,
+    MODBUS_CHANNEL_ALARM_TYPE_MAX: 52,
+    MODBUS_CHANNEL_ALARM_NAME_GENERIC: "AlarmChannel",
     MODBUS_CHANNEL_ALARM_VALUES: {
         "0x00": "normal",
+        "0x01": "generic exception",
+        "0x02": "crc checking failure",
+        "0x03": "response size error",
+        "0x04": "illegal slave id",
+        "0x05": "response timeout",
+        "0x81": "illegal function code",
+        "0x82": "illegal data address",
+        "0x83": "illegal data value",
+        "0x84": "slave device failure",
+        "0x85": "response incorrect",
     },
     TYPES : {
-        "0xFE" : {SIZE: 4, NAME : "Timestamp"},
+        "0xFE" : {SIZE: 4, NAME : "DeviceTimestamp"},
         "0x00" : {SIZE: 1, NAME : "InternalTemperatureAlarm",
             VALUES     : {
                 "0x00" : "normal",
@@ -306,7 +317,17 @@ function decodeAlarmPacket(bytes)
             var info = CONFIG_ALARM.TYPES[type] ? CONFIG_ALARM.TYPES[type] : null;
             if(info == null)
             {
-                continue;
+                var modbusChannelId = parseInt(type, 16);
+                if(modbusChannelId >= CONFIG_ALARM.MODBUS_CHANNEL_ALARM_TYPE_MIN && 
+                    modbusChannelId <= CONFIG_ALARM.MODBUS_CHANNEL_ALARM_TYPE_MAX)
+                {
+                    info = {NAME: CONFIG_ALARM.MODBUS_CHANNEL_ALARM_NAME_GENERIC +
+                            (modbusChannelId + 1 - CONFIG_ALARM.MODBUS_CHANNEL_ALARM_TYPE_MIN),
+                            SIZE: 1, VALUES: CONFIG_ALARM.MODBUS_CHANNEL_ALARM_VALUES};
+                }else
+                {
+                    continue;
+                }
             }
             size = info.SIZE ? info.SIZE : 0;
             if(size == 0)
@@ -408,6 +429,7 @@ function decodeMeasurement(bytes, baseIndex, deviceTimestamp)
 	try 
 	{
 		var channel = bytes[index];
+		index = index + 1;
 		if(channel < CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPE_OFFSET || 
            channel >= CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPE_OFFSET + 
                         CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPE_TOTAL)
@@ -416,16 +438,71 @@ function decodeMeasurement(bytes, baseIndex, deviceTimestamp)
             return decoded;
 		}
         decoded.ChannelId = channel - CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPE_OFFSET + 1;
-		index = index + 1;
-        var type = type = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
+        var type = bytes[index];
         index = index + 1;
         var dataInfo = getValueFromBytesBigEndianFormat(bytes, index, 3);
-        var byteOrder = dataInfo & 0x3;
+        index = index + 3;
+        decoded.ChannelByteOrder = dataInfo & 0x03;
+        var numberOfDataBytes = dataInfo & 0x0C;
+        dataInfo = dataInfo >> 4;
+        decoded.ChannelDataloggerTimestamp = deviceTimestamp - dataInfo;
+        decoded.ChannelBytes = [];
+        for(var i=0; i<numberOfDataBytes; i=i+1)
+        {
+            decoded.ChannelBytes.push(bytes[index]);
+            index = index + 1;
+        }
+        var channelBytesBigEndian = [];
+        switch (decoded.ChannelByteOrder) {
+            case CONFIG_PERIODIC.MODBUS_BYTE_ORDERS.BYTE_ORDER_ABCD:
+            {
+                for(var i=0; i<numberOfDataBytes; i=i+1)
+                {
+                    channelBytesBigEndian.push(decoded.ChannelBytes[i]);
+                }
+                break;
+            }
+            case CONFIG_PERIODIC.MODBUS_BYTE_ORDERS.BYTE_ORDER_DCBA:
+            {
+                for(var i=0; i<numberOfDataBytes; i=i+1)
+                {
+                    channelBytesBigEndian.push(decoded.ChannelBytes[numberOfDataBytes-1-i]);
+                }
+                break;
+            }
+            default:
+            {
+                for(var i=0; i<numberOfDataBytes; i=i+1)
+                {
+                    channelBytesBigEndian.push(decoded.ChannelBytes[i]);
+                }
+                break;
+            }
+        }
         // TODO
         switch(type) {
             case CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPES.DATA_TYPE_COILS:
             {
 
+                break;
+            }
+            case CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPES.DATA_TYPE_DISCRETE:
+            {
+                break;
+            }
+            case CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPES.DATA_TYPE_HOLDING_FLOAT:
+            {
+                decoded.ChannelValue = getFloatValueFromBytesBigEndianFormat(channelBytesBigEndian);
+                break;
+            }
+            case CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPES.DATA_TYPE_HOLDING_32:
+            {
+                decoded.ChannelValue = getValueFromBytesBigEndianFormat(channelBytesBigEndian, 0, numberOfDataBytes);
+                break;
+            }
+            case CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPES.DATA_TYPE_INPUT_32:
+            {
+                decoded.ChannelValue = getValueFromBytesBigEndianFormat(channelBytesBigEndian, 0, numberOfDataBytes);
                 break;
             }
             default:
@@ -537,6 +614,38 @@ function getSignedIntegerFromInteger(integer, size)
         return integer & dataMask;
     }
 }
+
+function getFloatValueFromBytesLittleEndianFormat(bytes) {
+    var exponent = ((bytes[3] & 0xFF) << 1) | ((bytes[2] & 0x80) >> 7);
+    var mantissa = ((bytes[2] & 0x7F) << 16) | (bytes[1] << 8) | bytes[0];
+
+    if (exponent === 0 && mantissa === 0) {
+        return 0.0;
+    }
+
+    var sign = bytes[3] & 0x80 ? -1 : 1;
+
+    // Calculate the float value
+    var floatValue = sign * Math.pow(2, exponent - 127) * (1 + mantissa / Math.pow(2, 23));
+    return parseFloat(floatValue.toFixed(3));
+}
+
+function getFloatValueFromBytesBigEndianFormat(bytes)
+{
+    var exponent = ((bytes[0] & 0x7F) << 1) | ((bytes[1] & 0x80) >> 7);
+    var mantissa = ((bytes[1] & 0x7F) << 16) | (bytes[2] << 8) | bytes[3];
+
+    if (exponent === 0 && mantissa === 0) {
+        return 0.0;
+    }
+
+    var sign = bytes[0] & 0x80 ? -1 : 1;
+
+    // Calculate the float value
+    var floatValue = sign * Math.pow(2, exponent - 127) * (1 + mantissa / Math.pow(2, 23));
+    return parseFloat(floatValue.toFixed(3));
+}
+
 
 /************************************************************************************************************/
 
@@ -828,6 +937,7 @@ function encodeParamtersReading(obj, variables)
     }
     return encoded;
 }
+
 
 
 
