@@ -73,7 +73,7 @@ var CONFIG_INFO = {
     "0x21" : {SIZE : 2, NAME : "PhaseAngleL2", UNIT : "degree", RESOLUTION : 0.01, SIGNED : true,},
     "0x22" : {SIZE : 2, NAME : "PhaseAngleL3", UNIT : "degree", RESOLUTION : 0.01, SIGNED : true,},
     "0x23" : {SIZE : 2, NAME : "Frequency", UNIT : "Hz", RESOLUTION : 0.01, SIGNED : true,},
-    "0x24" : {SIZE : 4, NAME : "TotalSystemActivePower", UNIT : "kW",},
+    "0x24" : {SIZE : 4, NAME : "TotalSystemActivePower", UNIT : "kW", RESOLUTION : 0.001,},
     "0x25" : {SIZE : 4, NAME : "TotalSystemReactivePower", UNIT : "kvar", RESOLUTION : 0.001,},
     "0x26" : {SIZE : 4, NAME : "TotalSystemApparentPower", UNIT : "kVA", RESOLUTION : 0.001,},
     "0x27" : {SIZE : 4, NAME : "MaximumL1CurrentDemand", UNIT : "mA", SIGNED : true,},
@@ -340,6 +340,17 @@ function getSignedIntegerFromInteger(integer, size)
     {
 	    return integer & dataMask;
 	}
+}
+
+
+function getSizeBasedOnChannel(bytes, index, channel)
+{
+    var size = 0;
+    while(index + size < bytes.length && bytes[index + size] != channel)
+    {
+        size = size + 1;
+    }
+    return size;
 }
 
 /************************************************************************************************************/
