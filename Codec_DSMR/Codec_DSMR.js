@@ -1,22 +1,32 @@
 /**
  * Codec for DSMR device : compatible with TTN, ChirpStack v4 and v3, etc...
- * Release Date : 05 August 2023
- * Update  Date : 06 August 2023
+ * Release Date : 28 February 2023
+ * Update  Date : 28 February 2023
  */
 
 // Configuration constants for device basic info and current settings
 var CONFIG_INFO = {
-    PORT     : 50,
+    FPORT    : 50,
     CHANNEL  : parseInt("0xFF", 16),
     TYPES    : {
-        "0x01" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
-        "0x0A" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x10" : {SIZE : 7, NAME : "DeviceSerialNumber", DIGIT: true},
-        "0x20" : {SIZE : 1, NAME : "DeviceClass",
+        "0x05" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
+        "0x04" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
+        "0x03" : {SIZE : 7, NAME : "DeviceSerialNumber", DIGIT: true},
+        "0x01" : {SIZE : 0, NAME : "Manufacturer"}, // size to be determinated
+        "0x02" : {SIZE : 0, NAME : "DeviceModel"},  // size to be determinated
+        "0x07" : {SIZE : 1, NAME : "BatteryPercentage"},
+        "0x08" : {SIZE : 1, NAME : "BatteryVoltage", RESOLUTION: 0.1},
+        "0x11" : {SIZE : 1, NAME : "DeviceClass",
             VALUES     : {
                 "0x00" : "Class A",
                 "0x01" : "Class B",
                 "0x02" : "Class C",
+            },
+        },
+        "0x06" : {SIZE : 1, NAME : "PowerEvent",
+            VALUES     : {
+                "0x00" : "AC Power Off",
+                "0x01" : "AC Power On",
             },
         }
     },
@@ -44,12 +54,12 @@ var CONFIG_MEASUREMENT = {
     "0x1F" : {SIZE : 4, NAME : "NumberOfVoltageSwellsL1",},
     "0x20" : {SIZE : 4, NAME : "NumberOfVoltageSwellsL2",},
     "0x21" : {SIZE : 4, NAME : "NumberOfVoltageSwellsL3",},
-    "0x22" : {SIZE : 2, NAME : "VoltageL1", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
-    "0x23" : {SIZE : 2, NAME : "VoltageL2", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
-    "0x24" : {SIZE : 2, NAME : "VoltageL3", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
-    "0x26" : {SIZE : 2, NAME : "CurrentL1", UNIT : "A", SIGNED : true,},
-    "0x28" : {SIZE : 2, NAME : "CurrentL2", UNIT : "A", SIGNED : true,},
-    "0x2A" : {SIZE : 2, NAME : "CurrentL3", UNIT : "A", SIGNED : true,},
+    "0x22" : {SIZE : 4, NAME : "VoltageL1", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
+    "0x23" : {SIZE : 4, NAME : "VoltageL2", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
+    "0x24" : {SIZE : 4, NAME : "VoltageL3", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
+    "0x26" : {SIZE : 4, NAME : "CurrentL1", UNIT : "A", SIGNED : true,},
+    "0x28" : {SIZE : 4, NAME : "CurrentL2", UNIT : "A", SIGNED : true,},
+    "0x2A" : {SIZE : 4, NAME : "CurrentL3", UNIT : "A", SIGNED : true,},
     "0x2C" : {SIZE : 4, NAME : "ActivePowerDeliveredL1", UNIT : "W", SIGNED : true,},
     "0x2E" : {SIZE : 4, NAME : "ActivePowerDeliveredL2", UNIT : "W", SIGNED : true,},
     "0x30" : {SIZE : 4, NAME : "ActivePowerDeliveredL3", UNIT : "W", SIGNED : true,},
@@ -80,13 +90,25 @@ function decodeBasicInformation(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
+    if(LENGTH == 1)
+    {
+        if(bytes[0] == 0)
+        {
+            decoded[CONFIG_INFO.INFO_NAME] = "Downlink command succeeded";
+
+        } else if(bytes[0] == 1)
+        {
+            decoded[CONFIG_INFO.WARNING_NAME] = "Downlink command failed";
+        }
+        return decoded;
+    }
     try
     {
         while(index < LENGTH)
         {
             channel = bytes[index];
             index = index + 1;
-            // channel checking
+            // Channel checking
             if(channel != CONFIG_INFO.CHANNEL)
             {
                 continue;
@@ -95,38 +117,12 @@ function decodeBasicInformation(bytes)
             type = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
             index = index + 1;
             var info = CONFIG_INFO.TYPES[type];
-            size = info["SIZE"];
+            size = info.SIZE;
             // Decoding
             var value = 0;
-            if(type == "0x06" || info["NAME"] == "Battery")
+            if(info.DIGIT || info.DIGIT == false)
             {
-                decoded[info["NAME"]] = {};
-                decoded[info["NAME"]]["percentage"] = getValueFromBytesBigEndianFormat(bytes, index, 1);
-                index = index + 1;
-                value = getValueFromBytesBigEndianFormat(bytes, index, 1) * 0.1;
-                index = index + 1;
-                decoded[info["NAME"]]["voltage"] = parseFloat(value.toFixed(1));
-                continue;
-            }
-            if(type == "0x08" || info["NAME"] == "Settings")
-            {
-                decoded[info["NAME"]] = {};
-                value = getValueFromBytesBigEndianFormat(bytes, index, 1);
-                decoded[info["NAME"]] = decodeSettingsInfo(value);
-                index = index + 1;
-                decoded[info["NAME"]]["BatteryAlarmThreshold"] = getValueFromBytesBigEndianFormat(bytes, index, 1);
-                index = index + 1;
-                decoded[info["NAME"]]["TransmitInterval"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
-                index = index + 2;
-                decoded[info["NAME"]]["CollectionInterval"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
-                index = index + 2;
-                decoded[info["NAME"]]["GasLeakageAlarmThreshold"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
-                index = index + 2;
-                continue;
-            }
-            if("DIGIT" in info)
-            {
-                if(info["DIGIT"] == false)
+                if(info.DIGIT == false)
                 {
                     // Decode into "V" + DIGIT STRING + "." DIGIT STRING format
                     value = getDigitStringArrayNoFormat(bytes, index, size);
@@ -135,35 +131,36 @@ function decodeBasicInformation(bytes)
                 {
                     // Decode into DIGIT STRING format
                     value = getDigitStringArrayEvenFormat(bytes, index, size);
-                    value = value.toString();
+                    value = value.toString().toUpperCase();
                 }
+
             }
-            else if("VALUES" in info)
+            else if(info.VALUES)
             {
                 // Decode into STRING (VALUES specified in CONFIG_INFO)
                 value = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
-                value = info["VALUES"][value];
+                value = info.VALUES[value];
             }else
             {
-                // Decode into DECIMAL format
-                value = getValueFromBytesBigEndianFormat(bytes, index, size);
+                if(size == 0)
+                {
+                    size = getSizeBasedOnChannel(bytes, index, channel);
+                    // Decode into STRING format
+                    value = getStringFromBytesBigEndianFormat(bytes, index, size);
+                    
+                }else
+                {
+                    // Decode into DECIMAL format
+                    value = getValueFromBytesBigEndianFormat(bytes, index, size);
+                }
             }
-            if("RESOLUTION" in info)
+            if(info.RESOLUTION)
             {
-                value = value * info["RESOLUTION"];
+                value = value * info.RESOLUTION;
                 value = parseFloat(value.toFixed(2));
             }
-            if("UNIT" in info)
-            {
-                decoded[info["NAME"]] = {}
-                decoded[info["NAME"]]["data"] = value;
-                decoded[info["NAME"]]["unit"] = info["UNIT"];
-            }else
-            {
-                decoded[info["NAME"]] = value;
-            }
+            decoded[info.NAME] = value;
             index = index + size;
-        
         }
     }catch(error)
     {
@@ -194,7 +191,7 @@ function decodeDeviceData(bytes)
             // No channel checking
 
             var measurement = CONFIG_MEASUREMENT[type];
-            size = measurement["SIZE"];
+            size = measurement.SIZE;
             // Decoding
             var value = 0;
 
@@ -203,8 +200,8 @@ function decodeDeviceData(bytes)
                 // PowerFailureEventLog decoding
                 value = getValueFromBytesBigEndianFormat(bytes, index, 4);
                 index = index + 4;
-                size =  measurement["SINGLE_EVENT_SIZE"] * value;
-                decoded[measurement["NAME"]] = getPowerFailureEventLog(bytes, index, size);
+                size =  measurement.SINGLE_EVENT_SIZE * value;
+                decoded[measurement.NAME] = getPowerFailureEventLog(bytes, index, size);
                 index = index + size;
                 continue;
             }
@@ -213,34 +210,34 @@ function decodeDeviceData(bytes)
                 // Slave last reading decoding
                 value = getValueFromBytesBigEndianFormat(bytes, index, 4);
                 index = index + 4;
-                decoded[measurement["NAME"]] = {};
-                decoded[measurement["NAME"]]["timestamp"] = value;
+                decoded[measurement.NAME] = {};
+                decoded[measurement.NAME]["timestamp"] = value;
                 value = getValueFromBytesBigEndianFormat(bytes, index, 4);
                 index = index + 4;
-                decoded[measurement["NAME"]]["value"] = value;
+                decoded[measurement.NAME]["value"] = value;
                 continue;
             }
 
             // Decode into DECIMAL format
             value = getValueFromBytesBigEndianFormat(bytes, index, size);
         
-            if("SIGNED" in measurement)
+            if(measurement.SIGNED)
             {
                 value = getSignedIntegerFromInteger(value, size);
             }
-            if("RESOLUTION" in measurement)
+            if(measurement.RESOLUTION)
             {
-                value = value * measurement["RESOLUTION"];
+                value = value * measurement.RESOLUTION;
                 value = parseFloat(value.toFixed(2));
             }
-            if("UNIT" in measurement)
+            if(measurement.UNIT)
             {
-                decoded[measurement["NAME"]] = {};
-                decoded[measurement["NAME"]]["data"] = value;
-                decoded[measurement["NAME"]]["unit"] = measurement["UNIT"];
+                decoded[measurement.NAME] = {};
+                decoded[measurement.NAME]["data"] = value;
+                decoded[measurement.NAME]["unit"] = measurement["UNIT"];
             }else
             {
-                decoded[measurement["NAME"]] = value;
+                decoded[measurement.NAME] = value;
             }
             index = index + size;
 
@@ -254,26 +251,6 @@ function decodeDeviceData(bytes)
 
 
 /**  Helper functions  **/
-
-function getBitValue(byte, indexOfBitInByte)
-{
-    var bitMask = 0x01 << indexOfBitInByte;
-    if(byte & bitMask)
-    {
-        return true;
-    }
-    return false;
-}
-
-function decodeSettingsInfo(byte)
-{
-    var decoded = {};
-    decoded["UplinkConfirmation"] = getBitValue(byte, 0);
-    decoded["ADR"] = getBitValue(byte, 1);
-    decoded["DutyCycle"] = getBitValue(byte, 2);
-    return decoded;
-}
-
 
 function getStringFromBytesBigEndianFormat(bytes, index, size)
 {
@@ -302,7 +279,7 @@ function getValueFromBytesBigEndianFormat(bytes, index, size)
     {
         value = (value | bytes[index+i]) << 8; 
     }
-    value = value | bytes[index+size-1]
+    value = value | bytes[index+size-1];
     return value;
 }
 
@@ -313,7 +290,7 @@ function getValueFromBytesLittleEndianFormat(bytes, index, size)
     {
         value = (value | bytes[index+i]) << 8; 
     }
-    value = value | bytes[index]
+    value = value | bytes[index];
     return value;
 }
 
@@ -324,7 +301,7 @@ function getDigitStringArrayNoFormat(bytes, index, size)
   {
     hexString.push(bytes[index+i].toString(16));
   }
-  return hexString
+  return hexString;
 }
 
 function getDigitStringArrayEvenFormat(bytes, index, size)
@@ -334,7 +311,7 @@ function getDigitStringArrayEvenFormat(bytes, index, size)
   {
     hexString.push(bytes[index+i].toString(16));
   }
-  return hexString.map(toEvenHEX)
+  return hexString.map(toEvenHEX);
 }
 
 function toEvenHEX(hex)
@@ -344,6 +321,16 @@ function toEvenHEX(hex)
     return "0"+hex;
   }
   return hex;
+}
+
+function getSizeBasedOnChannel(bytes, index, channel)
+{
+    var size = 0;
+    while(index + size < bytes.length && bytes[index + size] != channel)
+    {
+        size = size + 1;
+    }
+    return size;
 }
 
 function getSignedIntegerFromInteger(integer, size) 
@@ -381,10 +368,10 @@ function getPowerFailureEventLog(bytes, index, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
-    if(fPort == CONFIG_INFO.PORT)
+    if(fPort == CONFIG_INFO.FPORT)
     {
         return decodeBasicInformation(bytes);
-    }else if(fPort >= 1 && fPort <= 5)
+    }else if(fPort >= 1 && fPort <= 10)
     {
         return decodeDeviceData(bytes);
     }else if(fPort == 11)
