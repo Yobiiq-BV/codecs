@@ -445,7 +445,7 @@ function decodeMeasurement(bytes, baseIndex, deviceTimestamp)
         decoded.ChannelByteOrder = dataInfo & 0x03;
         var numberOfDataBytes = dataInfo & 0x0C;
         dataInfo = dataInfo >> 4;
-        decoded.ChannelDataloggerTimestamp = deviceTimestamp - dataInfo;
+        decoded.ChannelLoggerTimestamp = deviceTimestamp - dataInfo;
         decoded.ChannelBytes = [];
         for(var i=0; i<numberOfDataBytes; i=i+1)
         {
@@ -492,17 +492,17 @@ function decodeMeasurement(bytes, baseIndex, deviceTimestamp)
             }
             case CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPES.DATA_TYPE_HOLDING_FLOAT:
             {
-                decoded.ChannelValue = getFloatValueFromBytesBigEndianFormat(channelBytesBigEndian);
+                decoded.ChannelDecodedValue = getFloatValueFromBytesBigEndianFormat(channelBytesBigEndian);
                 break;
             }
             case CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPES.DATA_TYPE_HOLDING_32:
             {
-                decoded.ChannelValue = getValueFromBytesBigEndianFormat(channelBytesBigEndian, 0, numberOfDataBytes);
+                decoded.ChannelDecodedValue = getValueFromBytesBigEndianFormat(channelBytesBigEndian, 0, numberOfDataBytes);
                 break;
             }
             case CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPES.DATA_TYPE_INPUT_32:
             {
-                decoded.ChannelValue = getValueFromBytesBigEndianFormat(channelBytesBigEndian, 0, numberOfDataBytes);
+                decoded.ChannelDecodedValue = getValueFromBytesBigEndianFormat(channelBytesBigEndian, 0, numberOfDataBytes);
                 break;
             }
             default:
