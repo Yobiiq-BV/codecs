@@ -1,7 +1,7 @@
 /**
  * Codec for EM4301-CT device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 07 March 2024
- * Update  Date : 08 March 2024
+ * Update  Date : 13 March 2024
  */
 
 // Configuration constants for device basic info
@@ -49,17 +49,17 @@ var CONFIG_INFO = {
         "0x00" : {SIZE : 4, NAME : "Index",},
         "0x01" : {SIZE : 4, NAME : "Timestamp",},
         "0x03" : {SIZE : 4, NAME : "DataloggerTimestamp",},
-        "0x04" : {SIZE : 4, NAME : "ActiveEnergyImportL123T1", UNIT : "Wh", SIGNED : true,},
-        "0x05" : {SIZE : 4, NAME : "ActiveEnergyImportL123T2", UNIT : "Wh", SIGNED : true,},
-        "0x06" : {SIZE : 4, NAME : "ActiveEnergyExportL123T1", UNIT : "Wh", SIGNED : true,},
-        "0x07" : {SIZE : 4, NAME : "ActiveEnergyExportL123T2", UNIT : "Wh", SIGNED : true,},
-        "0x08" : {SIZE : 4, NAME : "ReactiveEnergyImportL123T1", UNIT : "varh", SIGNED : true,},
-        "0x09" : {SIZE : 4, NAME : "ReactiveEnergyImportL123T2", UNIT : "varh", SIGNED : true,},
-        "0x0A" : {SIZE : 4, NAME : "ReactiveEnergyExportL123T1", UNIT : "varh", SIGNED : true,},
-        "0x0B" : {SIZE : 4, NAME : "ReactiveEnergyExportL123T2", UNIT : "varh", SIGNED : true,},
-        "0x0C" : {SIZE : 4, NAME : "VoltageL1N", UNIT : "V", RESOLUTION : 0.1,},
-        "0x0D" : {SIZE : 4, NAME : "VoltageL2N", UNIT : "V", RESOLUTION : 0.1,},
-        "0x0E" : {SIZE : 4, NAME : "VoltageL3N", UNIT : "V", RESOLUTION : 0.1,},
+        "0x04" : {SIZE : 4, NAME : "ActiveEnergyImportL123T1", UNIT : "kWh", RESOLUTION : 0.01, SIGNED : true,},
+        "0x05" : {SIZE : 4, NAME : "ActiveEnergyImportL123T2", UNIT : "kWh", RESOLUTION : 0.01, SIGNED : true,},
+        "0x06" : {SIZE : 4, NAME : "ActiveEnergyExportL123T1", UNIT : "kWh", RESOLUTION : 0.01, SIGNED : true,},
+        "0x07" : {SIZE : 4, NAME : "ActiveEnergyExportL123T2", UNIT : "kWh", RESOLUTION : 0.01, SIGNED : true,},
+        "0x08" : {SIZE : 4, NAME : "ReactiveEnergyImportL123T1", UNIT : "kvarh", RESOLUTION : 0.01, SIGNED : true,},
+        "0x09" : {SIZE : 4, NAME : "ReactiveEnergyImportL123T2", UNIT : "kvarh", RESOLUTION : 0.01, SIGNED : true,},
+        "0x0A" : {SIZE : 4, NAME : "ReactiveEnergyExportL123T1", UNIT : "kvarh", RESOLUTION : 0.01, SIGNED : true,},
+        "0x0B" : {SIZE : 4, NAME : "ReactiveEnergyExportL123T2", UNIT : "kvarh", RESOLUTION : 0.01, SIGNED : true,},
+        "0x0C" : {SIZE : 4, NAME : "VoltageL1N", UNIT : "V", RESOLUTION : 0.01,},
+        "0x0D" : {SIZE : 4, NAME : "VoltageL2N", UNIT : "V", RESOLUTION : 0.01,},
+        "0x0E" : {SIZE : 4, NAME : "VoltageL3N", UNIT : "V", RESOLUTION : 0.01,},
         "0x0F" : {SIZE : 4, NAME : "CurrentL123", UNIT : "mA",},
         "0x10" : {SIZE : 4, NAME : "CurrentL1", UNIT : "mA",},
         "0x11" : {SIZE : 4, NAME : "CurrentL2", UNIT : "mA",},
@@ -642,7 +642,7 @@ var CONFIG_PERIODIC = {
         SecondaryCurrentTransformerRatio : "0xC2",
         PrimaryVoltageTransformerRatio : "0xD1",
         SecondaryVoltageTransformerRatio : "0xD2",
-        MIDYearofCertification : "0xF0",
+        MIDYearOfCertification : "0xF0",
         ManufacturedYear : "0xF1",
         FirmwareVersion : "0xF2",
         HardwareVersion : "0xF3",
