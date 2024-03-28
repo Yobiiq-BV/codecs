@@ -214,7 +214,7 @@ function getValueFromBytesBigEndianFormat(bytes, index, size)
         value = (value | bytes[index+i]) << 8; 
     }
     value = value | bytes[index+size-1]
-    return value;
+    return (value >>> 0); // to unsigned
 }
 
 function getValueFromBytesLittleEndianFormat(bytes, index, size)
@@ -225,7 +225,7 @@ function getValueFromBytesLittleEndianFormat(bytes, index, size)
         value = (value | bytes[index+i]) << 8; 
     }
     value = value | bytes[index]
-    return value;
+    return (value >>> 0); // to unsigned
 }
 
 function getDigitStringArrayNoFormat(bytes, index, size)
