@@ -1,7 +1,7 @@
 /**
  * Codec for FM432g device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 26 June 2023
- * Update  Date : 26 June 2023
+ * Update  Date : 15 March 2024
  */
 
 // Config for FM432g device
@@ -32,7 +32,10 @@ function Decode(fPort, bytes, variables)
         return DecodeT1Payload(bytes, timestamp);
     }
 
-    return {warning: "Payload is not T1 message"};
+    return {
+        warning: "Payload is not T1 message", 
+        RawPayload: getDigitStringArrayEvenFormat(bytes, 0, bytes.length).join("")
+    };
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)
@@ -71,7 +74,7 @@ function Encode(fPort, obj, variables) {
 // - bytes = Byte array containing the downlink payload.
 function encodeDownlink(input) {
     return {
-        bytes: []
+        bytes: Encode(null, input.data, input.variables)
     };
 }
 
@@ -150,16 +153,24 @@ function DecodeT1Payload(bytes, timestamp)
 {
     var decoded = {};
     var payload = getDigitStringArrayEvenFormat(bytes, 0, bytes.length).join("");
-    decoded.Index = decode_index(payload);
-    decoded.StepInMinute = decode_step(payload);
-    decoded.ListOfIncrements = [];
-    var increments = decode_list_increment(payload);
-    for(var i=0; i<increments.length; i=i+1)
+    decoded.RawPayload = payload;
+    try
     {
-        var increment = {};
-        increment.value = increments[i];
-        increment.timestamp = timestamp - ((8 - i)*decoded.StepInMinute*60);
-        decoded.ListOfIncrements.push(increment);
+        decoded.Index = decode_index(payload);
+        decoded.StepInMinute = decode_step(payload);
+        decoded.ListOfIncrements = [];
+        var increments = decode_list_increment(payload);
+        for(var i=0; i<increments.length; i=i+1)
+        {
+            var increment = {};
+            increment.value = increments[i];
+            increment.timestamp = timestamp - ((8 - i)*decoded.StepInMinute*60);
+            decoded.ListOfIncrements.push(increment);
+        }
+
+    }catch(error)
+    {
+
     }
     return decoded;
 }
