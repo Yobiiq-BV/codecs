@@ -1,7 +1,7 @@
 /**
  * Codec for EM4301 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 11 June 2023
- * Update  Date : 08 February 2024
+ * Update  Date : 27 March 2024
  */
 
 // Configuration constants for device basic info
@@ -286,7 +286,7 @@ function getValueFromBytesBigEndianFormat(bytes, index, size)
         value = (value | bytes[index+i]) << 8; 
     }
     value = value | bytes[index+size-1]
-    return value;
+    return (value >>> 0); // to unsigned
 }
 
 function getValueFromBytesLittleEndianFormat(bytes, index, size)
@@ -297,7 +297,7 @@ function getValueFromBytesLittleEndianFormat(bytes, index, size)
         value = (value | bytes[index+i]) << 8; 
     }
     value = value | bytes[index]
-    return value;
+    return (value >>> 0); // to unsigned
 }
 
 function getDigitStringArrayNoFormat(bytes, index, size)
