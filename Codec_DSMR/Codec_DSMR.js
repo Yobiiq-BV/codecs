@@ -1,7 +1,7 @@
 /**
  * Codec for DSMR device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 28 February 2023
- * Update  Date : 28 February 2023
+ * Update  Date : 27 March 2024
  */
 
 // Configuration constants for device basic info and current settings
@@ -11,7 +11,7 @@ var CONFIG_INFO = {
     TYPES    : {
         "0x05" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
         "0x04" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x03" : {SIZE : 7, NAME : "DeviceSerialNumber", DIGIT: true},
+        "0x03" : {SIZE : 4, NAME : "DeviceSerialNumber"},
         "0x01" : {SIZE : 0, NAME : "Manufacturer"}, // size to be determinated
         "0x02" : {SIZE : 0, NAME : "DeviceModel"},  // size to be determinated
         "0x07" : {SIZE : 1, NAME : "BatteryPercentage"},
@@ -178,6 +178,18 @@ function decodeDeviceData(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
+    if(LENGTH == 1)
+    {
+        if(bytes[0] == 0)
+        {
+            decoded[CONFIG_MEASUREMENT.INFO_NAME] = "Downlink command succeeded";
+
+        } else if(bytes[0] == 1)
+        {
+            decoded[CONFIG_MEASUREMENT.WARNING_NAME] = "Downlink command failed";
+        }
+        return decoded;
+    }
     try
     {
         while(index < LENGTH)
@@ -280,7 +292,7 @@ function getValueFromBytesBigEndianFormat(bytes, index, size)
         value = (value | bytes[index+i]) << 8; 
     }
     value = value | bytes[index+size-1];
-    return value;
+    return (value >>> 0); // to unsigned
 }
 
 function getValueFromBytesLittleEndianFormat(bytes, index, size)
@@ -291,7 +303,7 @@ function getValueFromBytesLittleEndianFormat(bytes, index, size)
         value = (value | bytes[index+i]) << 8; 
     }
     value = value | bytes[index];
-    return value;
+    return (value >>> 0); // to unsigned
 }
 
 function getDigitStringArrayNoFormat(bytes, index, size)
