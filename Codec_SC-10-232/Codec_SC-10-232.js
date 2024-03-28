@@ -440,10 +440,13 @@ function decodeMeasurement(bytes, baseIndex, deviceTimestamp)
         decoded.ChannelId = channel - CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPE_OFFSET + 1;
         var type = bytes[index];
         index = index + 1;
+        decoded.ChannelDataType = type;
         var dataInfo = getValueFromBytesBigEndianFormat(bytes, index, 3);
         index = index + 3;
-        decoded.ChannelByteOrder = dataInfo & 0x03;
-        var numberOfDataBytes = dataInfo & 0x0C;
+        decoded.ChannelByteOrder = dataInfo & 0x03; // Bit index [1:0]
+        var numberOfDataBytes = (dataInfo >> 2) & 0x03;  // Bit index [3:2]
+        // 0 ==> 4 bytes; 1 ==> 1 byte; 2 ==> 2 bytes; 3 ==> 3 bytes
+        numberOfDataBytes = numberOfDataBytes ? numberOfDataBytes : 4;
         dataInfo = dataInfo >> 4;
         decoded.ChannelLoggerTimestamp = deviceTimestamp - dataInfo;
         decoded.ChannelBytes = [];
@@ -937,9 +940,5 @@ function encodeParamtersReading(obj, variables)
     }
     return encoded;
 }
-
-
-
-
 
 
