@@ -1,7 +1,7 @@
 /**
  * Codec for OTM device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 04 November 2023
- * Update  Date : 19 December 2023
+ * Update  Date : 27 March 2024
  */
 
 // Configuration constants for device basic info
@@ -11,7 +11,7 @@ var CONFIG_INFO = {
     TYPES    : {
         "0x05" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
         "0x04" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x03" : {SIZE : 7, NAME : "DeviceSerialNumber", DIGIT: true},
+        "0x03" : {SIZE : 4, NAME : "DeviceSerialNumber"},
         "0x01" : {SIZE : 0, NAME : "Manufacturer"}, // size to be determinated
         "0x02" : {SIZE : 0, NAME : "DeviceModel"},  // size to be determinated
         "0x07" : {SIZE : 1, NAME : "BatteryPercentage"},
@@ -878,7 +878,7 @@ function getValueFromBytesBigEndianFormat(bytes, index, size)
         value = (value | bytes[index+i]) << 8; 
     }
     value = value | bytes[index+size-1];
-    return value;
+    return (value >>> 0); // to unsigned
 }
 
 function getValueFromBytesLittleEndianFormat(bytes, index, size)
@@ -889,7 +889,7 @@ function getValueFromBytesLittleEndianFormat(bytes, index, size)
         value = (value | bytes[index+i]) << 8; 
     }
     value = value | bytes[index];
-    return value;
+    return (value >>> 0); // to unsigned
 }
 
 function getDigitStringArrayNoFormat(bytes, index, size)
