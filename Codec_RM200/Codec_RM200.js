@@ -11,7 +11,7 @@ var CONFIG_INFO = {
     TYPES    : {
         "0x05" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
         "0x04" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x03" : {SIZE : 7, NAME : "DeviceSerialNumber", DIGIT: true},
+        "0x03" : {SIZE : 4, NAME : "DeviceSerialNumber"},
         "0x01" : {SIZE : 0, NAME : "Manufacturer"}, // size to be determinated
         "0x02" : {SIZE : 0, NAME : "DeviceModel"},  // size to be determinated
         "0x07" : {SIZE : 1, NAME : "BatteryPercentage"},
