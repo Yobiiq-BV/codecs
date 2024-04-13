@@ -1,5 +1,15 @@
 Downlink fPort  : 50
 
+0. Restart the LoRaWAN Interface
+
+{
+    "Type" : "Config",
+    "Config" : {
+        "Param" : "Restart",
+        "Value" : 1
+    }
+}
+
 1. To reset Relay Control
 
 {
