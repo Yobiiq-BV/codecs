@@ -1,7 +1,7 @@
 /**
  * Codec for RM200 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 11 January 2024
- * Update  Date : 27 March 2024
+ * Update  Date : 17 April 2024
  */
 
 // Configuration constants for device basic info
@@ -72,9 +72,9 @@ var CHANNEL_STATES = {
                 "0x06" : "SF7BW250",
             }
         },
-        "0x14" : {SIZE: 1, NAME : "CommunicationWatchdogFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",},},
-        "0x15" : {SIZE: 2, NAME : "CommunicationWatchdogTimeout",},
-        "0x16" : {SIZE: 1, NAME : "CommunicationWatchdogAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",},},
+        "0x14" : {SIZE: 1, NAME : "LorawanWatchdogFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",},},
+        "0x15" : {SIZE: 2, NAME : "LorawanWatchdogTimeout",},
+        "0x16" : {SIZE: 1, NAME : "LorawanWatchdogAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",},},
         "0x64" : {SIZE: 1, NAME : "DefaultState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
         "0x65" : {SIZE: 1, NAME : "TimeoutState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
         "0x66" : {SIZE: 1, NAME : "ButtonOverrideFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
@@ -113,7 +113,7 @@ var CONFIG_ALARM = {
         "0x02" : {SIZE: 1, NAME : "Channel2State",
             VALUES     : CHANNEL_STATES,
         },
-        "0x03" : {SIZE: 1, NAME : "CommunicationWatchdogAlarm",
+        "0x03" : {SIZE: 1, NAME : "LorawanWatchdogAlarm",
             VALUES     : {
                 "0x00" : "normal",
                 "0x01" : "alarm",
@@ -130,8 +130,8 @@ var CONFIG_PARAMETER = {
     FPORT : 100,
     CHANNEL : parseInt("0xFF", 16),
     TYPES : {
-        "0x12": {NAME: "ADR", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x13": {NAME: "SF", SIZE: 1, VALUES: {
+        "0x12" : {SIZE: 1, NAME: "ADR", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x13" : {SIZE: 1, NAME: "SF", SIZE: 1, VALUES: {
                 "0x00" : "SF12BW125",
                 "0x01" : "SF11BW125",
                 "0x02" : "SF10BW125",
@@ -141,8 +141,23 @@ var CONFIG_PARAMETER = {
                 "0x06" : "SF7BW250",
             }
         },
-        "0x65": {NAME : "CommunicationWatchdogTimeout", SIZE: 2, RESOLUTION: 1,},
-        "0x66": {NAME : "DeviceOperationMode", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "override",}},
+        "0x14" : {SIZE: 1, NAME : "LorawanWatchdogFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",},},
+        "0x15" : {SIZE: 2, NAME : "LorawanWatchdogTimeout",},
+        "0x16" : {SIZE: 1, NAME : "LorawanWatchdogAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",},},
+        "0x64" : {SIZE: 1, NAME : "DefaultState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
+        "0x65" : {SIZE: 1, NAME : "TimeoutState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
+        "0x66" : {SIZE: 1, NAME : "ButtonOverrideFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x67" : {SIZE: 1, NAME : "DeviceOperationMode", VALUES: {"0x00" : "normal", "0x01" : "override",}},
+        "0x69" : {SIZE: 1, NAME : "InternalCircuitTemperatureAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
+        "0x70" : {SIZE: 4, NAME : "InternalCircuitTemperatureNumberOfAlarms",},
+        "0x71" : {SIZE: 2, NAME : "InternalCircuitTemperature", RESOLUTION: 0.01},
+        "0x72" : {SIZE: 1, NAME : "InternalCircuitHumidity",},
+        "0x95" : {SIZE: 1, NAME : "Channel1State", VALUES: CHANNEL_STATES},
+        "0x96" : {SIZE: 1, NAME : "Channel1Control", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME,}},
+        "0x97" : {SIZE: 4, NAME : "Channel1Counter",},
+        "0x98" : {SIZE: 1, NAME : "Channel2State", VALUES: CHANNEL_STATES},
+        "0x99" : {SIZE: 1, NAME : "Channel2Control", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME,}},
+        "0x9A" : {SIZE: 4, NAME : "Channel2Counter",},
     },
     WARNING_NAME   : "Warning",
     ERROR_NAME     : "Error",
@@ -631,18 +646,18 @@ var CONFIG_DEVICE = {
     REGISTER_CHANNEL : parseInt("0xFF", 16),
     PERIODIC_CHANNEL : parseInt("0xFF", 16),
     READING_TYPE : parseInt("0xCC", 16),
-    DATA_MAX_SIZE : 9,
+    DATA_MAX_SIZE : 10,
     REGISTERS : {
         "RebootDevice": {TYPE: parseInt("0x0A", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
         "Restart": {TYPE: parseInt("0x0B", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
         "ADR": {TYPE: parseInt("0x12", 16), SIZE: 1, MIN: 0, MAX: 1,},
         "SF": {TYPE: parseInt("0x13", 16), SIZE: 1, MIN: 0, MAX: 6,},
-        "CommunicationWatchdogFunction": {TYPE: parseInt("0x14", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "CommunicationWatchdogTimeout": {TYPE : parseInt("0x15", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "CommunicationWatchdogAlarm": {TYPE: parseInt("0x16", 16), RIGHT:"READ_ONLY"},
+        "LorawanWatchdogFunction": {TYPE: parseInt("0x14", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "LorawanWatchdogTimeout": {TYPE : parseInt("0x15", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "LorawanWatchdogAlarm": {TYPE: parseInt("0x16", 16), RIGHT:"READ_ONLY"},
         "DefaultState": {TYPE: parseInt("0x64", 16), SIZE: 1, MIN: 0, MAX: 2,},
         "TimeoutState": {TYPE: parseInt("0x65", 16), SIZE: 1, MIN: 0, MAX: 2,},
-        "ButtonOverrideFunction": {TYPE: parseInt("0x66", 66), SIZE: 1, MIN: 0, MAX: 1,},
+        "ButtonOverrideFunction": {TYPE: parseInt("0x66", 16), SIZE: 1, MIN: 0, MAX: 1,},
         "DeviceOperationMode": {TYPE: parseInt("0x67", 16), RIGHT:"READ_ONLY"},
         "ButtonOverrideReset": {TYPE: parseInt("0x68", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
         "InternalCircuitTemperatureAlarm": {TYPE: parseInt("0x69", 16), RIGHT:"READ_ONLY"},
