@@ -1,7 +1,7 @@
 /**
  * Codec for EM4301 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 11 June 2023
- * Update  Date : 27 March 2024
+ * Update  Date : 25 April 2024
  */
 
 // Configuration constants for device basic info
@@ -492,7 +492,7 @@ var CONFIG_PERIODIC = {
         MaximumL2CurrentDemand : "0x28",
         MaximumL3CurrentDemand : "0x29",
         AveragePower : "0x2A",
-        MIDYearofCertification : "0x2B",
+        MIDYearOfCertification : "0x2B",
         ManufacturedYear : "0xF0",
         FirmwareVersion : "0xF1",
         HardwareVersion : "0xF2",
