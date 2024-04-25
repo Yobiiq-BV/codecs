@@ -1,7 +1,7 @@
 /**
  * Codec for EM2101 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 16 June 2023
- * Update  Date : 27 March 2024
+ * Update  Date : 25 April 2024
  */
 
 // Configuration constants for device basic info and current settings
@@ -709,7 +709,7 @@ var CONFIG_PERIODIC = {
         TotalSystemApparentPower : "0x26",
         MaximumL1CurrentDemand : "0x27",
         AveragePower : "0x2A",
-        MIDYearofCertification : "0x2B",
+        MIDYearOfCertification : "0x2B",
         ManufacturedYear : "0xF0",
         FirmwareVersion : "0xF1",
         HardwareVersion : "0xF2",
