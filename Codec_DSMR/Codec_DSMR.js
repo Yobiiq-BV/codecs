@@ -1,7 +1,7 @@
 /**
  * Codec for DSMR device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 28 February 2023
- * Update  Date : 27 March 2024
+ * Update  Date : 26 June 2024
  */
 
 // Configuration constants for device basic info and current settings
@@ -38,6 +38,7 @@ var CONFIG_INFO = {
 // Configuration constants for measurement
 var CONFIG_MEASUREMENT = {
     "0xFE" : {SIZE : 4, NAME : "DeviceTimestamp",},
+    "0x00" : {SIZE : 2, NAME : "P1Version", RESOLUTION: 0.1},
     "0x02" : {SIZE : 4, NAME : "TelegramTimestamp",},
     "0x06" : {SIZE : 4, NAME : "ElectricityDeliveredToClientT1", UNIT : "Wh",},
     "0x08" : {SIZE : 4, NAME : "ElectricityDeliveredToClientT2", UNIT : "Wh",},
@@ -74,6 +75,8 @@ var CONFIG_MEASUREMENT = {
     "0x70" : {SIZE : 8, NAME : "LastReadingOnChannel3",},
     "0x76" : {SIZE : 2, NAME : "DeviceTypeOnChannel4",},
     "0x80" : {SIZE : 8, NAME : "LastReadingOnChannel4",},
+    "0xD1" : {SIZE : 4, NAME : "PulseCounterDryInput1",},
+    "0xD2" : {SIZE : 4, NAME : "PulseCounterDryInput2",},
     CHANNEL : parseInt("0xDD", 16),
     WARNING_NAME   : "Warning",
     ERROR_NAME     : "Error",
@@ -389,7 +392,7 @@ function Decode(fPort, bytes, variables)
     }else if(fPort == 11)
     {
         // status packet
-        return {error: "P1 COM Timeout", timestamp: getValueFromBytesBigEndianFormat(bytes, 2, 4)};
+        return {};
     }
     return {error: "Incorrect fPort", fPort : fPort};
 }
