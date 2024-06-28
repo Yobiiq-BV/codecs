@@ -1,7 +1,7 @@
 /**
  * Codec for RM200 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 11 January 2024
- * Update  Date : 17 April 2024
+ * Update  Date : 28 June 2024
  */
 
 // Configuration constants for device basic info
@@ -118,7 +118,9 @@ var CONFIG_ALARM = {
                 "0x00" : "normal",
                 "0x01" : "alarm",
             },
-        }
+        },
+        "0x97" : {SIZE: 4, NAME : "Channel1Counter",},
+        "0x9A" : {SIZE: 4, NAME : "Channel2Counter",},
     },
     WARNING_NAME   : "Warning",
     ERROR_NAME     : "Error",
