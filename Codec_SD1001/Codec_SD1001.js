@@ -104,14 +104,14 @@ function decodeBasicInformation(bytes)
                 type = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
                 index = index + 1;
                 var info = CONFIG_INFO.TYPES[type]
-                size = info["SIZE"];
+                size = info.SIZE;
                 // Decoding
                 var value = 0;
                 if(size != 0)
                 {
                     if("DIGIT" in info)
                     {
-                        if(info["DIGIT"] == false)
+                        if(info.DIGIT == false)
                         {
                             // Decode into "V" + DIGIT STRING + "." DIGIT STRING format
                             value = getDigitStringArrayNoFormat(bytes, index, size);
@@ -127,13 +127,13 @@ function decodeBasicInformation(bytes)
                     {
                         // Decode into HEX STRING (VALUES specified in CONFIG_INFO)
                         value = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
-                        value = info["VALUES"][value];
+                        value = info.VALUES[value];
                     }else
                     {
                         // Decode into DECIMAL format
                         value = getValueFromBytesBigEndianFormat(bytes, index, size);
                     }
-                    decoded[info["NAME"]] = value;
+                    decoded[info.NAME] = value;
                     index = index + size;
                 }
             }
@@ -182,7 +182,7 @@ function decodeDeviceData(bytes)
             // No type checking
 
             var data = CONFIG_DATA[channel]
-            size = data["SIZE"];
+            size = data.SIZE;
             // Decoding
             var value = 0;
             // Decode into DECIMAL format
@@ -190,13 +190,13 @@ function decodeDeviceData(bytes)
             {
                 // Decode into STRING (VALUES specified in CONFIG_DATA)
                 value = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
-                value = data["VALUES"][value];
+                value = data.VALUES[value];
             }else
             {
                 // Decode into DECIMAL format
                 value = getValueFromBytesBigEndianFormat(bytes, index, size);
             }
-            decoded[data["NAME"]] = value;
+            decoded[data.NAME] = value;
             index = index + size;
         }
     }catch(error)
@@ -358,12 +358,30 @@ function encodeDeviceConfiguration(obj, variables)
         {
             encoded[index] = CONFIG_DEVICE.CHANNEL;
             index = index + 1;
-            encoded[index] = config["TYPE"];
+            encoded[index] = config.TYPE;
             index = index + 1;
-            for(var i=config["SIZE"]; i>=1; i=i-1)
+            if(config.SIZE == 1)
             {
-                encoded[index] = (value >> 8*(config["SIZE"] - i)) % 256;
+                encoded[index] = value;
                 index = index + 1;
+            }else if(config.SIZE == 2)
+            {
+                switch(config.TYPE)
+                {
+                    case 3: // reporting interval
+                        var lowByte = value % 256;
+                        encoded[index] = ((lowByte & parseInt("0x0F", 16)) << 4) +  (lowByte >> 4);
+                        index = index + 1;
+                        encoded[index] = (value >> 8) % 256;
+                        index = index + 1;
+                        break;
+                    default:
+                        encoded[index] = (value >> 8) % 256;
+                        index = index + 1;
+                        encoded[index] = value % 256;
+                        index = index + 1;
+                        break;
+                }
             }
         }else
         {
@@ -377,6 +395,5 @@ function encodeDeviceConfiguration(obj, variables)
     }
     return encoded;
 }
-
 
 
