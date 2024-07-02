@@ -19,7 +19,7 @@
 }
 
 
-2. To set silence buzzer time to 5 min
+3. To set silence buzzer time to 5 min
 
 {
     "Type" : "Config",
