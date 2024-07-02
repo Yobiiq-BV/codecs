@@ -1,7 +1,7 @@
 /**
  * Codec for SD1001 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 12 June 2023
- * Update  Date : 12 June 2023
+ * Update  Date : 02 July 2024
  */
 
 // Configuration constants for device basic info
