@@ -1,0 +1,52 @@
+1. To restart the LoRaWAN Interface
+
+{
+    "Type" : "Config",
+    "Config" : [{
+        "Param" : "Restart",
+        "Value" : 1
+    }]
+}
+
+
+2. To reboot the device
+
+{
+    "Type" : "Config",
+    "Config" : [{
+        "Param" : "RebootDevice",
+        "Value" : 1
+    }]
+}
+
+
+3. To configure ADR and SF (2 parameters)
+
+{
+    "Type": "Config",
+    "Config": [{
+        "Param": "ADR",
+        "Value": 0
+    }, {
+        "Param": "SF",
+        "Value": 3
+    }]
+}
+
+
+4. To configure periodic uplink
+
+{
+    "Type" : "Periodic",
+    "Periodic" : {
+        "Interval" : 10,
+        "Mode" : 0,
+        "Status" : 1,
+        "Measurement" : [
+            "Temperature",
+            "Humidity",
+            "Co2",
+            "Voc",
+        ]
+    }
+}
