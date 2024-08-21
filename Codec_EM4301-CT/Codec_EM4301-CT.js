@@ -496,6 +496,10 @@ function getSizeBasedOnChannel(bytes, index, channel)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    if(fPort == 0)
+    {
+        return {mac: "MAC command received", fPort: fPort};
+    }
     if(fPort == CONFIG_INFO.FPORT)
     {
         return decodeBasicInformation(bytes);

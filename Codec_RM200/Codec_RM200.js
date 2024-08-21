@@ -1,7 +1,7 @@
 /**
- * Codec for RM200 device : compatible with TTN, ChirpStack v4 and v3, etc...
- * Release Date : 11 January 2024
- * Update  Date : 28 June 2024
+ * Codec for ESD device : compatible with TTN, ChirpStack v4 and v3, etc...
+ * Release Date : 07 August 2024
+ * Update  Date : 07 August 2024
  */
 
 // Configuration constants for device basic info
@@ -557,6 +557,10 @@ function getSignedIntegerFromInteger(integer, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    if(fPort == 0)
+    {
+        return {mac: "MAC command received", fPort: fPort};
+    }
     if(fPort == CONFIG_INFO.FPORT)
     {
         return decodeBasicInformation(bytes);

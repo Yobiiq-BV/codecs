@@ -77,8 +77,8 @@ var CONFIG_INFO = {
 var CONFIG_ALARM = {
     FPORT : 11,
     CHANNEL : parseInt("0xAA", 16),
-    MODBUS_CHANNEL_ALARM_TYPE_MIN: 3,
-    MODBUS_CHANNEL_ALARM_TYPE_MAX: 52,
+    MODBUS_CHANNEL_ALARM_TYPE_MIN: 200,
+    MODBUS_CHANNEL_ALARM_TYPE_MAX: 249,
     MODBUS_CHANNEL_ALARM_NAME_GENERIC: "AlarmChannel",
     MODBUS_CHANNEL_ALARM_VALUES: {
         "0x00": "normal",
@@ -88,10 +88,10 @@ var CONFIG_ALARM = {
         "0x04": "illegal slave id",
         "0x05": "response timeout",
         "0x81": "illegal function code",
-        "0x82": "illegal data address",
-        "0x83": "illegal data value",
+        "0x82": "illegal modbus address",
+        "0x83": "illegal write value",
         "0x84": "slave device failure",
-        "0x85": "response incorrect",
+        "0x85": "write operation failure",
     },
     TYPES : {
         "0xFE" : {SIZE: 4, NAME : "DeviceTimestamp"},
@@ -135,9 +135,16 @@ var CONFIG_PARAMETER = {
                 "0x06" : "SF7BW250",
             }
         },
-        "0x15": {NAME : "LorawanWatchdogTimeout", SIZE: 2, RESOLUTION: 1,},
-        "0x18": {NAME : "SerialWatchdogTimeout", SIZE: 2, RESOLUTION: 1,},
-        "0x66": {NAME : "DeviceOperationMode", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "override",}},
+        "0x14": {NAME : "LorawanWatchdogFunction", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x15": {NAME : "LorawanWatchdogTimeout", SIZE: 2},
+        "0x16": {NAME : "LorawanWatchdogAlarm", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
+        "0x17": {NAME : "SerialWatchdogFunction", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x18": {NAME : "SerialWatchdogTimeout", SIZE: 2},
+        "0x18": {NAME : "SerialWatchdogAlarm", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
+        "0x69": {NAME : "InternalCircuitTemperatureAlarm", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
+        "0x70": {NAME : "InternalCircuitTemperatureNumberOfAlarms", SIZE: 4},
+        "0x71": {NAME : "InternalCircuitTemperature", SIZE: 2, RESOLUTION: 0.01},
+        "0x72": {NAME : "InternalCircuitHumidity", SIZE: 1},
     },
     WARNING_NAME   : "Warning",
     ERROR_NAME     : "Error",
@@ -659,6 +666,10 @@ function getFloatValueFromBytesBigEndianFormat(bytes)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    if(fPort == 0)
+    {
+        return {mac: "MAC command received", fPort: fPort};
+    }
     if(fPort == CONFIG_INFO.FPORT)
     {
         return decodeBasicInformation(bytes);
@@ -764,7 +775,6 @@ var CONFIG_DEVICE = {
         "SerialWatchdogFunction": {TYPE: parseInt("0x17", 16), SIZE: 1, MIN: 0, MAX: 1,},
         "SerialWatchdogTimeout": {TYPE : parseInt("0x18", 16), SIZE: 2, MIN: 1, MAX: 65535,},
         "SerialWatchdogAlarm": {TYPE: parseInt("0x19", 16), RIGHT:"READ_ONLY"},
-        "DeviceOperationMode": {TYPE: parseInt("0x67", 16), RIGHT:"READ_ONLY"},
         "InternalCircuitTemperatureAlarm": {TYPE: parseInt("0x69", 16), RIGHT:"READ_ONLY"},
         "InternalCircuitTemperatureNumberOfAlarms": {TYPE: parseInt("0x70", 16), RIGHT:"READ_ONLY"},
         "InternalCircuitTemperature": {TYPE: parseInt("0x71", 16), RIGHT:"READ_ONLY"},

@@ -1,7 +1,7 @@
 /**
  * Codec for DSMR device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 28 February 2023
- * Update  Date : 26 June 2024
+ * Update  Date : 08 July 2024
  */
 
 // Configuration constants for device basic info and current settings
@@ -75,6 +75,10 @@ var CONFIG_MEASUREMENT = {
     "0x70" : {SIZE : 8, NAME : "LastReadingOnChannel3",},
     "0x76" : {SIZE : 2, NAME : "DeviceTypeOnChannel4",},
     "0x80" : {SIZE : 8, NAME : "LastReadingOnChannel4",},
+    "0x71" : {SIZE: 2, NAME : "InternalCircuitTemperature", RESOLUTION: 0.01},
+    "0x72" : {SIZE: 1, NAME : "InternalCircuitHumidity",},
+    "0x81" : {SIZE: 2, NAME : "AmbientTemperature", RESOLUTION: 0.01},
+    "0x82" : {SIZE: 1, NAME : "AmbientHumidity",},
     "0xD1" : {SIZE : 4, NAME : "PulseCounterDryInput1",},
     "0xD2" : {SIZE : 4, NAME : "PulseCounterDryInput2",},
     CHANNEL : parseInt("0xDD", 16),
@@ -383,6 +387,10 @@ function getPowerFailureEventLog(bytes, index, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    if(fPort == 0)
+    {
+        return {mac: "MAC command received", fPort: fPort};
+    }
     if(fPort == CONFIG_INFO.FPORT)
     {
         return decodeBasicInformation(bytes);
