@@ -1,7 +1,7 @@
 /**
  * Codec for ESD device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 08 August 2024
- * Update  Date : 12 August 2024
+ * Update  Date : 21 August 2024
  */
 
 // Configuration constants for device basic info
@@ -64,9 +64,12 @@ var CONFIG_INFO = {
         "0xB3" : {SIZE: 2, NAME : "OutsideTemperature", RESOLUTION: 0.01, SIGNED:true},
         "0xB4" : {SIZE: 2, NAME : "Co2"},
         "0xB5" : {SIZE: 2, NAME : "OutsideHumidity", RESOLUTION: 0.01},
-        "0xB6" : {SIZE: 2, NAME : "Voc"},
+        "0xB6" : {SIZE: 2, NAME : "VocIndex"},
         "0xB7" : {SIZE: 2, NAME : "Light"},
         "0xB8" : {SIZE: 2, NAME : "Motion"},
+        "0xB9" : {SIZE: 2, NAME : "NoxIndex"},
+        "0xA6" : {SIZE: 2, NAME : "VocRawValue"},
+        "0xA9" : {SIZE: 2, NAME : "NoxRawValue"},
         "0xBA" : {SIZE: 2, NAME : "TemperatureCorrection", RESOLUTION: 0.01, SIGNED:true},
         "0xBB" : {SIZE: 2, NAME : "HumidityCorrection", RESOLUTION: 0.01, SIGNED:true},
         "0xBC" : {SIZE: 2, NAME : "Co2Correction", SIGNED:true},
@@ -543,6 +546,10 @@ function getSignedIntegerFromInteger(integer, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    if(fPort == 0)
+    {
+        return {mac: "MAC command received", fPort: fPort};
+    }
     if(fPort == CONFIG_INFO.FPORT)
     {
         return decodeBasicInformation(bytes);
@@ -650,9 +657,12 @@ var CONFIG_DEVICE = {
         "OutsideTemperature": {TYPE: parseInt("0xB3", 16), RIGHT:"READ_ONLY"},
         "Co2": {TYPE: parseInt("0xB4", 16), RIGHT:"READ_ONLY"},
         "OutsideHumidity": {TYPE: parseInt("0xB5", 16), RIGHT:"READ_ONLY"},
-        "Voc": {TYPE: parseInt("0xB6", 16), RIGHT:"READ_ONLY"},
+        "VocIndex": {TYPE: parseInt("0xB6", 16), RIGHT:"READ_ONLY"},
         "Light": {TYPE: parseInt("0xB7", 16), RIGHT:"READ_ONLY"},
         "Motion": {TYPE: parseInt("0xB8", 16), RIGHT:"READ_ONLY"},
+        "NoxIndex": {TYPE: parseInt("0xB9", 16), RIGHT:"READ_ONLY"},
+        "VocRawValue": {TYPE: parseInt("0xA6", 16), RIGHT:"READ_ONLY"},
+        "NoxRawValue": {TYPE: parseInt("0xA9", 16), RIGHT:"READ_ONLY"},
         "TemperatureCorrection": {TYPE : parseInt("0xBA", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
         "HumidityCorrection": {TYPE : parseInt("0xBB", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
         "Co2Correction": {TYPE : parseInt("0xBC", 16), SIZE: 2, MIN: -32768, MAX: 32767,},

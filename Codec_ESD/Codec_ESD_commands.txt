@@ -46,7 +46,10 @@
             "Temperature",
             "Humidity",
             "Co2",
-            "Voc",
+            "VocIndex",
+            "NoxIndex",
+            "VocRawValue",
+            "NoxRawValue",
         ]
     }
 }
