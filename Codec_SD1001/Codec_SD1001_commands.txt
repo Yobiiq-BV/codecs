@@ -28,3 +28,21 @@
         "Value" : 5
     }
 }
+
+4. To enable confirmed uplinks
+{
+    "Type" : "Config",
+    "Config" : {
+        "Param" : "ConfirmedUplink",
+        "Value" : 1
+    }
+}
+
+4. To disable confirmed uplinks
+{
+    "Type" : "Config",
+    "Config" : {
+        "Param" : "ConfirmedUplink",
+        "Value" : 0
+    }
+}

@@ -1,17 +1,17 @@
 /**
  * Codec for SD1001 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 12 June 2023
- * Update  Date : 02 July 2024
+ * Update  Date : 23 August 2024
  */
 
 // Configuration constants for device basic info
 var CONFIG_INFO = {
-    PORT     : 50,
+    FPORT     : 50,
     CHANNEL  : parseInt("0xFF", 16),
     TYPES    : {
         "0x09" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
         "0x0A" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x16" : {SIZE : 7, NAME : "DeviceSerialNumber", DIGIT: true},
+        "0x16" : {SIZE : 5, NAME : "DeviceSerialNumber", DIGIT: true},
         "0x0F" : {SIZE : 1, NAME : "DeviceClass",
             VALUES     : {
                 "0x00" : "Class A",
@@ -33,35 +33,38 @@ var CONFIG_INFO = {
 
 // Configuration constants for data registers
  var CONFIG_DATA = {
-    "0x01" : {SIZE : 1, NAME : "BatteryLevelInPercentage",},
-    "0x02" : {SIZE : 1, NAME : "PowerEvent",
-        VALUES     : {
-            "0x00" : "AC Power Off",
-            "0x01" : "AC Power On",
+    FPORT   : 8,
+    CHANNELS   : {
+        "0x01" : {SIZE : 1, NAME : "BatteryLevelInPercentage",},
+        "0x02" : {SIZE : 1, NAME : "PowerEvent",
+            VALUES     : {
+                "0x00" : "AC Power Off",
+                "0x01" : "AC Power On",
+            },
         },
-    },
-    "0x03" : {SIZE : 1, NAME : "LowBatteryAlarm",
-        VALUES     : {
-            "0x00" : "Normal",
-            "0x01" : "Alarm",
+        "0x03" : {SIZE : 1, NAME : "LowBatteryAlarm",
+            VALUES     : {
+                "0x00" : "Normal",
+                "0x01" : "Alarm",
+            },
         },
-    },
-    "0x04" : {SIZE : 1, NAME : "FaultAlarm",
-        VALUES     : {
-            "0x00" : "Normal",
-            "0x01" : "Alarm",
+        "0x04" : {SIZE : 1, NAME : "FaultAlarm",
+            VALUES     : {
+                "0x00" : "Normal",
+                "0x01" : "Alarm",
+            },
         },
-    },
-    "0x05" : {SIZE : 1, NAME : "SmokeAlarm",
-        VALUES     : {
-            "0x00" : "Normal",
-            "0x01" : "Alarm",
+        "0x05" : {SIZE : 1, NAME : "SmokeAlarm",
+            VALUES     : {
+                "0x00" : "Normal",
+                "0x01" : "Alarm",
+            },
         },
-    },
-    "0x06" : {SIZE : 1, NAME : "InterconnectAlarm",
-        VALUES     : {
-            "0x00" : "Normal",
-            "0x01" : "Alarm",
+        "0x06" : {SIZE : 1, NAME : "InterconnectAlarm",
+            VALUES     : {
+                "0x00" : "Normal",
+                "0x01" : "Alarm",
+            },
         },
     },
     WARNING_NAME   : "Warning",
@@ -69,6 +72,22 @@ var CONFIG_INFO = {
     INFO_NAME      : "Info"
 }
 
+function isBasicInformation(bytes, fPort)
+{
+    if(fPort == CONFIG_INFO.FPORT)
+    {
+        return true;
+    }
+    // Example: ff090100 ff0a0102 ff162404152795 ff0f02 ff0b01
+    if(bytes[0] == CONFIG_INFO.CHANNEL &&
+        bytes[4] == CONFIG_INFO.CHANNEL &&
+        bytes[8] == CONFIG_INFO.CHANNEL
+    )
+    {
+        return true
+    }
+    return false;
+}
 
 function decodeBasicInformation(bytes)
 {
@@ -98,44 +117,45 @@ function decodeBasicInformation(bytes)
             security = security - 1;
             channel = bytes[index];
             index = index + 1;
-            if(channel == CONFIG_INFO.CHANNEL)
+            if(channel != CONFIG_INFO.CHANNEL)
             {
-                // Type of basic information
-                type = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
-                index = index + 1;
-                var info = CONFIG_INFO.TYPES[type]
-                size = info.SIZE;
-                // Decoding
-                var value = 0;
-                if(size != 0)
+                continue; // next byte
+            }
+            // Type of basic information
+            type = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
+            index = index + 1;
+            var info = CONFIG_INFO.TYPES[type]
+            size = info.SIZE;
+            // Decoding
+            var value = 0;
+            if(size != 0)
+            {
+                if("DIGIT" in info)
                 {
-                    if("DIGIT" in info)
+                    if(info.DIGIT == false)
                     {
-                        if(info.DIGIT == false)
-                        {
-                            // Decode into "V" + DIGIT STRING + "." DIGIT STRING format
-                            value = getDigitStringArrayNoFormat(bytes, index, size);
-                            value = "V" + value[0] + "." + value[1];
-                        }else
-                        {
-                            // Decode into DIGIT STRING format
-                            value = getDigitStringArrayEvenFormat(bytes, index, size);
-                            value = value.toString();
-                        }
-                    }
-                    else if("VALUES" in info)
-                    {
-                        // Decode into HEX STRING (VALUES specified in CONFIG_INFO)
-                        value = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
-                        value = info.VALUES[value];
+                        // Decode into "V" + DIGIT STRING + "." DIGIT STRING format
+                        value = getDigitStringArrayNoFormat(bytes, index, size);
+                        value = "V" + value[0] + "." + value[1];
                     }else
                     {
-                        // Decode into DECIMAL format
-                        value = getValueFromBytesBigEndianFormat(bytes, index, size);
+                        // Decode into DIGIT STRING format
+                        value = getDigitStringArrayEvenFormat(bytes, index, size).join("");
+                        value = parseInt(value, 10);
                     }
-                    decoded[info.NAME] = value;
-                    index = index + size;
                 }
+                else if("VALUES" in info)
+                {
+                    // Decode into HEX STRING (VALUES specified in CONFIG_INFO)
+                    value = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
+                    value = info.VALUES[value];
+                }else
+                {
+                    // Decode into DECIMAL format
+                    value = getValueFromBytesBigEndianFormat(bytes, index, size);
+                }
+                decoded[info.NAME] = value;
+                index = index + size;
             }
         }
     }catch(error)
@@ -181,22 +201,21 @@ function decodeDeviceData(bytes)
 
             // No type checking
 
-            var data = CONFIG_DATA[channel]
-            size = data.SIZE;
+            var config = CONFIG_DATA.CHANNELS[channel]
+            size = config.SIZE;
             // Decoding
             var value = 0;
-            // Decode into DECIMAL format
-            if("VALUES" in data)
+            if("VALUES" in config)
             {
                 // Decode into STRING (VALUES specified in CONFIG_DATA)
                 value = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
-                value = data.VALUES[value];
+                value = config.VALUES[value];
             }else
             {
                 // Decode into DECIMAL format
                 value = getValueFromBytesBigEndianFormat(bytes, index, size);
             }
-            decoded[data.NAME] = value;
+            decoded[config.NAME] = value;
             index = index + size;
         }
     }catch(error)
@@ -266,7 +285,7 @@ function toEvenHEX(hex)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
-    if(fPort == CONFIG_INFO.PORT)
+    if(isBasicInformation(bytes, fPort))
     {
         return decodeBasicInformation(bytes);
     }else
@@ -336,6 +355,7 @@ var CONFIG_DEVICE = {
         "ReportingInterval" : {TYPE : parseInt("0x03", 16), SIZE : 2, MIN : 1, MAX : 65535,},
         "SmokeDetector" : {TYPE : parseInt("0x00", 16), SIZE : 1, MIN : 0, MAX : 1,},
         "SilenceBuzzer" : {TYPE : parseInt("0x0A", 16), SIZE : 2, MIN : 0, MAX : 65535,},
+        "ConfirmedUplink" : {TYPE : parseInt("0x01", 16), SIZE : 1, MIN : 0, MAX : 1,},
     }
 }
 
