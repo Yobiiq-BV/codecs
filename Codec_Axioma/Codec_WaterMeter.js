@@ -71,7 +71,7 @@ function decodeExtendedPacket(bytes)
             if(info.RESOLUTION)
             {
                 value = value * info.RESOLUTION;
-                value = parseFloat(value.toFixed(2));
+                value = parseFloat(value.toFixed(3));
             }
             if(info.UNIT)
             {
@@ -87,6 +87,7 @@ function decodeExtendedPacket(bytes)
             {DataloggerTimestamp: decoded.CurrentTimestamp, Volume: decoded.CurrentVolume},
             {DataloggerTimestamp: decoded.LogTimestamp, Volume: decoded.LogVolume}
         ];
+        var logVolume = decoded.LogVolume;
         for(var j=0; j<CONFIG_EXTENDED_PACKET.MEASUREMENT_TOTAL; j=j+1)
         {
             var measurements = {};
@@ -120,6 +121,8 @@ function decodeExtendedPacket(bytes)
                 }
                 index = index + info.SIZE;
             }
+            logVolume = logVolume + measurements.deltaVolume;
+            measurements.Volume = parseFloat(logVolume.toFixed(3));
             decoded.ListOfMeasurements.push(measurements);
         }
     }catch(error)
@@ -336,4 +339,6 @@ function encodeDownlink(input) {
         bytes: Encode(null, input.data, input.variables)
     };
 }
+
+
 
