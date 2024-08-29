@@ -1,7 +1,7 @@
 /**
  * Codec for ESD device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 08 August 2024
- * Update  Date : 21 August 2024
+ * Update  Date : 29 August 2024
  */
 
 // Configuration constants for device basic info
@@ -43,6 +43,8 @@ var CONFIG_INFO = {
     TYPES : {
         "0xFE" : {SIZE: 4, TYPE: "U32", NAME : "Timestamp"},
         "0xFD" : {SIZE: 4, TYPE: "U32", NAME : "DataloggerTimestamp"},
+        "0x07" : {SIZE : 1, NAME : "BatteryPercentage"},
+        "0x08" : {SIZE : 1, NAME : "BatteryVoltage", RESOLUTION: 0.1},
         "0x12" : {SIZE: 1, NAME: "ADR", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
         "0x13" : {SIZE: 1, NAME: "SF", SIZE: 1, VALUES: {
                 "0x00" : "SF12BW125",
@@ -868,7 +870,5 @@ function encodeParamtersReading(obj, variables)
     }
     return encoded;
 }
-
-
 
 
