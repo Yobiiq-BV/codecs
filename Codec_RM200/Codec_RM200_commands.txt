@@ -45,3 +45,35 @@
         "Registers": ["InternalCircuitTemperature", "InternalCircuitHumidity"]
     }
 }
+
+
+5. To set relay 1 ON
+
+{
+    "Type" : "Config",
+    "Config" : [{
+        "Param" : "Channel1Control",
+        "Value" : 1
+    }]
+}
+
+7. To set relay 2 OFF
+
+{
+    "Type" : "Config",
+    "Config" : [{
+        "Param" : "Channel2Control",
+        "Value" : 1
+    }]
+}
+
+
+9. To reset button override modes
+
+{
+    "Type" : "Config",
+    "Config" : [{
+        "Param" : "ButtonOverrideReset",
+        "Value" : 1
+    }]
+}

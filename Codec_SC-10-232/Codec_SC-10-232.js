@@ -143,7 +143,7 @@ var CONFIG_PARAMETER = {
         "0x18": {NAME : "SerialWatchdogAlarm", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
         "0x69": {NAME : "InternalCircuitTemperatureAlarm", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
         "0x70": {NAME : "InternalCircuitTemperatureNumberOfAlarms", SIZE: 4},
-        "0x71": {NAME : "InternalCircuitTemperature", SIZE: 2, RESOLUTION: 0.01},
+        "0x71": {NAME : "InternalCircuitTemperature", SIZE: 2, RESOLUTION: 0.01, SIGNED: true},
         "0x72": {NAME : "InternalCircuitHumidity", SIZE: 1},
     },
     WARNING_NAME   : "Warning",
@@ -405,7 +405,10 @@ function decodeParameters(bytes)
             }
             // Decoding
             var value = getValueFromBytesBigEndianFormat(bytes, index, size);
-            value = getSignedIntegerFromInteger(value, size);
+            if(info.SIGNED)
+            {
+                value = getSignedIntegerFromInteger(value, size);
+            }
             if(info.VALUES)
             {
                 value = "0x" + toEvenHEX(value.toString(16).toUpperCase());

@@ -1,7 +1,7 @@
 /**
- * Codec for ESD device : compatible with TTN, ChirpStack v4 and v3, etc...
- * Release Date : 07 August 2024
- * Update  Date : 07 August 2024
+ * Codec for RM200 device : compatible with TTN, ChirpStack v4 and v3, etc...
+ * Release Date : 11 January 2024
+ * Update  Date : 13 September 2024
  */
 
 // Configuration constants for device basic info
@@ -81,7 +81,7 @@ var CHANNEL_STATES = {
         "0x67" : {SIZE: 1, NAME : "DeviceOperationMode", VALUES: {"0x00" : "normal", "0x01" : "override",}},
         "0x69" : {SIZE: 1, NAME : "InternalCircuitTemperatureAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
         "0x70" : {SIZE: 4, NAME : "InternalCircuitTemperatureNumberOfAlarms",},
-        "0x71" : {SIZE: 2, NAME : "InternalCircuitTemperature", RESOLUTION: 0.01},
+        "0x71" : {SIZE: 2, NAME : "InternalCircuitTemperature", RESOLUTION: 0.01, SIGNED: true},
         "0x72" : {SIZE: 1, NAME : "InternalCircuitHumidity",},
         "0x95" : {SIZE: 1, NAME : "Channel1State", VALUES: CHANNEL_STATES},
         "0x96" : {SIZE: 1, NAME : "Channel1Control", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME,}},
@@ -152,7 +152,7 @@ var CONFIG_PARAMETER = {
         "0x67" : {SIZE: 1, NAME : "DeviceOperationMode", VALUES: {"0x00" : "normal", "0x01" : "override",}},
         "0x69" : {SIZE: 1, NAME : "InternalCircuitTemperatureAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
         "0x70" : {SIZE: 4, NAME : "InternalCircuitTemperatureNumberOfAlarms",},
-        "0x71" : {SIZE: 2, NAME : "InternalCircuitTemperature", RESOLUTION: 0.01},
+        "0x71" : {SIZE: 2, NAME : "InternalCircuitTemperature", RESOLUTION: 0.01, SIGNED: true},
         "0x72" : {SIZE: 1, NAME : "InternalCircuitHumidity",},
         "0x95" : {SIZE: 1, NAME : "Channel1State", VALUES: CHANNEL_STATES},
         "0x96" : {SIZE: 1, NAME : "Channel1Control", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME,}},
@@ -300,7 +300,10 @@ function decodeDeviceData(bytes)
                 continue;
             }
             var value = getValueFromBytesBigEndianFormat(bytes, index, size);
-            value = getSignedIntegerFromInteger(value, size);
+            if(info.SIGNED)
+            {
+                value = getSignedIntegerFromInteger(value, size);
+            }
             if(info.VALUES)
             {
                 value = "0x" + toEvenHEX(value.toString(16).toUpperCase());
@@ -430,7 +433,10 @@ function decodeParameters(bytes)
             }
             // Decoding
             var value = getValueFromBytesBigEndianFormat(bytes, index, size);
-            value = getSignedIntegerFromInteger(value, size);
+            if(info.SIGNED)
+            {
+                value = getSignedIntegerFromInteger(value, size);
+            }
             if(info.VALUES)
             {
                 value = "0x" + toEvenHEX(value.toString(16).toUpperCase());
