@@ -119,7 +119,7 @@ var REMOTE_COMMAND = {
         "0x02" : {TYPE: "F8U8", FLAG_HB: null, NAME_LB: "MasterMemberIdCode"},
         "0x03" : {TYPE: "F8U8", FLAG_HB: FLAG_SLAVE_CONFIG, NAME_LB: "SlaveMemberIdCode"},
         "0x04" : {TYPE: "RCMD", NAME : "RemoteCommand"},
-        "0x05" : {TYPE: "F8U8", FLAG_HB: FLAG_APP_FAULT, NAME_LB: "EquipementManufacturerFaultCode"},
+        "0x05" : {TYPE: "F8U8", FLAG_HB: FLAG_APP_FAULT, NAME_LB: "EquipmentManufacturerFaultCode"},
         "0x06" : {TYPE: "F8F8", FLAG_HB: FLAG_REMOTE_PARAM_XFER, FLAG_LB: FLAG_REMOTE_PARAM_RW},
         "0x07" : {TYPE: "FLOAT", NAME: "CoolingControlSignalPercentage"},
         "0x08" : {TYPE: "FLOAT", NAME: "ControlSetpointTemperature2"},
