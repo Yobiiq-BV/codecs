@@ -1,8 +1,16 @@
 /**
- * Codec for SD1001 device : compatible with TTN, ChirpStack v4 and v3, etc...
+ * Codec for SD-1001 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 12 June 2023
- * Update  Date : 23 August 2024
+ * Update  Date : 29 October 2024
  */
+
+// Version Control
+var VERSION_CONTROL = {
+    CODEC : {VERSION: "1.1.0", NAME: "CodecVersion"},
+    DEVICE: {MODEL : "SD-1001", NAME: "DeviceModel"},
+    PRODUCT: {CODE : "1002015", NAME: "ProductCode"},
+    MANUFACTURER: {COMPANY : "YOBIIQ", NAME: "Manufacturer"},
+}
 
 // Configuration constants for device basic info
 var CONFIG_INFO = {
@@ -285,13 +293,19 @@ function toEvenHEX(hex)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    var decoded = {};
     if(isBasicInformation(bytes, fPort))
     {
-        return decodeBasicInformation(bytes);
+        decoded = decodeBasicInformation(bytes);
     }else
     {
-        return decodeDeviceData(bytes);
+        decoded = decodeDeviceData(bytes);
     }
+    decoded[VERSION_CONTROL.CODEC.NAME] = VERSION_CONTROL.CODEC.VERSION;
+    decoded[VERSION_CONTROL.DEVICE.NAME] = VERSION_CONTROL.DEVICE.MODEL;
+    decoded[VERSION_CONTROL.PRODUCT.NAME] = VERSION_CONTROL.PRODUCT.CODE;
+    decoded[VERSION_CONTROL.MANUFACTURER.NAME] = VERSION_CONTROL.MANUFACTURER.COMPANY;
+    return decoded;
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)
