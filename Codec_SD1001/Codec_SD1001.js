@@ -74,6 +74,12 @@ var CONFIG_INFO = {
                 "0x01" : "Alarm",
             },
         },
+        "0x07" : {SIZE : 1, NAME : "testButtonPressed",
+            VALUES     : {
+                "0x00" : "Normal",
+                "0x01" : "Pushed",
+            },
+        },
     },
     WARNING_NAME   : "Warning",
     ERROR_NAME     : "Error",
