@@ -1,15 +1,15 @@
 /**
  * Codec for SD-1001 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 12 June 2023
- * Update  Date : 29 October 2024
+ * Update  Date : 30 October 2024
  */
 
 // Version Control
 var VERSION_CONTROL = {
-    CODEC : {VERSION: "1.1.0", NAME: "CodecVersion"},
-    DEVICE: {MODEL : "SD-1001", NAME: "DeviceModel"},
-    PRODUCT: {CODE : "1002015", NAME: "ProductCode"},
-    MANUFACTURER: {COMPANY : "YOBIIQ", NAME: "Manufacturer"},
+    CODEC : {VERSION: "1.1.0", NAME: "codecVersion"},
+    DEVICE: {MODEL : "SD-1001", NAME: "deviceModel"},
+    PRODUCT: {CODE : "1002015", NAME: "productCode"},
+    MANUFACTURER: {COMPANY : "YOBIIQ B.V.", NAME: "manufacturer"},
 }
 
 // Configuration constants for device basic info
@@ -17,17 +17,17 @@ var CONFIG_INFO = {
     FPORT     : 50,
     CHANNEL  : parseInt("0xFF", 16),
     TYPES    : {
-        "0x09" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
-        "0x0A" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x16" : {SIZE : 5, NAME : "DeviceSerialNumber", DIGIT: true},
-        "0x0F" : {SIZE : 1, NAME : "DeviceClass",
+        "0x09" : {SIZE : 2, NAME : "hardwareVersion", DIGIT: false},
+        "0x0A" : {SIZE : 2, NAME : "firmwareVersion", DIGIT: false},
+        "0x16" : {SIZE : 5, NAME : "deviceSerialNumber", DIGIT: true},
+        "0x0F" : {SIZE : 1, NAME : "deviceClass",
             VALUES     : {
                 "0x00" : "Class A",
                 "0x01" : "Class B",
                 "0x02" : "Class C",
             },
         },
-        "0x0B" : {SIZE : 1, NAME : "PowerEvent",
+        "0x0B" : {SIZE : 1, NAME : "powerEvent",
             VALUES     : {
                 "0x00" : "AC Power Off",
                 "0x01" : "AC Power On",
@@ -43,32 +43,32 @@ var CONFIG_INFO = {
  var CONFIG_DATA = {
     FPORT   : 8,
     CHANNELS   : {
-        "0x01" : {SIZE : 1, NAME : "BatteryLevelInPercentage",},
-        "0x02" : {SIZE : 1, NAME : "PowerEvent",
+        "0x01" : {SIZE : 1, NAME : "batteryLevelInPercentage",},
+        "0x02" : {SIZE : 1, NAME : "powerEvent",
             VALUES     : {
                 "0x00" : "AC Power Off",
                 "0x01" : "AC Power On",
             },
         },
-        "0x03" : {SIZE : 1, NAME : "LowBatteryAlarm",
+        "0x03" : {SIZE : 1, NAME : "lowBatteryAlarm",
             VALUES     : {
                 "0x00" : "Normal",
                 "0x01" : "Alarm",
             },
         },
-        "0x04" : {SIZE : 1, NAME : "FaultAlarm",
+        "0x04" : {SIZE : 1, NAME : "faultAlarm",
             VALUES     : {
                 "0x00" : "Normal",
                 "0x01" : "Alarm",
             },
         },
-        "0x05" : {SIZE : 1, NAME : "SmokeAlarm",
+        "0x05" : {SIZE : 1, NAME : "smokeAlarm",
             VALUES     : {
                 "0x00" : "Normal",
                 "0x01" : "Alarm",
             },
         },
-        "0x06" : {SIZE : 1, NAME : "InterconnectAlarm",
+        "0x06" : {SIZE : 1, NAME : "interconnectAlarm",
             VALUES     : {
                 "0x00" : "Normal",
                 "0x01" : "Alarm",
@@ -366,10 +366,10 @@ var CONFIG_DEVICE = {
     PORT : 50,
     CHANNEL : parseInt("0xFF", 16),
     TYPES : {
-        "ReportingInterval" : {TYPE : parseInt("0x03", 16), SIZE : 2, MIN : 1, MAX : 65535,},
-        "SmokeDetector" : {TYPE : parseInt("0x00", 16), SIZE : 1, MIN : 0, MAX : 1,},
-        "SilenceBuzzer" : {TYPE : parseInt("0x0A", 16), SIZE : 2, MIN : 0, MAX : 65535,},
-        "ConfirmedUplink" : {TYPE : parseInt("0x01", 16), SIZE : 1, MIN : 0, MAX : 1,},
+        "reportingInterval" : {TYPE : parseInt("0x03", 16), SIZE : 2, MIN : 1, MAX : 65535,},
+        "smokeDetector" : {TYPE : parseInt("0x00", 16), SIZE : 1, MIN : 0, MAX : 1,},
+        "silenceBuzzer" : {TYPE : parseInt("0x0A", 16), SIZE : 2, MIN : 0, MAX : 65535,},
+        "confirmedUplink" : {TYPE : parseInt("0x01", 16), SIZE : 1, MIN : 0, MAX : 1,},
     }
 }
 
@@ -429,5 +429,3 @@ function encodeDeviceConfiguration(obj, variables)
     }
     return encoded;
 }
-
-
