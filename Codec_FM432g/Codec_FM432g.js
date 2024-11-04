@@ -34,7 +34,7 @@ function Decode(fPort, bytes, variables)
 
     return {
         warning: "Payload is not T1 message", 
-        RawPayload: getDigitStringArrayEvenFormat(bytes, 0, bytes.length).join("")
+        rawPayload: getDigitStringArrayEvenFormat(bytes, 0, bytes.length).join("")
     };
 }
 
@@ -153,19 +153,19 @@ function DecodeT1Payload(bytes, timestamp)
 {
     var decoded = {};
     var payload = getDigitStringArrayEvenFormat(bytes, 0, bytes.length).join("");
-    decoded.RawPayload = payload;
+    decoded.rawPayload = payload;
     try
     {
-        decoded.Index = decode_index(payload);
-        decoded.StepInMinute = decode_step(payload);
-        decoded.ListOfIncrements = [];
+        decoded.index = decode_index(payload);
+        decoded.stepInMinute = decode_step(payload);
+        decoded.listOfIncrements = [];
         var increments = decode_list_increment(payload);
         for(var i=0; i<increments.length; i=i+1)
         {
             var increment = {};
             increment.value = increments[i];
-            increment.timestamp = timestamp - ((8 - i)*decoded.StepInMinute*60);
-            decoded.ListOfIncrements.push(increment);
+            increment.timestamp = timestamp - ((8 - i)*decoded.stepInMinute*60);
+            decoded.listOfIncrements.push(increment);
         }
 
     }catch(error)

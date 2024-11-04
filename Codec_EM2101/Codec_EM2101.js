@@ -1,128 +1,140 @@
 /**
  * Codec for EM2101 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 16 June 2023
- * Update  Date : 25 April 2024
+ * Update  Date : 04 November 2024
  */
+
+// Version Control
+var VERSION_CONTROL = {
+    CODEC : {VERSION: "1.0.0", NAME: "codecVersion"},
+    DEVICE: {MODEL : "EM2101", NAME: "genericModel"},
+    PRODUCT: {CODE : "P100xxxx", NAME: "productCode"},
+    MANUFACTURER: {COMPANY : "YOBIIQ B.V.", NAME: "manufacturer"},
+}
 
 // Configuration constants for device basic info and current settings
 var CONFIG_INFO = {
-    PORT     : 50,
+    FPORT     : 50,
     CHANNEL  : parseInt("0xFF", 16),
     TYPES    : {
-        "0x09" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
-        "0x0A" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x16" : {SIZE : 4, NAME : "DeviceSerialNumber"},
-        "0x0F" : {SIZE : 1, NAME : "DeviceClass",
+        "0x09" : {SIZE : 2, NAME : "hardwareVersion", DIGIT: false},
+        "0x0A" : {SIZE : 2, NAME : "firmwareVersion", DIGIT: false},
+        "0x16" : {SIZE : 4, NAME : "deviceSerialNumber"},
+        "0x0F" : {SIZE : 1, NAME : "deviceClass",
             VALUES     : {
                 "0x00" : "Class A",
                 "0x01" : "Class B",
                 "0x02" : "Class C",
             },
         },
-        "0x0B" : {SIZE : 1, NAME : "PowerEvent",
+        "0x0B" : {SIZE : 1, NAME : "powerEvent",
             VALUES     : {
                 "0x00" : "AC Power Off",
                 "0x01" : "AC Power On",
             },
         },
-        "0x00" : {SIZE : 1, NAME : "RelayStatus",
+        "0x00" : {SIZE : 1, NAME : "relayStatus",
             VALUES     : {
                 "0x00" : "LOW",
                 "0x01" : "HIGH"
             },
         },
-        "0x1E" : {SIZE : 2, NAME : "PrimaryCurrentTransformerRatio",},
-        "0x1F" : {SIZE : 1, NAME : "SecondaryCurrentTransformerRatio",},
-        "0x20" : {SIZE : 4, NAME : "PrimaryVoltageTransformerRatio",},
-        "0x21" : {SIZE : 2, NAME : "SecondaryVoltageTransformerRatio",},
-        "0x28" : {SIZE : 0, NAME : "DeviceModel",},
-        "0x3C" : {SIZE : 2, NAME : "CurrentLimitFallback", UNIT : "A", RESOLUTION : 0.1,},
-        "0x3D" : {SIZE : 2, NAME : "VoltageLimitFallback", UNIT : "V",},
-        "0x3E" : {SIZE : 2, NAME : "PowerLimitFallback", UNIT : "W",},
-        "0x3F" : {SIZE : 2, NAME : "DeactivationDelayFallback", UNIT : "s",},
-        "0x40" : {SIZE : 2, NAME : "ActivationDelayFallback", UNIT : "s",},
-        "0x41" : {SIZE : 2, NAME : "OffsetCurrentFallback", UNIT : "A", RESOLUTION : 0.1,},
-        "0x42" : {SIZE : 2, NAME : "OffsetDelayFallback", UNIT : "s",},
-        "0x43" : {SIZE : 2, NAME : "ResetTimeFallback", UNIT : "s",},
-        "0x44" : {SIZE : 1, NAME : "ResetAmountFallback",},
-        "0x50" : {SIZE : 2, NAME : "CurrentLimitDynamic", UNIT : "A", RESOLUTION : 0.1},
-        "0x51" : {SIZE : 2, NAME : "VoltageLimitDynamic", UNIT : "V",},
-        "0x52" : {SIZE : 2, NAME : "PowerLimitDynamic", UNIT : "W",},
-        "0x53" : {SIZE : 2, NAME : "DeactivationDelayDynamic", UNIT : "s",},
-        "0x54" : {SIZE : 2, NAME : "ActivationDelayDynamic", UNIT : "s",},
-        "0x55" : {SIZE : 2, NAME : "OffsetCurrentDynamic", UNIT : "A", RESOLUTION : 0.1},
-        "0x56" : {SIZE : 2, NAME : "OffsetDelayDynamic", UNIT : "s",},
-        "0x57" : {SIZE : 2, NAME : "ResetTimeDynamic", UNIT : "s",},
-        "0x58" : {SIZE : 1, NAME : "ResetAmountDynamic",},
+        "0x1E" : {SIZE : 2, NAME : "primaryCurrentTransformerRatio",},
+        "0x1F" : {SIZE : 1, NAME : "secondaryCurrentTransformerRatio",},
+        "0x20" : {SIZE : 4, NAME : "primaryVoltageTransformerRatio",},
+        "0x21" : {SIZE : 2, NAME : "secondaryVoltageTransformerRatio",},
+        "0x28" : {SIZE : 0, NAME : "deviceModel",},
+        "0x3C" : {SIZE : 2, NAME : "currentLimitFallback", UNIT : "A", RESOLUTION : 0.1,},
+        "0x3D" : {SIZE : 2, NAME : "voltageLimitFallback", UNIT : "V",},
+        "0x3E" : {SIZE : 2, NAME : "powerLimitFallback", UNIT : "W",},
+        "0x3F" : {SIZE : 2, NAME : "deactivationDelayFallback", UNIT : "s",},
+        "0x40" : {SIZE : 2, NAME : "activationDelayFallback", UNIT : "s",},
+        "0x41" : {SIZE : 2, NAME : "offsetCurrentFallback", UNIT : "A", RESOLUTION : 0.1,},
+        "0x42" : {SIZE : 2, NAME : "offsetDelayFallback", UNIT : "s",},
+        "0x43" : {SIZE : 2, NAME : "resetTimeFallback", UNIT : "s",},
+        "0x44" : {SIZE : 1, NAME : "resetAmountFallback",},
+        "0x50" : {SIZE : 2, NAME : "currentLimitDynamic", UNIT : "A", RESOLUTION : 0.1},
+        "0x51" : {SIZE : 2, NAME : "voltageLimitDynamic", UNIT : "V",},
+        "0x52" : {SIZE : 2, NAME : "powerLimitDynamic", UNIT : "W",},
+        "0x53" : {SIZE : 2, NAME : "deactivationDelayDynamic", UNIT : "s",},
+        "0x54" : {SIZE : 2, NAME : "activationDelayDynamic", UNIT : "s",},
+        "0x55" : {SIZE : 2, NAME : "offsetCurrentDynamic", UNIT : "A", RESOLUTION : 0.1},
+        "0x56" : {SIZE : 2, NAME : "offsetDelayDynamic", UNIT : "s",},
+        "0x57" : {SIZE : 2, NAME : "resetTimeDynamic", UNIT : "s",},
+        "0x58" : {SIZE : 1, NAME : "resetAmountDynamic",},
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for measurement registers
  var CONFIG_MEASUREMENT = {
-    "0x00" : {SIZE : 4, NAME : "Index",},
-    "0x01" : {SIZE : 4, NAME : "Timestamp",},
-    "0x03" : {SIZE : 4, NAME : "DataloggerTimestamp",},
-    "0x04" : {SIZE : 4, NAME : "ActiveEnergyImportL1T1", UNIT : "Wh",},
-    "0x05" : {SIZE : 4, NAME : "ActiveEnergyImportL1T2", UNIT : "Wh",},
-    "0x06" : {SIZE : 4, NAME : "ActiveEnergyExportL1T1", UNIT : "Wh",},
-    "0x07" : {SIZE : 4, NAME : "ActiveEnergyExportL1T2", UNIT : "Wh",},
-    "0x08" : {SIZE : 4, NAME : "ReactiveEnergyImportL1T1", UNIT : "varh",},
-    "0x09" : {SIZE : 4, NAME : "ReactiveEnergyImportL1T2", UNIT : "varh",},
-    "0x0A" : {SIZE : 4, NAME : "ReactiveEnergyExportL1T1", UNIT : "varh",},
-    "0x0B" : {SIZE : 4, NAME : "ReactiveEnergyExportL1T2", UNIT : "varh",},
-    "0x0C" : {SIZE : 4, NAME : "VoltageL1N", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
-    "0x10" : {SIZE : 4, NAME : "CurrentL1", UNIT : "mA", SIGNED : true,},
-    "0x14" : {SIZE : 4, NAME : "ActivePowerL1", UNIT : "W", SIGNED : true,},
-    "0x17" : {SIZE : 4, NAME : "ReactivePowerL1", UNIT : "kvar", RESOLUTION : 0.001, SIGNED : true,},
-    "0x1A" : {SIZE : 4, NAME : "ApparentPowerL1", UNIT : "kVA", RESOLUTION : 0.001, SIGNED : true,},
-    "0x1D" : {SIZE : 1, NAME : "PowerFactorL1", RESOLUTION : 0.01, SIGNED : true,},
-    "0x20" : {SIZE : 2, NAME : "PhaseAngleL1", UNIT : "degree", RESOLUTION : 0.01, SIGNED : true,},
-    "0x23" : {SIZE : 2, NAME : "Frequency", UNIT : "Hz", RESOLUTION : 0.01, SIGNED : true,},
-    "0x24" : {SIZE : 4, NAME : "TotalSystemActivePower", UNIT : "kW",},
-    "0x25" : {SIZE : 4, NAME : "TotalSystemReactivePower", UNIT : "kvar", RESOLUTION : 0.001,},
-    "0x26" : {SIZE : 4, NAME : "TotalSystemApparentPower", UNIT : "kVA", RESOLUTION : 0.001,},
-    "0x27" : {SIZE : 4, NAME : "MaximumL1CurrentDemand", UNIT : "mA", SIGNED : true,},
-    "0x2A" : {SIZE : 4, NAME : "AveragePower", UNIT : "W", SIGNED : true,},
-    "0x2B" : {SIZE : 4, NAME : "MIDYearOfCertification",},
-    "0xF0" : {SIZE : 2, NAME : "ManufacturedYear", DIGIT: true,},
-    "0xF1" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false,},
-    "0xF2" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false,},
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    FPORT_MIN : 1,
+    FPORT_MAX : 10,
+    TYPES : {
+        "0x00" : {SIZE : 4, NAME : "index",},
+        "0x01" : {SIZE : 4, NAME : "timestamp",},
+        "0x03" : {SIZE : 4, NAME : "dataloggerTimestamp",},
+        "0x04" : {SIZE : 4, NAME : "activeEnergyImportL1T1", UNIT : "Wh",},
+        "0x05" : {SIZE : 4, NAME : "activeEnergyImportL1T2", UNIT : "Wh",},
+        "0x06" : {SIZE : 4, NAME : "activeEnergyExportL1T1", UNIT : "Wh",},
+        "0x07" : {SIZE : 4, NAME : "activeEnergyExportL1T2", UNIT : "Wh",},
+        "0x08" : {SIZE : 4, NAME : "reactiveEnergyImportL1T1", UNIT : "varh",},
+        "0x09" : {SIZE : 4, NAME : "reactiveEnergyImportL1T2", UNIT : "varh",},
+        "0x0A" : {SIZE : 4, NAME : "reactiveEnergyExportL1T1", UNIT : "varh",},
+        "0x0B" : {SIZE : 4, NAME : "reactiveEnergyExportL1T2", UNIT : "varh",},
+        "0x0C" : {SIZE : 4, NAME : "voltageL1N", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
+        "0x10" : {SIZE : 4, NAME : "currentL1", UNIT : "mA", SIGNED : true,},
+        "0x14" : {SIZE : 4, NAME : "activePowerL1", UNIT : "W", SIGNED : true,},
+        "0x17" : {SIZE : 4, NAME : "reactivePowerL1", UNIT : "kvar", RESOLUTION : 0.001, SIGNED : true,},
+        "0x1A" : {SIZE : 4, NAME : "apparentPowerL1", UNIT : "kVA", RESOLUTION : 0.001, SIGNED : true,},
+        "0x1D" : {SIZE : 1, NAME : "powerFactorL1", RESOLUTION : 0.01, SIGNED : true,},
+        "0x20" : {SIZE : 2, NAME : "phaseAngleL1", UNIT : "degree", RESOLUTION : 0.01, SIGNED : true,},
+        "0x23" : {SIZE : 2, NAME : "frequency", UNIT : "Hz", RESOLUTION : 0.01, SIGNED : true,},
+        "0x24" : {SIZE : 4, NAME : "totalSystemActivePower", UNIT : "kW",},
+        "0x25" : {SIZE : 4, NAME : "totalSystemReactivePower", UNIT : "kvar", RESOLUTION : 0.001,},
+        "0x26" : {SIZE : 4, NAME : "totalSystemApparentPower", UNIT : "kVA", RESOLUTION : 0.001,},
+        "0x27" : {SIZE : 4, NAME : "maximumL1CurrentDemand", UNIT : "mA", SIGNED : true,},
+        "0x2A" : {SIZE : 4, NAME : "averagePower", UNIT : "W", SIGNED : true,},
+        "0x2B" : {SIZE : 4, NAME : "midYearOfCertification",},
+        "0xF0" : {SIZE : 2, NAME : "manufacturedYear", DIGIT: true,},
+        "0xF1" : {SIZE : 2, NAME : "firmwareVersion", DIGIT: false,},
+        "0xF2" : {SIZE : 2, NAME : "hardwareVersion", DIGIT: false,},
+    },
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for change of state
 var CONFIG_STATE = {
-    PORT : 11,
+    FPORT : 11,
     TYPES : {
-        "0x01" : {SIZE : 1, NAME : "RelayStatus",
+        "0x01" : {SIZE : 1, NAME : "relayStatus",
             VALUES     : {
                 "0x00" : "OPEN",
                 "0x01" : "CLOSED"
             },
         },
-        "0x02" : {SIZE : 1, NAME : "DigitalInputStatus",
+        "0x02" : {SIZE : 1, NAME : "digitalInputStatus",
             VALUES     : {
                 "0x00" : "OPEN",
                 "0x01" : "CLOSED"
             },
         },
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for event logging
 var CONFIG_LOGGING = {
-    PORT : 60,
+    FPORT : 60,
     CHANNEL  : parseInt("0xFD", 16),
     TYPES : {
-        "0x01" : {SIZE : 1, NAME : "RelaySwitchingOffReason",
+        "0x01" : {SIZE : 1, NAME : "relaySwitchingOffReason",
             VALUES     : {
                 "0x00" : "Invalid",
                 "0x01" : "Due to too high current limit",
@@ -130,7 +142,7 @@ var CONFIG_LOGGING = {
                 "0x03" : "By operation via display"
             },
         },
-        "0x02" : {SIZE : 1, NAME : "RelayEnableReason",
+        "0x02" : {SIZE : 1, NAME : "relayEnableReason",
             VALUES     : {
                 "0x00" : "Invalid",
                 "0x01" : "By reset based on time",
@@ -139,21 +151,21 @@ var CONFIG_LOGGING = {
                 "0x04" : "By control from the Lora network"
             },
         },
-        "0x03" : {SIZE : 4, NAME : "RelaySwitchOffTime",},
-        "0x04" : {SIZE : 4, NAME : "RelayEnableTime",},
-        "0x05" : {SIZE : 4, NAME : "CurrentWhenRelaySwitchingOff",},
-        "0x06" : {SIZE : 4, NAME : "VoltageWhenRelaySwitchingOff",},
-        "0x07" : {SIZE : 4, NAME : "ActivePowerWhenRelaySwitchingOff",},
-        "0x08" : {SIZE : 1, NAME : "ResetAmountStatus",
+        "0x03" : {SIZE : 4, NAME : "relaySwitchOffTime",},
+        "0x04" : {SIZE : 4, NAME : "relayEnableTime",},
+        "0x05" : {SIZE : 4, NAME : "currentWhenRelaySwitchingOff",},
+        "0x06" : {SIZE : 4, NAME : "voltageWhenRelaySwitchingOff",},
+        "0x07" : {SIZE : 4, NAME : "activePowerWhenRelaySwitchingOff",},
+        "0x08" : {SIZE : 1, NAME : "resetAmountStatus",
             VALUES     : {
                 "0x01" : "Current reset count is less than the reset amount",
                 "0x02" : "Current reset count exceeds the reset amount",
             },
         },
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 function decodeBasicInformation(bytes)
@@ -284,7 +296,7 @@ function decodeDeviceData(bytes)
 
             // No channel checking
 
-            var measurement = CONFIG_MEASUREMENT[type];
+            var measurement = CONFIG_MEASUREMENT.TYPES[type];
             size = measurement.SIZE;
             // Decoding
             var value = 0;
@@ -544,20 +556,32 @@ function getSignedIntegerFromInteger(integer, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
-    if(fPort == CONFIG_INFO.PORT)
+    var decoded = {};
+    if(fPort == 0)
     {
-        return decodeBasicInformation(bytes);
-    }else if(fPort >= 1 && fPort <= 10)
-    {
-        return decodeDeviceData(bytes);
-    }else if(fPort == CONFIG_STATE.PORT)
-    {
-        return decodeChangeState(bytes);
-    }else if(fPort == CONFIG_LOGGING.PORT)
-    {
-        return decodeEventLogging(bytes);
+        decoded = {mac: "MAC command received", fPort: fPort};
     }
-    return {error: "Incorrect fPort", fPort : fPort};
+    else if(fPort == CONFIG_INFO.FPORT)
+    {
+        decoded = decodeBasicInformation(bytes);
+    }else if(fPort >= CONFIG_MEASUREMENT.FPORT_MIN && fPort <= CONFIG_MEASUREMENT.FPORT_MAX)
+    {
+        decoded = decodeDeviceData(bytes);
+    }else if(fPort == CONFIG_STATE.FPORT)
+    {
+        decoded = decodeChangeState(bytes);
+    }else if(fPort == CONFIG_LOGGING.FPORT)
+    {
+        decoded = decodeEventLogging(bytes);
+    }else
+    {
+        decoded = {error: "Incorrect fPort", fPort : fPort};
+    }
+    decoded[VERSION_CONTROL.CODEC.NAME] = VERSION_CONTROL.CODEC.VERSION;
+    decoded[VERSION_CONTROL.DEVICE.NAME] = VERSION_CONTROL.DEVICE.MODEL;
+    decoded[VERSION_CONTROL.PRODUCT.NAME] = VERSION_CONTROL.PRODUCT.CODE;
+    decoded[VERSION_CONTROL.MANUFACTURER.NAME] = VERSION_CONTROL.MANUFACTURER.COMPANY;
+    return decoded;
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)
@@ -630,20 +654,20 @@ function encodeDownlink(input) {
 
 // Constants for device configuration 
 var CONFIG_DEVICE = {
-    PORT : 50,
+    FPORT : 50,
     CHANNEL : parseInt("0xFF", 16),
     TYPES : {
-        "Restart" : {TYPE : parseInt("0x0B", 16), SIZE : 1, MIN : 1, MAX : 1,},
-        "DigitalInput" : {TYPE : parseInt("0x47", 16), SIZE : 1, MIN : 0, MAX : 1, CHANNEL : parseInt("0x08", 16),},
-        "CurrentLimitFallback" : {TYPE : parseInt("0x32", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "VoltageLimitFallback" : {TYPE : parseInt("0x33", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "PowerLimitFallback" : {TYPE : parseInt("0x34", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "DeactivationDelayFallback" : {TYPE : parseInt("0x35", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "ActivationDelayFallback" : {TYPE : parseInt("0x36", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "OffsetCurrentFallback" : {TYPE : parseInt("0x37", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "OffsetDelayFallback" : {TYPE : parseInt("0x38", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "ResetTimeFallback" : {TYPE : parseInt("0x39", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "ResetAmountFallback" : {TYPE : parseInt("0x3A", 16), SIZE : 1, MIN : 0, MAX : 255,}
+        "restart" : {TYPE : parseInt("0x0B", 16), SIZE : 1, MIN : 1, MAX : 1,},
+        "digitalInput" : {TYPE : parseInt("0x47", 16), SIZE : 1, MIN : 0, MAX : 1, CHANNEL : parseInt("0x08", 16),},
+        "currentLimitFallback" : {TYPE : parseInt("0x32", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "voltageLimitFallback" : {TYPE : parseInt("0x33", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "powerLimitFallback" : {TYPE : parseInt("0x34", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "deactivationDelayFallback" : {TYPE : parseInt("0x35", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "activationDelayFallback" : {TYPE : parseInt("0x36", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "offsetCurrentFallback" : {TYPE : parseInt("0x37", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "offsetDelayFallback" : {TYPE : parseInt("0x38", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "resetTimeFallback" : {TYPE : parseInt("0x39", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "resetAmountFallback" : {TYPE : parseInt("0x3A", 16), SIZE : 1, MIN : 0, MAX : 255,}
     }
 }
 
@@ -652,15 +676,15 @@ var CONFIG_DYNAMIC = {
     PORT : 50,
     CHANNEL : parseInt("0x01", 16),
     TYPES : {
-        "CurrentLimit" : {TYPE : parseInt("0x32", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "VoltageLimit" : {TYPE : parseInt("0x33", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "PowerLimit" : {TYPE : parseInt("0x34", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "DeactivationDelay" : {TYPE : parseInt("0x35", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "ActivationDelay" : {TYPE : parseInt("0x36", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "OffsetCurrent" : {TYPE : parseInt("0x37", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "OffsetDelay" : {TYPE : parseInt("0x38", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "ResetTime" : {TYPE : parseInt("0x39", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "ResetAmount" : {TYPE : parseInt("0x3A", 16), SIZE : 1, MIN : 0, MAX : 255,}
+        "currentLimit" : {TYPE : parseInt("0x32", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "voltageLimit" : {TYPE : parseInt("0x33", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "powerLimit" : {TYPE : parseInt("0x34", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "deactivationDelay" : {TYPE : parseInt("0x35", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "activationDelay" : {TYPE : parseInt("0x36", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "offsetCurrent" : {TYPE : parseInt("0x37", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "offsetDelay" : {TYPE : parseInt("0x38", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "resetTime" : {TYPE : parseInt("0x39", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "resetAmount" : {TYPE : parseInt("0x3A", 16), SIZE : 1, MIN : 0, MAX : 255,}
     }
 }
 
@@ -669,9 +693,9 @@ var CONFIG_RELAY = {
     PORT : 50,
     CHANNEL : parseInt("0x07", 16),
     TYPES : {
-        "Reset" : {TYPE : parseInt("0x46", 16), SIZE : 1, MIN : 1, MAX : 1,},
-        "ControlMode" : {TYPE : parseInt("0x47", 16), SIZE : 1, MIN : 0, MAX : 1,},
-        "RelayCommand" : {TYPE : parseInt("0x48", 16), SIZE : 1, MIN : 0, MAX : 1,}
+        "reset" : {TYPE : parseInt("0x46", 16), SIZE : 1, MIN : 1, MAX : 1,},
+        "controlMode" : {TYPE : parseInt("0x47", 16), SIZE : 1, MIN : 0, MAX : 1,},
+        "relayCommand" : {TYPE : parseInt("0x48", 16), SIZE : 1, MIN : 0, MAX : 1,}
     }
 }
 
@@ -685,34 +709,34 @@ var CONFIG_PERIODIC = {
         "Measurement" : {TYPE : parseInt("0x17", 16), SIZE : 1, MIN : 0, MAX : 10,},
     },
     MEASUREMENTS : {
-        Index : "0x00",
-        Timestamp : "0x01",
-        DataloggerTimestamp : "0x03",
-        ActiveEnergyImportL1T1 : "0x04",
-        ActiveEnergyImportL1T2 : "0x05",
-        ActiveEnergyExportL1T1 : "0x06",
-        ActiveEnergyExportL1T2 : "0x07",
-        ReactiveEnergyImportL1T1 : "0x08",
-        ReactiveEnergyImportL1T2 : "0x09",
-        ReactiveEnergyExportL1T1 : "0x0A",
-        ReactiveEnergyExportL1T2 : "0x0B",
-        VoltageL1N : "0x0C",
-        CurrentL1 : "0x10",
-        ActivePowerL1 : "0x14",
-        ReactivePowerL1 : "0x17",
-        ApparentPowerL1 : "0x1A",
-        PowerFactorL1 : "0x1D",
-        PhaseAngleL1 : "0x20",
-        Frequency : "0x23",
-        TotalSystemActivePower : "0x24",
-        TotalSystemReactivePower : "0x25",
-        TotalSystemApparentPower : "0x26",
-        MaximumL1CurrentDemand : "0x27",
+        index : "0x00",
+        timestamp : "0x01",
+        dataloggerTimestamp : "0x03",
+        activeEnergyImportL1T1 : "0x04",
+        activeEnergyImportL1T2 : "0x05",
+        activeEnergyExportL1T1 : "0x06",
+        activeEnergyExportL1T2 : "0x07",
+        reactiveEnergyImportL1T1 : "0x08",
+        reactiveEnergyImportL1T2 : "0x09",
+        reactiveEnergyExportL1T1 : "0x0A",
+        reactiveEnergyExportL1T2 : "0x0B",
+        voltageL1N : "0x0C",
+        currentL1 : "0x10",
+        activePowerL1 : "0x14",
+        reactivePowerL1 : "0x17",
+        apparentPowerL1 : "0x1A",
+        powerFactorL1 : "0x1d",
+        phaseAngleL1 : "0x20",
+        frequency : "0x23",
+        totalSystemActivePower : "0x24",
+        totalSystemReactivePower : "0x25",
+        totalSystemApparentPower : "0x26",
+        maximumL1CurrentDemand : "0x27",
         AveragePower : "0x2A",
-        MIDYearOfCertification : "0x2B",
-        ManufacturedYear : "0xF0",
-        FirmwareVersion : "0xF1",
-        HardwareVersion : "0xF2",
+        midYearOfCertification : "0x2B",
+        manufacturedYear : "0xF0",
+        firmwareVersion : "0xF1",
+        hardwareVersion : "0xF2",
     }
 }
 
@@ -721,24 +745,24 @@ var CONFIG_REQUEST = {
     CHANNEL : parseInt("0x02", 16),
     TYPE : parseInt("0x0B", 16),
     SETTINGS : {
-        CurrentLimitFallback : "0x3C",
-        VoltageLimitFallback : "0x3D",
-        PowerLimitFallback : "0x3E",
-        DeactivationDelayFallback : "0x3F",
-        ActivationDelayFallback : "0x40",
-        OffsetCurrentFallback : "0x41",
-        OffsetDelayFallback : "0x42",
-        ResetTimeFallback : "0x43",
-        ResetAmountFallback : "0x44",
-        CurrentLimitDynamic : "0x50",
-        VoltageLimitDynamic : "0x51",
-        PowerLimitDynamic : "0x52",
-        DeactivationDelayDynamic : "0x53",
-        ActivationDelayDynamic : "0x54",
-        OffsetCurrentDynamic : "0x55",
-        OffsetDelayDynamic : "0x56",
-        ResetTimeDynamic : "0x57",
-        ResetAmountDynamic : "0x58",
+        currentLimitFallback : "0x3C",
+        voltageLimitFallback : "0x3D",
+        powerLimitFallback : "0x3E",
+        deactivationDelayFallback : "0x3F",
+        activationDelayFallback : "0x40",
+        offsetCurrentFallback : "0x41",
+        offsetDelayFallback : "0x42",
+        resetTimeFallback : "0x43",
+        resetAmountFallback : "0x44",
+        currentLimitDynamic : "0x50",
+        voltageLimitDynamic : "0x51",
+        powerLimitDynamic : "0x52",
+        deactivationDelayDynamic : "0x53",
+        activationDelayDynamic : "0x54",
+        offsetCurrentDynamic : "0x55",
+        offsetDelayDynamic : "0x56",
+        resetTimeDynamic : "0x57",
+        resetAmountDynamic : "0x58",
     }
 
 }
@@ -956,4 +980,5 @@ function encodeRequestSettings(obj, variables){
 
     return encoded;
 }
+
 

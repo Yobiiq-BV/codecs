@@ -8,7 +8,7 @@ Note :
 { 
     "Type": "Config",
     "Config": {
-        "Param": "Reboot",
+        "Param": "reboot",
         "Value": 1 	
     }
 }
@@ -21,7 +21,7 @@ Note :
 { 
     "Type": "Config",
     "Config": {
-        "Param": "Lock",
+        "Param": "lock",
         "Value": 1 	
     }
 }
@@ -31,7 +31,7 @@ Note :
 { 
     "Type": "Config",
     "Config": {
-        "Param": "Lock",
+        "Param": "lock",
         "Value": 0
     }
 }
@@ -42,7 +42,7 @@ Note :
 { 
     "Type": "Config",
     "Config": {
-        "Param": "TransmitInterval",
+        "Param": "transmitInterval",
         "Value": 30
     }
 }
@@ -53,7 +53,7 @@ Note :
 { 
     "Type": "Config",
     "Config": {
-        "Param": "MessageFormat",
+        "Param": "messageFormat",
         "Value": "COMPACT"
     }
 }
@@ -75,7 +75,7 @@ Note: Available value or format:
 { 
     "Type": "Config",
     "Config": {
-        "Param": "EcoMode",
+        "Param": "ecoMode",
         "Value": 1 	
     }
 }
@@ -85,7 +85,7 @@ Note: Available value or format:
 { 
     "Type": "Config",
     "Config": {
-        "Param": "EcoMode",
+        "Param": "ecoMode",
         "Value": 0
     }
 }
@@ -96,7 +96,7 @@ Note: Available value or format:
 { 
     "Type": "Config",
     "Config": {
-        "Param": "TimeRelative",
+        "Param": "timeRelative",
         "Value": 60
     }
 }
@@ -106,7 +106,7 @@ Note: Available value or format:
 { 
     "Type": "Config",
     "Config": {
-        "Param": "TimeRelative",
+        "Param": "timeRelative",
         "Value": -60
     }
 }
@@ -117,7 +117,7 @@ Note: Available value or format:
 { 
     "Type": "Config",
     "Config": {
-        "Param": "UtcOffset",
+        "Param": "utcOffset",
         "Value": 60
     }
 }
@@ -127,7 +127,7 @@ Note: Available value or format:
 { 
     "Type": "Config",
     "Config": {
-        "Param": "UtcOffset",
+        "Param": "utcOffset",
         "Value": -60
     }
 }

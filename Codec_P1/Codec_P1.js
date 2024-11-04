@@ -1,18 +1,26 @@
 /**
  * Codec for P1 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 05 August 2023
- * Update  Date : 27 March 2024
+ * Update  Date : 04 November 2024
  */
+
+// Version Control
+var VERSION_CONTROL = {
+    CODEC : {VERSION: "1.0.0", NAME: "codecVersion"},
+    DEVICE: {MODEL : "P1-iQ-DSMR", NAME: "genericModel"},
+    PRODUCT: {CODE : "P100xxxx", NAME: "productCode"},
+    MANUFACTURER: {COMPANY : "YOBIIQ B.V.", NAME: "manufacturer"},
+}
 
 // Configuration constants for device basic info and current settings
 var CONFIG_INFO = {
     FPORT     : 50,
     CHANNEL  : parseInt("0xFF", 16),
     TYPES    : {
-        "0x01" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
-        "0x0A" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x10" : {SIZE : 4, NAME : "DeviceSerialNumber"},
-        "0x20" : {SIZE : 1, NAME : "DeviceClass",
+        "0x01" : {SIZE : 2, NAME : "hardwareVersion", DIGIT: false},
+        "0x0A" : {SIZE : 2, NAME : "firmwareVersion", DIGIT: false},
+        "0x10" : {SIZE : 4, NAME : "deviceSerialNumber"},
+        "0x20" : {SIZE : 1, NAME : "deviceClass",
             VALUES     : {
                 "0x00" : "Class A",
                 "0x01" : "Class B",
@@ -20,54 +28,58 @@ var CONFIG_INFO = {
             },
         }
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for measurement
 var CONFIG_MEASUREMENT = {
-    "0xFE" : {SIZE : 4, NAME : "DeviceTimestamp",},
-    "0x02" : {SIZE : 4, NAME : "TelegramTimestamp",},
-    "0x06" : {SIZE : 4, NAME : "ElectricityDeliveredToClientT1", UNIT : "Wh",},
-    "0x08" : {SIZE : 4, NAME : "ElectricityDeliveredToClientT2", UNIT : "Wh",},
-    "0x0A" : {SIZE : 4, NAME : "ElectricityDeliveredByClientT1", UNIT : "Wh",},
-    "0x0C" : {SIZE : 4, NAME : "ElectricityDeliveredByClientT2", UNIT : "Wh",},
-    "0x0E" : {SIZE : 2, NAME : "TariffIndicator",},
-    "0x10" : {SIZE : 4, NAME : "ElectricityPowerDelivered", UNIT : "W", SIGNED : true,},
-    "0x12" : {SIZE : 4, NAME : "ElectricityPowerReceived", UNIT : "W", SIGNED : true,},
-    "0x14" : {SIZE : 4, NAME : "NumberOfPowerFailuresInAnyPhase",},
-    "0x18" : {SIZE : 0, NAME : "PowerFailureEventLog", SINGLE_EVENT_SIZE:8,},
-    "0x1A" : {SIZE : 4, NAME : "NumberOfVoltageSagsL1",},
-    "0x1C" : {SIZE : 4, NAME : "NumberOfVoltageSagsL2",},
-    "0x1E" : {SIZE : 4, NAME : "NumberOfVoltageSagsL3",},
-    "0x1F" : {SIZE : 4, NAME : "NumberOfVoltageSwellsL1",},
-    "0x20" : {SIZE : 4, NAME : "NumberOfVoltageSwellsL2",},
-    "0x21" : {SIZE : 4, NAME : "NumberOfVoltageSwellsL3",},
-    "0x22" : {SIZE : 2, NAME : "VoltageL1", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
-    "0x23" : {SIZE : 2, NAME : "VoltageL2", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
-    "0x24" : {SIZE : 2, NAME : "VoltageL3", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
-    "0x26" : {SIZE : 2, NAME : "CurrentL1", UNIT : "A", SIGNED : true,},
-    "0x28" : {SIZE : 2, NAME : "CurrentL2", UNIT : "A", SIGNED : true,},
-    "0x2A" : {SIZE : 2, NAME : "CurrentL3", UNIT : "A", SIGNED : true,},
-    "0x2C" : {SIZE : 4, NAME : "ActivePowerDeliveredL1", UNIT : "W", SIGNED : true,},
-    "0x2E" : {SIZE : 4, NAME : "ActivePowerDeliveredL2", UNIT : "W", SIGNED : true,},
-    "0x30" : {SIZE : 4, NAME : "ActivePowerDeliveredL3", UNIT : "W", SIGNED : true,},
-    "0x32" : {SIZE : 4, NAME : "ActivePowerReceivedL1", UNIT : "W", SIGNED : true,},
-    "0x33" : {SIZE : 4, NAME : "ActivePowerReceivedL2", UNIT : "W", SIGNED : true,},
-    "0x34" : {SIZE : 4, NAME : "ActivePowerReceivedL3", UNIT : "W", SIGNED : true,},
-    "0x46" : {SIZE : 2, NAME : "DeviceTypeOnChannel1",},
-    "0x50" : {SIZE : 8, NAME : "LastReadingOnChannel1",},
-    "0x56" : {SIZE : 2, NAME : "DeviceTypeOnChannel2",},
-    "0x60" : {SIZE : 8, NAME : "LastReadingOnChannel2",},
-    "0x66" : {SIZE : 2, NAME : "DeviceTypeOnChannel3",},
-    "0x70" : {SIZE : 8, NAME : "LastReadingOnChannel3",},
-    "0x76" : {SIZE : 2, NAME : "DeviceTypeOnChannel4",},
-    "0x80" : {SIZE : 8, NAME : "LastReadingOnChannel4",},
+    FPORT_MIN    : 1,
+    FPORT_MAX    : 5,
     CHANNEL : parseInt("0xDD", 16),
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    TYPES : {
+        "0xFE" : {SIZE : 4, NAME : "deviceTimestamp",},
+        "0x02" : {SIZE : 4, NAME : "telegramTimestamp",},
+        "0x06" : {SIZE : 4, NAME : "electricityDeliveredToClientT1", UNIT : "Wh",},
+        "0x08" : {SIZE : 4, NAME : "electricityDeliveredToClientT2", UNIT : "Wh",},
+        "0x0A" : {SIZE : 4, NAME : "electricityDeliveredByClientT1", UNIT : "Wh",},
+        "0x0C" : {SIZE : 4, NAME : "electricityDeliveredByClientT2", UNIT : "Wh",},
+        "0x0E" : {SIZE : 2, NAME : "tariffIndicator",},
+        "0x10" : {SIZE : 4, NAME : "electricityPowerDelivered", UNIT : "W", SIGNED : true,},
+        "0x12" : {SIZE : 4, NAME : "electricityPowerReceived", UNIT : "W", SIGNED : true,},
+        "0x14" : {SIZE : 4, NAME : "numberOfPowerFailuresInAnyPhase",},
+        "0x18" : {SIZE : 0, NAME : "powerFailureEventLog", SINGLE_EVENT_SIZE:8,},
+        "0x1A" : {SIZE : 4, NAME : "numberOfVoltageSagsL1",},
+        "0x1C" : {SIZE : 4, NAME : "numberOfVoltageSagsL2",},
+        "0x1E" : {SIZE : 4, NAME : "numberOfVoltageSagsL3",},
+        "0x1F" : {SIZE : 4, NAME : "numberOfVoltageSwellsL1",},
+        "0x20" : {SIZE : 4, NAME : "numberOfVoltageSwellsL2",},
+        "0x21" : {SIZE : 4, NAME : "numberOfVoltageSwellsL3",},
+        "0x22" : {SIZE : 2, NAME : "voltageL1", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
+        "0x23" : {SIZE : 2, NAME : "voltageL2", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
+        "0x24" : {SIZE : 2, NAME : "voltageL3", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
+        "0x26" : {SIZE : 2, NAME : "currentL1", UNIT : "A", SIGNED : true,},
+        "0x28" : {SIZE : 2, NAME : "currentL2", UNIT : "A", SIGNED : true,},
+        "0x2A" : {SIZE : 2, NAME : "currentL3", UNIT : "A", SIGNED : true,},
+        "0x2C" : {SIZE : 4, NAME : "activePowerDeliveredL1", UNIT : "W", SIGNED : true,},
+        "0x2E" : {SIZE : 4, NAME : "activePowerDeliveredL2", UNIT : "W", SIGNED : true,},
+        "0x30" : {SIZE : 4, NAME : "activePowerDeliveredL3", UNIT : "W", SIGNED : true,},
+        "0x32" : {SIZE : 4, NAME : "activePowerReceivedL1", UNIT : "W", SIGNED : true,},
+        "0x33" : {SIZE : 4, NAME : "activePowerReceivedL2", UNIT : "W", SIGNED : true,},
+        "0x34" : {SIZE : 4, NAME : "activePowerReceivedL3", UNIT : "W", SIGNED : true,},
+        "0x46" : {SIZE : 2, NAME : "deviceTypeOnChannel1",},
+        "0x50" : {SIZE : 8, NAME : "lastReadingOnChannel1",},
+        "0x56" : {SIZE : 2, NAME : "deviceTypeOnChannel2",},
+        "0x60" : {SIZE : 8, NAME : "lastReadingOnChannel2",},
+        "0x66" : {SIZE : 2, NAME : "deviceTypeOnChannel3",},
+        "0x70" : {SIZE : 8, NAME : "lastReadingOnChannel3",},
+        "0x76" : {SIZE : 2, NAME : "deviceTypeOnChannel4",},
+        "0x80" : {SIZE : 8, NAME : "lastReadingOnChannel4",},
+    },
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 
@@ -98,7 +110,7 @@ function decodeBasicInformation(bytes)
             size = info["SIZE"];
             // Decoding
             var value = 0;
-            if(type == "0x06" || info["NAME"] == "Battery")
+            if(type == "0x06" || info["NAME"] == "battery")
             {
                 decoded[info["NAME"]] = {};
                 decoded[info["NAME"]]["percentage"] = getValueFromBytesBigEndianFormat(bytes, index, 1);
@@ -108,19 +120,19 @@ function decodeBasicInformation(bytes)
                 decoded[info["NAME"]]["voltage"] = parseFloat(value.toFixed(1));
                 continue;
             }
-            if(type == "0x08" || info["NAME"] == "Settings")
+            if(type == "0x08" || info["NAME"] == "settings")
             {
                 decoded[info["NAME"]] = {};
                 value = getValueFromBytesBigEndianFormat(bytes, index, 1);
                 decoded[info["NAME"]] = decodeSettingsInfo(value);
                 index = index + 1;
-                decoded[info["NAME"]]["BatteryAlarmThreshold"] = getValueFromBytesBigEndianFormat(bytes, index, 1);
+                decoded[info["NAME"]]["batteryAlarmThreshold"] = getValueFromBytesBigEndianFormat(bytes, index, 1);
                 index = index + 1;
-                decoded[info["NAME"]]["TransmitInterval"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
+                decoded[info["NAME"]]["transmitInterval"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
                 index = index + 2;
-                decoded[info["NAME"]]["CollectionInterval"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
+                decoded[info["NAME"]]["collectionInterval"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
                 index = index + 2;
-                decoded[info["NAME"]]["GasLeakageAlarmThreshold"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
+                decoded[info["NAME"]]["gasLeakageAlarmThreshold"] = getValueFromBytesBigEndianFormat(bytes, index, 2);
                 index = index + 2;
                 continue;
             }
@@ -193,7 +205,7 @@ function decodeDeviceData(bytes)
 
             // No channel checking
 
-            var measurement = CONFIG_MEASUREMENT[type];
+            var measurement = CONFIG_MEASUREMENT.TYPES[type];
             size = measurement["SIZE"];
             // Decoding
             var value = 0;
@@ -268,9 +280,9 @@ function getBitValue(byte, indexOfBitInByte)
 function decodeSettingsInfo(byte)
 {
     var decoded = {};
-    decoded["UplinkConfirmation"] = getBitValue(byte, 0);
-    decoded["ADR"] = getBitValue(byte, 1);
-    decoded["DutyCycle"] = getBitValue(byte, 2);
+    decoded["uplinkConfirmation"] = getBitValue(byte, 0);
+    decoded["adr"] = getBitValue(byte, 1);
+    decoded["dutyCycle"] = getBitValue(byte, 2);
     return decoded;
 }
 
@@ -381,18 +393,29 @@ function getPowerFailureEventLog(bytes, index, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
-    if(fPort == CONFIG_INFO.FPORT)
+    var decoded = {};
+    if(fPort == 0)
     {
-        return decodeBasicInformation(bytes);
-    }else if(fPort >= 1 && fPort <= 5)
+        decoded = {mac: "MAC command received", fPort: fPort};
+    }else if(fPort == CONFIG_INFO.FPORT)
     {
-        return decodeDeviceData(bytes);
+        decoded = decodeBasicInformation(bytes);
+    }else if(fPort >= CONFIG_MEASUREMENT.FPORT_MIN && fPort <= CONFIG_MEASUREMENT.FPORT_MAX)
+    {
+        decoded = decodeDeviceData(bytes);
     }else if(fPort == 11)
     {
         // status packet
-        return {error: "P1 COM Timeout", timestamp: getValueFromBytesBigEndianFormat(bytes, 2, 4)};
+        decoded = {error: "P1 COM Timeout", timestamp: getValueFromBytesBigEndianFormat(bytes, 2, 4)};
+    }else
+    {
+        decoded = {error: "Incorrect fPort", fPort : fPort};
     }
-    return {error: "Incorrect fPort", fPort : fPort};
+    decoded[VERSION_CONTROL.CODEC.NAME] = VERSION_CONTROL.CODEC.VERSION;
+    decoded[VERSION_CONTROL.DEVICE.NAME] = VERSION_CONTROL.DEVICE.MODEL;
+    decoded[VERSION_CONTROL.PRODUCT.NAME] = VERSION_CONTROL.PRODUCT.CODE;
+    decoded[VERSION_CONTROL.MANUFACTURER.NAME] = VERSION_CONTROL.MANUFACTURER.COMPANY;
+    return decoded;
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)

@@ -3,7 +3,7 @@
 {
     "Type" : "Config",
     "Config" : [{
-        "Param" : "Restart",
+        "Param" : "restart",
         "Value" : 1
     }]
 }
@@ -13,15 +13,15 @@
 {
     "Type" : "Reading",
     "Reading" : [
-		"CalculatedHeatingCurveValue",
-		"CalculatedSetpointBoiler",
-		"ExternalHeatDemand",
-		"HeatcurveMinimumTemperature",
-		"HeatcurveMaximumTemperature",
-		"OutsideTemperature1",
-		"SupplyTemperature1",
-		"OutsideTemperature2",
-		"BoilerCentralHeating2"
+		"calculatedHeatingCurveValue",
+		"calculatedSetpointBoiler",
+		"externalHeatDemand",
+		"heatcurveMinimumTemperature",
+		"heatcurveMaximumTemperature",
+		"outsideTemperature1",
+		"supplyTemperature1",
+		"outsideTemperature2",
+		"boilerCentralHeating2"
 	]
 }
 

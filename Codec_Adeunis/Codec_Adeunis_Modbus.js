@@ -601,16 +601,16 @@ function decodeUplink(input) {
                 continue; // wrong measurement : skip
             }
             var measurement = {};
-            measurement.ChannelId = i + 1;
-            measurement.ChannelDecodedValue = decoded.registerValues[i];
-            measurement.ChannelLoggerTimestamp = deviceTimestamp;
+            measurement.channelId = i + 1;
+            measurement.channelDecodedValue = decoded.registerValues[i];
+            measurement.channelLoggerTimestamp = deviceTimestamp;
             measurements.push(measurement);
         }
     }
     return {
         data: {
-            DeviceTimestamp: deviceTimestamp,
-            ListOfMeasurements: measurements,
+            deviceTimestamp: deviceTimestamp,
+            listOfMeasurements: measurements,
             bytes: decoded,
         },
         warnings: [],

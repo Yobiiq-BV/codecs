@@ -1,7 +1,7 @@
 /**
  * Codec for Axioma water meters : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 26 August 2024
- * Update  Date : 26 August 2024
+ * Update  Date : 04 November 2024
  */
 
 // Configuration constants for device
@@ -9,11 +9,11 @@ var CONFIG_EXTENDED_PACKET = {
     FPORT : 100,
     LENGTH : 48,
     ORDER : [
-        {INDEX: 0, SIZE : 4, NAME : "CurrentTimestamp"},
-        {INDEX: 4, SIZE : 1, NAME : "StatusCode"},
-        {INDEX: 5, SIZE : 4, NAME : "CurrentVolume", RESOLUTION: 0.001},
-        {INDEX: 9, SIZE : 4, NAME : "LogTimestamp"},
-        {INDEX: 13, SIZE : 4, NAME : "LogVolume", RESOLUTION: 0.001},
+        {INDEX: 0, SIZE : 4, NAME : "currentTimestamp"},
+        {INDEX: 4, SIZE : 1, NAME : "statusCode"},
+        {INDEX: 5, SIZE : 4, NAME : "currentVolume", RESOLUTION: 0.001},
+        {INDEX: 9, SIZE : 4, NAME : "logTimestamp"},
+        {INDEX: 13, SIZE : 4, NAME : "logVolume", RESOLUTION: 0.001},
     ],
     LOG_INTERVAL: 1200,  // 20 minutes
     MEASUREMENT_TOTAL : 15,
@@ -22,9 +22,9 @@ var CONFIG_EXTENDED_PACKET = {
     MEASUREMENT : [
         {SIZE : 2, NAME : "deltaVolume", RESOLUTION: 0.001},
     ],
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 var CONFIG_ALARM_PACKET = {
@@ -40,16 +40,16 @@ var CONFIG_ALARM_PACKET = {
         { MASK: parseInt("0x60", 16), VALUE: "Backflow" },
         { MASK: parseInt("0x80", 16), VALUE: "Freeze" },
     ],    
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 var CONFIG_PARAMETER_PACKET = {
     FPORT : 101,    
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 function decodeExtendedPacket(bytes)
@@ -83,16 +83,16 @@ function decodeExtendedPacket(bytes)
                 decoded[info.NAME] = value;
             }
         }
-        decoded.ListOfMeasurements = [
-            {DataloggerTimestamp: decoded.CurrentTimestamp, Volume: decoded.CurrentVolume},
-            {DataloggerTimestamp: decoded.LogTimestamp, Volume: decoded.LogVolume}
+        decoded.listOfMeasurements = [
+            {dataloggerTimestamp: decoded.currentTimestamp, volume: decoded.currentVolume},
+            {dataloggerTimestamp: decoded.logTimestamp, volume: decoded.logVolume}
         ];
-        var logVolume = decoded.LogVolume;
+        var logVolume = decoded.logVolume;
         for(var j=0; j<CONFIG_EXTENDED_PACKET.MEASUREMENT_TOTAL; j=j+1)
         {
             var measurements = {};
 
-            measurements.DataloggerTimestamp = decoded.LogTimestamp + 
+            measurements.dataloggerTimestamp = decoded.logTimestamp + 
                 (j+1)*CONFIG_EXTENDED_PACKET.LOG_INTERVAL;
             
             for(var k=0; k<CONFIG_EXTENDED_PACKET.MEASUREMENT.length; k=k+1)
@@ -122,8 +122,8 @@ function decodeExtendedPacket(bytes)
                 index = index + info.SIZE;
             }
             logVolume = logVolume + measurements.deltaVolume;
-            measurements.Volume = parseFloat(logVolume.toFixed(3));
-            decoded.ListOfMeasurements.push(measurements);
+            measurements.volume = parseFloat(logVolume.toFixed(3));
+            decoded.listOfMeasurements.push(measurements);
         }
     }catch(error)
     {
@@ -140,19 +140,19 @@ function decodeAlarmPacket(bytes)
         // Timestamp
         decoded.Timestamp = getValueFromBytesLittleEndianFormat(bytes, 0, 4);
         // Alarms
-        decoded.StatusCode = bytes[CONFIG_ALARM_PACKET.ALARM_INDEX];
-        decoded.Alarms = [];
-        if(decoded.StatusCode == CONFIG_ALARM_PACKET.NORMAL_STATUS_CODE)
+        decoded.statusCode = bytes[CONFIG_ALARM_PACKET.ALARM_INDEX];
+        decoded.alarms = [];
+        if(decoded.statusCode == CONFIG_ALARM_PACKET.NORMAL_STATUS_CODE)
         {
-            decoded.Alarms.push("Normal");
+            decoded.alarms.push("Normal");
             return decoded;
         }
         for(var i=0; i<CONFIG_ALARM_PACKET.STATUS.length; i=i+1)
         {
             var info = CONFIG_ALARM_PACKET.STATUS[i];
-            if((decoded.StatusCode & info.MASK) == info.MASK)
+            if((decoded.statusCode & info.MASK) == info.MASK)
             {
-                decoded.Alarms.push(info.VALUE);
+                decoded.alarms.push(info.VALUE);
             }
         }
     }catch(error)
@@ -274,6 +274,7 @@ function getSignedIntegerFromInteger(integer, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    var decoded = {};
     if(variables)
     {
         if(variables.interval)
@@ -283,21 +284,21 @@ function Decode(fPort, bytes, variables)
     }
     if(fPort == 0)
     {
-        return {mac: "MAC command received", fPort: fPort};
-    }
-    if(fPort == CONFIG_EXTENDED_PACKET.FPORT)
+        decoded = {mac: "MAC command received", fPort: fPort};
+    }else if(fPort == CONFIG_EXTENDED_PACKET.FPORT)
     {
-        return decodeExtendedPacket(bytes);
-    }
-    if(fPort == CONFIG_ALARM_PACKET.FPORT)
+        decoded = decodeExtendedPacket(bytes);
+    }else if(fPort == CONFIG_ALARM_PACKET.FPORT)
     {
-        return decodeAlarmPacket(bytes);
-    }
-    if(fPort == CONFIG_PARAMETER_PACKET.FPORT)
+        decoded = decodeAlarmPacket(bytes);
+    }else if(fPort == CONFIG_PARAMETER_PACKET.FPORT)
     {
-        return decodeParameterPacket(bytes);
+        decoded = decodeParameterPacket(bytes);
+    }else
+    {
+        decoded = {error: "unknown payload"};
     }
-    return {error: "unknown payload"};
+    return decoded;
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)
@@ -339,6 +340,5 @@ function encodeDownlink(input) {
         bytes: Encode(null, input.data, input.variables)
     };
 }
-
 
 

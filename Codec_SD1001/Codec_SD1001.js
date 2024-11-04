@@ -34,9 +34,9 @@ var CONFIG_INFO = {
             },
         },
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for data registers
@@ -81,9 +81,9 @@ var CONFIG_INFO = {
             },
         },
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 function isBasicInformation(bytes, fPort)

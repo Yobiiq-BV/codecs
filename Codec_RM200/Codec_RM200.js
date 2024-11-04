@@ -1,38 +1,46 @@
 /**
  * Codec for RM200 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 11 January 2024
- * Update  Date : 13 September 2024
+ * Update  Date : 04 November 2024
  */
+
+// Version Control
+var VERSION_CONTROL = {
+    CODEC : {VERSION: "1.0.0", NAME: "codecVersion"},
+    DEVICE: {MODEL : "RM200", NAME: "genericModel"},
+    PRODUCT: {CODE : "P1002003", NAME: "productCode"},
+    MANUFACTURER: {COMPANY : "YOBIIQ B.V.", NAME: "manufacturer"},
+}
 
 // Configuration constants for device basic info
 var CONFIG_INFO = {
     FPORT    : 50,
     CHANNEL  : parseInt("0xFF", 16),
     TYPES    : {
-        "0x05" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
-        "0x04" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x03" : {SIZE : 4, NAME : "DeviceSerialNumber"},
-        "0x01" : {SIZE : 0, NAME : "Manufacturer"}, // size to be determinated
-        "0x02" : {SIZE : 0, NAME : "DeviceModel"},  // size to be determinated
-        "0x07" : {SIZE : 1, NAME : "BatteryPercentage"},
-        "0x08" : {SIZE : 1, NAME : "BatteryVoltage", RESOLUTION: 0.1},
-        "0x11" : {SIZE : 1, NAME : "DeviceClass",
+        "0x05" : {SIZE : 2, NAME : "hardwareVersion", DIGIT: false},
+        "0x04" : {SIZE : 2, NAME : "firmwareVersion", DIGIT: false},
+        "0x03" : {SIZE : 4, NAME : "deviceSerialNumber"},
+        "0x01" : {SIZE : 0, NAME : "manufacturer"}, // size to be determinated
+        "0x02" : {SIZE : 0, NAME : "deviceModel"},  // size to be determinated
+        "0x07" : {SIZE : 1, NAME : "batteryPercentage"},
+        "0x08" : {SIZE : 1, NAME : "batteryVoltage", RESOLUTION: 0.1},
+        "0x11" : {SIZE : 1, NAME : "deviceClass",
             VALUES     : {
                 "0x00" : "Class A",
                 "0x01" : "Class B",
                 "0x02" : "Class C",
             },
         },
-        "0x06" : {SIZE : 1, NAME : "PowerEvent",
+        "0x06" : {SIZE : 1, NAME : "powerEvent",
             VALUES     : {
                 "0x00" : "AC Power Off",
                 "0x01" : "AC Power On",
             },
         }
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 var RELAY = {
@@ -42,8 +50,8 @@ var RELAY = {
     OFF_NAME: "OFF",
     ON_NAME: "ON",
     RETAIN_NAME: "RETAIN",
-    CHANNEL_1_STATE_NAME: "Channel1State",
-    CHANNEL_2_STATE_NAME: "Channel2State",
+    CHANNEL_1_STATE_NAME: "channel1State",
+    CHANNEL_2_STATE_NAME: "channel2State",
 }
 
 var CHANNEL_STATES = {
@@ -59,10 +67,10 @@ var CHANNEL_STATES = {
     FPORT_MIN : 1,
     FPORT_MAX : 5,
     TYPES : {
-        "0xFE" : {SIZE: 4, TYPE: "U32", NAME : "Timestamp"},
-        "0xFD" : {SIZE: 4, TYPE: "U32", NAME : "DataloggerTimestamp"},
-        "0x12" : {SIZE: 1, NAME: "ADR", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x13" : {SIZE: 1, NAME: "SF", SIZE: 1, VALUES: {
+        "0xFE" : {SIZE: 4, TYPE: "U32", NAME : "timestamp"},
+        "0xFD" : {SIZE: 4, TYPE: "U32", NAME : "dataloggerTimestamp"},
+        "0x12" : {SIZE: 1, NAME: "adr", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x13" : {SIZE: 1, NAME: "sf", SIZE: 1, VALUES: {
                 "0x00" : "SF12BW125",
                 "0x01" : "SF11BW125",
                 "0x02" : "SF10BW125",
@@ -72,27 +80,27 @@ var CHANNEL_STATES = {
                 "0x06" : "SF7BW250",
             }
         },
-        "0x14" : {SIZE: 1, NAME : "LorawanWatchdogFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",},},
-        "0x15" : {SIZE: 2, NAME : "LorawanWatchdogTimeout",},
-        "0x16" : {SIZE: 1, NAME : "LorawanWatchdogAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",},},
-        "0x64" : {SIZE: 1, NAME : "DefaultState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
-        "0x65" : {SIZE: 1, NAME : "TimeoutState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
-        "0x66" : {SIZE: 1, NAME : "ButtonOverrideFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x67" : {SIZE: 1, NAME : "DeviceOperationMode", VALUES: {"0x00" : "normal", "0x01" : "override",}},
-        "0x69" : {SIZE: 1, NAME : "InternalCircuitTemperatureAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
-        "0x70" : {SIZE: 4, NAME : "InternalCircuitTemperatureNumberOfAlarms",},
-        "0x71" : {SIZE: 2, NAME : "InternalCircuitTemperature", RESOLUTION: 0.01, SIGNED: true},
-        "0x72" : {SIZE: 1, NAME : "InternalCircuitHumidity",},
-        "0x95" : {SIZE: 1, NAME : "Channel1State", VALUES: CHANNEL_STATES},
-        "0x96" : {SIZE: 1, NAME : "Channel1Control", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME,}},
-        "0x97" : {SIZE: 4, NAME : "Channel1Counter",},
-        "0x98" : {SIZE: 1, NAME : "Channel2State", VALUES: CHANNEL_STATES},
-        "0x99" : {SIZE: 1, NAME : "Channel2Control", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME,}},
-        "0x9A" : {SIZE: 4, NAME : "Channel2Counter",},
+        "0x14" : {SIZE: 1, NAME : "lorawanWatchdogFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",},},
+        "0x15" : {SIZE: 2, NAME : "lorawanWatchdogTimeout",},
+        "0x16" : {SIZE: 1, NAME : "lorawanWatchdogAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",},},
+        "0x64" : {SIZE: 1, NAME : "defaultState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
+        "0x65" : {SIZE: 1, NAME : "timeoutState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
+        "0x66" : {SIZE: 1, NAME : "buttonOverrideFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x67" : {SIZE: 1, NAME : "deviceOperationMode", VALUES: {"0x00" : "normal", "0x01" : "override",}},
+        "0x69" : {SIZE: 1, NAME : "internalCircuitTemperatureAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
+        "0x70" : {SIZE: 4, NAME : "internalCircuitTemperatureNumberOfAlarms",},
+        "0x71" : {SIZE: 2, NAME : "internalCircuitTemperature", RESOLUTION: 0.01, SIGNED: true},
+        "0x72" : {SIZE: 1, NAME : "internalCircuitHumidity",},
+        "0x95" : {SIZE: 1, NAME : "channel1State", VALUES: CHANNEL_STATES},
+        "0x96" : {SIZE: 1, NAME : "channel1Control", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME,}},
+        "0x97" : {SIZE: 4, NAME : "channel1Counter",},
+        "0x98" : {SIZE: 1, NAME : "channel2State", VALUES: CHANNEL_STATES},
+        "0x99" : {SIZE: 1, NAME : "channel2Control", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME,}},
+        "0x9A" : {SIZE: 4, NAME : "channel2Counter",},
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for alarm packet
@@ -100,31 +108,31 @@ var CONFIG_ALARM = {
     FPORT : 11,
     CHANNEL : parseInt("0xAA", 16),
     TYPES : {
-        "0xFE" : {SIZE: 4, NAME : "Timestamp"},
-        "0x00" : {SIZE: 1, NAME : "InternalTemperatureAlarm",
+        "0xFE" : {SIZE: 4, NAME : "timestamp"},
+        "0x00" : {SIZE: 1, NAME : "internalTemperatureAlarm",
             VALUES     : {
                 "0x00" : "normal",
                 "0x01" : "alarm",
             },
         },
-        "0x01" : {SIZE: 1, NAME : "Channel1State",
+        "0x01" : {SIZE: 1, NAME : "channel1State",
             VALUES     : CHANNEL_STATES,
         },
-        "0x02" : {SIZE: 1, NAME : "Channel2State",
+        "0x02" : {SIZE: 1, NAME : "channel2State",
             VALUES     : CHANNEL_STATES,
         },
-        "0x03" : {SIZE: 1, NAME : "LorawanWatchdogAlarm",
+        "0x03" : {SIZE: 1, NAME : "lorawanWatchdogAlarm",
             VALUES     : {
                 "0x00" : "normal",
                 "0x01" : "alarm",
             },
         },
-        "0x97" : {SIZE: 4, NAME : "Channel1Counter",},
-        "0x9A" : {SIZE: 4, NAME : "Channel2Counter",},
+        "0x97" : {SIZE: 4, NAME : "channel1Counter",},
+        "0x9A" : {SIZE: 4, NAME : "channel2Counter",},
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for parameters reading
@@ -132,8 +140,8 @@ var CONFIG_PARAMETER = {
     FPORT : 100,
     CHANNEL : parseInt("0xFF", 16),
     TYPES : {
-        "0x12" : {SIZE: 1, NAME: "ADR", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x13" : {SIZE: 1, NAME: "SF", SIZE: 1, VALUES: {
+        "0x12" : {SIZE: 1, NAME: "adr", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x13" : {SIZE: 1, NAME: "sf", SIZE: 1, VALUES: {
                 "0x00" : "SF12BW125",
                 "0x01" : "SF11BW125",
                 "0x02" : "SF10BW125",
@@ -143,27 +151,27 @@ var CONFIG_PARAMETER = {
                 "0x06" : "SF7BW250",
             }
         },
-        "0x14" : {SIZE: 1, NAME : "LorawanWatchdogFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",},},
+        "0x14" : {SIZE: 1, NAME : "lorawanWatchdogFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",},},
         "0x15" : {SIZE: 2, NAME : "LorawanWatchdogTimeout",},
-        "0x16" : {SIZE: 1, NAME : "LorawanWatchdogAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",},},
-        "0x64" : {SIZE: 1, NAME : "DefaultState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
-        "0x65" : {SIZE: 1, NAME : "TimeoutState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
-        "0x66" : {SIZE: 1, NAME : "ButtonOverrideFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x67" : {SIZE: 1, NAME : "DeviceOperationMode", VALUES: {"0x00" : "normal", "0x01" : "override",}},
-        "0x69" : {SIZE: 1, NAME : "InternalCircuitTemperatureAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
-        "0x70" : {SIZE: 4, NAME : "InternalCircuitTemperatureNumberOfAlarms",},
-        "0x71" : {SIZE: 2, NAME : "InternalCircuitTemperature", RESOLUTION: 0.01, SIGNED: true},
-        "0x72" : {SIZE: 1, NAME : "InternalCircuitHumidity",},
-        "0x95" : {SIZE: 1, NAME : "Channel1State", VALUES: CHANNEL_STATES},
-        "0x96" : {SIZE: 1, NAME : "Channel1Control", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME,}},
-        "0x97" : {SIZE: 4, NAME : "Channel1Counter",},
-        "0x98" : {SIZE: 1, NAME : "Channel2State", VALUES: CHANNEL_STATES},
-        "0x99" : {SIZE: 1, NAME : "Channel2Control", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME,}},
-        "0x9A" : {SIZE: 4, NAME : "Channel2Counter",},
+        "0x16" : {SIZE: 1, NAME : "lorawanWatchdogAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",},},
+        "0x64" : {SIZE: 1, NAME : "defaultState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
+        "0x65" : {SIZE: 1, NAME : "timeoutState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
+        "0x66" : {SIZE: 1, NAME : "buttonOverrideFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x67" : {SIZE: 1, NAME : "deviceOperationMode", VALUES: {"0x00" : "normal", "0x01" : "override",}},
+        "0x69" : {SIZE: 1, NAME : "internalCircuitTemperatureAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
+        "0x70" : {SIZE: 4, NAME : "internalCircuitTemperatureNumberOfAlarms",},
+        "0x71" : {SIZE: 2, NAME : "internalCircuitTemperature", RESOLUTION: 0.01, SIGNED: true},
+        "0x72" : {SIZE: 1, NAME : "internalCircuitHumidity",},
+        "0x95" : {SIZE: 1, NAME : "channel1State", VALUES: CHANNEL_STATES},
+        "0x96" : {SIZE: 1, NAME : "channel1Control", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME,}},
+        "0x97" : {SIZE: 4, NAME : "channel1Counter",},
+        "0x98" : {SIZE: 1, NAME : "channel2State", VALUES: CHANNEL_STATES},
+        "0x99" : {SIZE: 1, NAME : "channel2Control", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME,}},
+        "0x9A" : {SIZE: 4, NAME : "channel2Counter",},
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 
 }
 
@@ -563,24 +571,31 @@ function getSignedIntegerFromInteger(integer, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    var decoded = {};
     if(fPort == 0)
     {
-        return {mac: "MAC command received", fPort: fPort};
-    }
-    if(fPort == CONFIG_INFO.FPORT)
+        decoded = {mac: "MAC command received", fPort: fPort};
+    }else if(fPort == CONFIG_INFO.FPORT)
     {
-        return decodeBasicInformation(bytes);
+        decoded = decodeBasicInformation(bytes);
     }else if(fPort >= CONFIG_PERIODIC.FPORT_MIN && fPort <= CONFIG_PERIODIC.FPORT_MAX)
     {
-        return decodeDeviceData(bytes);
+        decoded = decodeDeviceData(bytes);
     }else if(fPort == CONFIG_ALARM.FPORT)
     {
-        return decodeAlarmPacket(bytes);
+        decoded = decodeAlarmPacket(bytes);
     }else if(fPort == CONFIG_PARAMETER.FPORT)
     {
-        return decodeParameters(bytes);
+        decoded = decodeParameters(bytes);
+    }else
+    {
+        decoded = {error: "Incorrect fPort", fPort : fPort};
     }
-    return {error: "Incorrect fPort", fPort : fPort};
+    decoded[VERSION_CONTROL.CODEC.NAME] = VERSION_CONTROL.CODEC.VERSION;
+    decoded[VERSION_CONTROL.DEVICE.NAME] = VERSION_CONTROL.DEVICE.MODEL;
+    decoded[VERSION_CONTROL.PRODUCT.NAME] = VERSION_CONTROL.PRODUCT.CODE;
+    decoded[VERSION_CONTROL.MANUFACTURER.NAME] = VERSION_CONTROL.MANUFACTURER.COMPANY;
+    return decoded;
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)
@@ -654,34 +669,34 @@ var CONFIG_DOWNLINK = {
 
 // Constants for device configuration 
 var CONFIG_DEVICE = {
-    PORT : 50,
+    FPORT : 50,
     REGISTER_CHANNEL : parseInt("0xFF", 16),
     PERIODIC_CHANNEL : parseInt("0xFF", 16),
     READING_TYPE : parseInt("0xCC", 16),
     DATA_MAX_SIZE : 10,
     REGISTERS : {
-        "RebootDevice": {TYPE: parseInt("0x0A", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
-        "Restart": {TYPE: parseInt("0x0B", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
-        "ADR": {TYPE: parseInt("0x12", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "SF": {TYPE: parseInt("0x13", 16), SIZE: 1, MIN: 0, MAX: 6,},
-        "LorawanWatchdogFunction": {TYPE: parseInt("0x14", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "LorawanWatchdogTimeout": {TYPE : parseInt("0x15", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "LorawanWatchdogAlarm": {TYPE: parseInt("0x16", 16), RIGHT:"READ_ONLY"},
-        "DefaultState": {TYPE: parseInt("0x64", 16), SIZE: 1, MIN: 0, MAX: 2,},
-        "TimeoutState": {TYPE: parseInt("0x65", 16), SIZE: 1, MIN: 0, MAX: 2,},
-        "ButtonOverrideFunction": {TYPE: parseInt("0x66", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "DeviceOperationMode": {TYPE: parseInt("0x67", 16), RIGHT:"READ_ONLY"},
-        "ButtonOverrideReset": {TYPE: parseInt("0x68", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
-        "InternalCircuitTemperatureAlarm": {TYPE: parseInt("0x69", 16), RIGHT:"READ_ONLY"},
-        "InternalCircuitTemperatureNumberOfAlarms": {TYPE: parseInt("0x70", 16), RIGHT:"READ_ONLY"},
-        "InternalCircuitTemperature": {TYPE: parseInt("0x71", 16), RIGHT:"READ_ONLY"},
-        "InternalCircuitHumidity": {TYPE: parseInt("0x72", 16), RIGHT:"READ_ONLY"},
-        "Channel1State": {TYPE: parseInt("0x95", 16), RIGHT:"READ_ONLY",},
-        "Channel1Control": {TYPE: parseInt("0x96", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "Channel1Counter": {TYPE: parseInt("0x97", 16), RIGHT:"READ_ONLY",},
-        "Channel2State": {TYPE: parseInt("0x98", 16), RIGHT:"READ_ONLY",},
-        "Channel2Control": {TYPE: parseInt("0x99", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "Channel2Counter": {TYPE: parseInt("0x9A", 16), RIGHT:"READ_ONLY",},
+        "rebootDevice": {TYPE: parseInt("0x0A", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
+        "restart": {TYPE: parseInt("0x0B", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
+        "adr": {TYPE: parseInt("0x12", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "sf": {TYPE: parseInt("0x13", 16), SIZE: 1, MIN: 0, MAX: 6,},
+        "lorawanWatchdogFunction": {TYPE: parseInt("0x14", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "lorawanWatchdogTimeout": {TYPE : parseInt("0x15", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "lorawanWatchdogAlarm": {TYPE: parseInt("0x16", 16), RIGHT:"READ_ONLY"},
+        "defaultState": {TYPE: parseInt("0x64", 16), SIZE: 1, MIN: 0, MAX: 2,},
+        "timeoutState": {TYPE: parseInt("0x65", 16), SIZE: 1, MIN: 0, MAX: 2,},
+        "buttonOverrideFunction": {TYPE: parseInt("0x66", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "deviceOperationMode": {TYPE: parseInt("0x67", 16), RIGHT:"READ_ONLY"},
+        "buttonOverrideReset": {TYPE: parseInt("0x68", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
+        "internalCircuitTemperatureAlarm": {TYPE: parseInt("0x69", 16), RIGHT:"READ_ONLY"},
+        "internalCircuitTemperatureNumberOfAlarms": {TYPE: parseInt("0x70", 16), RIGHT:"READ_ONLY"},
+        "internalCircuitTemperature": {TYPE: parseInt("0x71", 16), RIGHT:"READ_ONLY"},
+        "internalCircuitHumidity": {TYPE: parseInt("0x72", 16), RIGHT:"READ_ONLY"},
+        "channel1State": {TYPE: parseInt("0x95", 16), RIGHT:"READ_ONLY",},
+        "channel1Control": {TYPE: parseInt("0x96", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "channel1Counter": {TYPE: parseInt("0x97", 16), RIGHT:"READ_ONLY",},
+        "channel2State": {TYPE: parseInt("0x98", 16), RIGHT:"READ_ONLY",},
+        "channel2Control": {TYPE: parseInt("0x99", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "channel2Counter": {TYPE: parseInt("0x9A", 16), RIGHT:"READ_ONLY",},
     }
 }
 
@@ -850,7 +865,5 @@ function encodeParamtersReading(obj, variables)
     }
     return encoded;
 }
-
-
 
 

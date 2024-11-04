@@ -3,7 +3,7 @@
 {
     "Type" : "Config",
     "Config" : [{
-        "Param" : "Restart",
+        "Param" : "restart",
         "Value" : 1
     }]
 }
@@ -14,7 +14,7 @@
 {
     "Type" : "Config",
     "Config" : [{
-        "Param" : "RebootDevice",
+        "Param" : "rebootDevice",
         "Value" : 1
     }]
 }
@@ -25,10 +25,10 @@
 {
     "Type": "Config",
     "Config": [{
-        "Param": "ADR",
+        "Param": "adr",
         "Value": 0
     }, {
-        "Param": "SF",
+        "Param": "sf",
         "Value": 3
     }]
 }
@@ -42,7 +42,7 @@
         "UplinkInterval": 15,
         "Mode": 1,
         "Status": 1,
-        "Registers": ["InternalCircuitTemperature", "InternalCircuitHumidity"]
+        "Registers": ["internalCircuitTemperature", "internalCircuitHumidity"]
     }
 }
 
@@ -52,7 +52,7 @@
 {
     "Type" : "Config",
     "Config" : [{
-        "Param" : "Channel1Control",
+        "Param" : "channel1Control",
         "Value" : 1
     }]
 }
@@ -62,7 +62,7 @@
 {
     "Type" : "Config",
     "Config" : [{
-        "Param" : "Channel2Control",
+        "Param" : "channel2Control",
         "Value" : 1
     }]
 }
@@ -73,7 +73,7 @@
 {
     "Type" : "Config",
     "Config" : [{
-        "Param" : "ButtonOverrideReset",
+        "Param" : "buttonOverrideReset",
         "Value" : 1
     }]
 }

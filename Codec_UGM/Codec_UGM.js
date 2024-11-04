@@ -1,18 +1,26 @@
 /**
  * Codec for UGM device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 12 July 2023
- * Update  Date : 24 July 2023
+ * Update  Date : 04 November 2024
  */
+
+// Version Control
+var VERSION_CONTROL = {
+    CODEC : {VERSION: "1.0.0", NAME: "codecVersion"},
+    DEVICE: {MODEL : "UGM", NAME: "genericModel"},
+    PRODUCT: {CODE : "P003901", NAME: "productCode"},
+    MANUFACTURER: {COMPANY : "YOBIIQ B.V.", NAME: "manufacturer"},
+}
 
 // Configuration constants for device basic info and current settings
 var CONFIG_INFO = {
-    PORT     : 50,
+    FPORT     : 50,
     CHANNEL  : parseInt("0xFF", 16),
     TYPES    : {
-        "0x01" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
-        "0x02" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x03" : {SIZE : 7, NAME : "DeviceSerialNumber", DIGIT: true},
-        "0x04" : {SIZE : 0, NAME : "DeviceModel",
+        "0x01" : {SIZE : 2, NAME : "hardwareVersion", DIGIT: false},
+        "0x02" : {SIZE : 2, NAME : "firmwareVersion", DIGIT: false},
+        "0x03" : {SIZE : 7, NAME : "deviceSerialNumber", DIGIT: true},
+        "0x04" : {SIZE : 0, NAME : "deviceModel",
             VALUES     : {
                 "0x04" : "UGM2.5",
                 "0x06" : "UGM4",
@@ -24,112 +32,116 @@ var CONFIG_INFO = {
                 "0x99" : "UGM65",
             },
         },
-        "0x05" : {SIZE : 1, NAME : "DeviceClass",
+        "0x05" : {SIZE : 1, NAME : "deviceClass",
             VALUES     : {
                 "0x00" : "Class A",
                 "0x01" : "Class B",
                 "0x02" : "Class C",
             },
         },
-        "0x06" : {SIZE : 2, NAME : "Battery",
+        "0x06" : {SIZE : 2, NAME : "battery",
         },
-        "0x07" : {SIZE : 1, NAME : "PowerEvent",
+        "0x07" : {SIZE : 1, NAME : "powerEvent",
             VALUES     : {
                 "0x00" : "AC Power Off",
                 "0x01" : "AC Power On",
             },
         },
-        "0x08" : {SIZE : 8, NAME : "Settings"
+        "0x08" : {SIZE : 8, NAME : "settings"
         },
-        "0x14" : {SIZE : 1, NAME : "EnergyType",
+        "0x14" : {SIZE : 1, NAME : "energyType",
 			VALUES     : {
 				"0x00" : "Electricity",
 				"0x01" : "Water",
 				"0x02" : "Gas",
 			},
 		},
-        "0x15" : {SIZE : 1, NAME : "ValveStatus",
+        "0x15" : {SIZE : 1, NAME : "valveStatus",
 			VALUES     : {
 				"0x00" : "open",
 				"0x01" : "closed",
 			},
 		},
-        "0x16" : {SIZE : 1, NAME : "BoxCoverStatus",
+        "0x16" : {SIZE : 1, NAME : "boxCoverStatus",
 			VALUES     : {
 				"0x00" : "closed",
 				"0x01" : "open",
 			},
 		},
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for measurement
  var CONFIG_MEASUREMENT = {
-    "0x1E" : {SIZE : 4, NAME : "Timestamp",},
-    "0x28" : {SIZE : 4, NAME : "GasVolume", UNIT : "m3", RESOLUTION : 0.001,},
-    "0x29" : {SIZE : 2, NAME : "GasFlow", UNIT : "m3/h", RESOLUTION : 0.01,},
-    "0x2A" : {SIZE : 1, NAME : "Pressure", UNIT : "KPa",},
-    "0x1F" : {SIZE : 2, NAME : "Temperature", RESOLUTION : 0.01,},
-    "0x15" : {SIZE : 1, NAME : "ValveStatus",
-		VALUES     : {
-			"0x00" : "open",
-			"0x01" : "closed",
-		},
-	},
 	HEADER_CHANNEL : parseInt("0xFF", 16),
 	HEADER_TYPE    : parseInt("0X1E", 16),
 	HEADER_SIZE    : 4,
 	LENGTH         : 21,
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    FPORT_MIN      : 10,
+    FPORT_MAX      : 30,
+    TYPES : {
+        "0x1E" : {SIZE : 4, NAME : "timestamp",},
+        "0x28" : {SIZE : 4, NAME : "gasVolume", UNIT : "m3", RESOLUTION : 0.001,},
+        "0x29" : {SIZE : 2, NAME : "gasFlow", UNIT : "m3/h", RESOLUTION : 0.01,},
+        "0x2A" : {SIZE : 1, NAME : "pressure", UNIT : "KPa",},
+        "0x1F" : {SIZE : 2, NAME : "temperature", RESOLUTION : 0.01,},
+        "0x15" : {SIZE : 1, NAME : "valveStatus",
+            VALUES     : {
+                "0x00" : "open",
+                "0x01" : "closed",
+            },
+        },
+    },
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 
 // Configuration constants for status packet
 var CONFIG_STATUS = {
-    PORT : 1,
+    FPORT : 1,
 	HEADER_CHANNEL : parseInt("0xFF", 16),
 	HEADER_TYPE    : parseInt("0X1E", 16),
 	HEADER_SIZE    : 4,
     TYPES : {
-        "0x15" : {SIZE : 1, NAME : "ValveStatus",
+        "0x15" : {SIZE : 1, NAME : "valveStatus",
 			VALUES     : {
 				"0x00" : "open",
 				"0x01" : "closed",
 			},
 		},
-        "0x16" : {SIZE : 1, NAME : "BoxCoverStatus",
+        "0x16" : {SIZE : 1, NAME : "boxCoverStatus",
 			VALUES     : {
 				"0x00" : "closed",
 				"0x01" : "open",
 			},
 		},
-        "0x06" : {SIZE : 2, NAME : "BatteryAlarm",
+        "0x06" : {SIZE : 2, NAME : "batteryAlarm",
 			VALUES     : {
 				"0x00" : "normal",
 				"0x01" : "alarm",
 			},
 		},
-        "0x28" : {SIZE : 1, NAME : "GasLeakageAlarm",
+        "0x28" : {SIZE : 1, NAME : "gasLeakageAlarm",
 			VALUES     : {
 				"0x00" : "normal",
 				"0x01" : "alarm",
 			},
 		},
-        "0x00" : {SIZE : 1, NAME : "CommunicationErrorAlarm",
+        "0x00" : {SIZE : 1, NAME : "communicationErrorAlarm",
 			VALUES     : {
 				"0x00" : "normal",
 				"0x01" : "alarm",
 			},
 		},
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 function decodeBasicInformation(bytes)
@@ -249,14 +261,14 @@ function decodeDeviceData(bytes)
 		if(channel == CONFIG_MEASUREMENT.HEADER_CHANNEL && type == CONFIG_MEASUREMENT.HEADER_TYPE)
 		{
 			// Decode device timestamp
-			decoded["DeviceTimestamp"] = getValueFromBytesBigEndianFormat(bytes, index, CONFIG_MEASUREMENT.HEADER_SIZE);
+			decoded["deviceTimestamp"] = getValueFromBytesBigEndianFormat(bytes, index, CONFIG_MEASUREMENT.HEADER_SIZE);
 			index = index + CONFIG_MEASUREMENT.HEADER_SIZE;
 		}
-		decoded["ListOfMeasurements"] = [];
+		decoded["listOfMeasurements"] = [];
 		while(index < LENGTH)
 		{
 			var measurement = decodeMeasurement(bytes, index, CONFIG_MEASUREMENT.LENGTH);
-			decoded["ListOfMeasurements"].push(measurement);
+			decoded["listOfMeasurements"].push(measurement);
 			index = index + CONFIG_MEASUREMENT.LENGTH;
 		}
 
@@ -338,9 +350,9 @@ function getBitValue(byte, indexOfBitInByte)
 function decodeSettingsInfo(byte)
 {
 	var decoded = {};
-	decoded["UplinkConfirmation"] = getBitValue(byte, 0);
-	decoded["ADR"] = getBitValue(byte, 1);
-	decoded["DutyCycle"] = getBitValue(byte, 2);
+	decoded["uplinkConfirmation"] = getBitValue(byte, 0);
+	decoded["adr"] = getBitValue(byte, 1);
+	decoded["dutyCycle"] = getBitValue(byte, 2);
 	return decoded;
 }
 
@@ -361,7 +373,7 @@ function decodeMeasurement(bytes, baseIndex)
 			// Type of device measurement
 			type = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
 			index = index + 1;
-			var measurement = CONFIG_MEASUREMENT[type]
+			var measurement = CONFIG_MEASUREMENT.TYPES[type]
 			size = measurement["SIZE"];
 			var value = 0;
 			// Decode into DECIMAL format
@@ -491,21 +503,28 @@ function getSignedIntegerFromInteger(integer, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    var decoded = {};
     if(fPort == 0)
     {
-        return {mac: "MAC command received", fPort: fPort};
-    }
-    if(fPort == CONFIG_INFO.FPORT)
+        decoded = {mac: "MAC command received", fPort: fPort};
+    }else if(fPort == CONFIG_INFO.FPORT)
     {
-        return decodeBasicInformation(bytes);
-    }else if(fPort >= 10 && fPort <= 30)
+        decoded = decodeBasicInformation(bytes);
+    }else if(fPort >= CONFIG_MEASUREMENT.FPORT_MIN && fPort <= CONFIG_MEASUREMENT.FPORT_MAX)
     {
-        return decodeDeviceData(bytes);
-    }else if (fPort == CONFIG_STATUS.PORT)
+        decoded = decodeDeviceData(bytes);
+    }else if (fPort == CONFIG_STATUS.FPORT)
 	{
-		return decodeStatusPacket(bytes);
-	}
-    return {error: "Incorrect fPort", fPort : fPort};
+		decoded = decodeStatusPacket(bytes);
+	}else
+    {
+        decoded = {error: "Incorrect fPort", fPort : fPort};
+    }
+    decoded[VERSION_CONTROL.CODEC.NAME] = VERSION_CONTROL.CODEC.VERSION;
+    decoded[VERSION_CONTROL.DEVICE.NAME] = VERSION_CONTROL.DEVICE.MODEL;
+    decoded[VERSION_CONTROL.PRODUCT.NAME] = VERSION_CONTROL.PRODUCT.CODE;
+    decoded[VERSION_CONTROL.MANUFACTURER.NAME] = VERSION_CONTROL.MANUFACTURER.COMPANY;
+    return decoded;
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)
@@ -547,6 +566,7 @@ function encodeDownlink(input) {
         bytes: Encode(null, input.data, input.variables)
     };
 }
+
 
 
 

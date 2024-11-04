@@ -9,25 +9,25 @@
 var CONFIG_DATA = {
     LENGTH    : 13,
     DATA : [
-        {INDEX: 0, SIZE : 1, NAME : "Status", VALUES: {
+        {INDEX: 0, SIZE : 1, NAME : "status", VALUES: {
             0:"OK", 1:"WarningMAX", 2:"ErrorMAX", 3:"ErrorMAXFreeze", 4:"WarningRet", 
             5:"ErrorRet", 6:"ErrorRetFreeze", 7:"WarningCond", 8:"ErrorCond"}
         },
-        {INDEX: 1, SIZE : 1, NAME : "KickStatus", VALUES: {
+        {INDEX: 1, SIZE : 1, NAME : "kickStatus", VALUES: {
             0:"Off", 1:"Primary", 2:"Pump", 3:"Secondary", 4:"Pump+Secondary"}
         },
-        {INDEX: 2, SIZE : 1, NAME : "Mode", VALUES: {
+        {INDEX: 2, SIZE : 1, NAME : "mode", VALUES: {
             0:"Off", 1:"Extern", 2:"Heating", 3:"Cooling", 4:"MainHeating", 5: "MainCooling", 6: "MainOff"}
         },
-        {INDEX: 3, SIZE : 2, NAME : "NtcTemperatureMaxInput", RESOLUTION: 0.01, SIGNED: true},
-        {INDEX: 5, SIZE : 2, NAME : "NtcTemperatureReturnInput", RESOLUTION: 0.01, SIGNED: true},
-        {INDEX: 7, SIZE : 2, NAME : "Condens", RESOLUTION: 1, SIGNED: false},
-        {INDEX: 9, SIZE : 2, NAME : "ThermostatRoomReading", RESOLUTION: 0.01, SIGNED: true},
-        {INDEX: 11, SIZE : 2, NAME : "ThermostatRoomSetpoint", RESOLUTION: 0.01, SIGNED: true},
+        {INDEX: 3, SIZE : 2, NAME : "ntcTemperatureMaxInput", RESOLUTION: 0.01, SIGNED: true},
+        {INDEX: 5, SIZE : 2, NAME : "ntcTemperatureReturnInput", RESOLUTION: 0.01, SIGNED: true},
+        {INDEX: 7, SIZE : 2, NAME : "condens", RESOLUTION: 1, SIGNED: false},
+        {INDEX: 9, SIZE : 2, NAME : "thermostatRoomReading", RESOLUTION: 0.01, SIGNED: true},
+        {INDEX: 11, SIZE : 2, NAME : "thermostatRoomSetpoint", RESOLUTION: 0.01, SIGNED: true},
     ],
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 
@@ -173,15 +173,18 @@ function getSignedIntegerFromInteger(integer, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    var decoded = {};
     if(fPort == 0)
     {
-        return {mac: "MAC command received", fPort: fPort};
-    }
-    if(bytes.length == CONFIG_DATA.LENGTH)
+        decoded = {mac: "MAC command received", fPort: fPort};
+    } else if(bytes.length == CONFIG_DATA.LENGTH)
     {
-        return decodeDeviceData(bytes, CONFIG_DATA);
+        decoded = decodeDeviceData(bytes, CONFIG_DATA);
+    }else
+    {
+        decoded = {error: "unknown payload"};
     }
-    return {error: "unknown payload"};
+    return decoded;
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)
@@ -241,7 +244,7 @@ function encodeDownlink(input) {
 var CONFIG_DEVICE = {
     PORT : 50,
     TYPES : {
-        "Mode" : {TYPE : 0, SIZE : 1, MIN : 0, MAX : 6, VALUES: {
+        "mode" : {TYPE : 0, SIZE : 1, MIN : 0, MAX : 6, VALUES: {
             "off":0, "extern":1, "heating":2, "cooling":3,
             "mainheating":4, "maincooling":5, "mainoff":6}
         },
@@ -288,7 +291,4 @@ function encodeDeviceConfiguration(obj, variables)
     }
     return encoded;
 }
-
-
-
 

@@ -8,120 +8,120 @@
 var CONFIG_BASIC_HEATING = {
     LENGTH    : 41,
     ORDER : [
-        {INDEX: 0, SIZE : 4, NAME : "Timestamp"},
-        {INDEX: 4, SIZE : 1, NAME : "StatusCode"},
-        {INDEX: 37, SIZE : 4, NAME : "PeriodBetweenMeasurement"},
+        {INDEX: 0, SIZE : 4, NAME : "timestamp"},
+        {INDEX: 4, SIZE : 1, NAME : "statusCode"},
+        {INDEX: 37, SIZE : 4, NAME : "periodBetweenMeasurement"},
     ],
     MEASUREMENT_TOTAL : 4,
     MEASUREMENT_INDEX : 5,
     MEASUREMENT_TIMESTAMP: true, // to be calculated for each measurement
     MEASUREMENT : [
-        {SIZE : 4, NAME : "EnergyForHeating", RESOLUTION: 0.001},
-        {SIZE : 4, NAME : "Volume", RESOLUTION: 0.001},
+        {SIZE : 4, NAME : "energyForHeating", RESOLUTION: 0.001},
+        {SIZE : 4, NAME : "volume", RESOLUTION: 0.001},
     ],
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 var CONFIG_BASIC_COOLING = {
     LENGTH    : 45,
     ORDER : [
-        {INDEX: 0, SIZE : 4, NAME : "Timestamp"},
-        {INDEX: 4, SIZE : 1, NAME : "StatusCode"},
-        {INDEX: 41, SIZE : 4, NAME : "PeriodBetweenMeasurement"},
+        {INDEX: 0, SIZE : 4, NAME : "timestamp"},
+        {INDEX: 4, SIZE : 1, NAME : "statusCode"},
+        {INDEX: 41, SIZE : 4, NAME : "periodBetweenMeasurement"},
     ],
     MEASUREMENT_TOTAL : 3,
     MEASUREMENT_INDEX : 5,
     MEASUREMENT_TIMESTAMP: true, // to be calculated for each measurement
     MEASUREMENT : [
-        {SIZE : 4, NAME : "EnergyForHeating", RESOLUTION: 0.001},
-        {SIZE : 4, NAME : "EnergyForCooling", RESOLUTION: 0.001},
-        {SIZE : 4, NAME : "Volume", RESOLUTION: 0.001},
+        {SIZE : 4, NAME : "energyForHeating", RESOLUTION: 0.001},
+        {SIZE : 4, NAME : "energyForCooling", RESOLUTION: 0.001},
+        {SIZE : 4, NAME : "volume", RESOLUTION: 0.001},
     ],
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 var CONFIG_BASIC_LT_HEATING_COOLING = {
     LENGTH    : 35,
     DATALOGGER_TIMESTAMP: true, // same as Timestamp
     ORDER : [
-        {INDEX: 0, SIZE : 4, NAME : "Timestamp"},
-        {INDEX: 4, SIZE : 1, NAME : "StatusCode"},
-        {INDEX: 5, SIZE : 4, NAME : "EnergyForHeating", RESOLUTION: 0.001},
-        {INDEX: 9, SIZE : 4, NAME : "EnergyForCooling", RESOLUTION: 0.001},
-        {INDEX: 13, SIZE : 4, NAME : "Volume", RESOLUTION: 0.001},
-        {INDEX: 17, SIZE : 3, NAME : "Power", RESOLUTION: 0.1},
-        {INDEX: 20, SIZE : 3, NAME : "Flow", RESOLUTION: 0.001},
-        {INDEX: 23, SIZE : 2, NAME : "TemperatureT1", RESOLUTION: 0.01, SIGNED: true},
-        {INDEX: 25, SIZE : 2, NAME : "TemperatureT2", RESOLUTION: 0.01, SIGNED: true},
-        {INDEX: 27, SIZE : 4, NAME : "WorkingTimeWithoutError"},
-        {INDEX: 31, SIZE : 4, NAME : "PeriodBetweenMeasurement"},
+        {INDEX: 0, SIZE : 4, NAME : "timestamp"},
+        {INDEX: 4, SIZE : 1, NAME : "statusCode"},
+        {INDEX: 5, SIZE : 4, NAME : "energyForHeating", RESOLUTION: 0.001},
+        {INDEX: 9, SIZE : 4, NAME : "energyForCooling", RESOLUTION: 0.001},
+        {INDEX: 13, SIZE : 4, NAME : "volume", RESOLUTION: 0.001},
+        {INDEX: 17, SIZE : 3, NAME : "power", RESOLUTION: 0.1},
+        {INDEX: 20, SIZE : 3, NAME : "flow", RESOLUTION: 0.001},
+        {INDEX: 23, SIZE : 2, NAME : "temperatureT1", RESOLUTION: 0.01, SIGNED: true},
+        {INDEX: 25, SIZE : 2, NAME : "temperatureT2", RESOLUTION: 0.01, SIGNED: true},
+        {INDEX: 27, SIZE : 4, NAME : "workingTimeWithoutError"},
+        {INDEX: 31, SIZE : 4, NAME : "periodBetweenMeasurement"},
     ],
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 var CONFIG_BASIC_LT_HEATING = {
     LENGTH    : 31,
     DATALOGGER_TIMESTAMP: true, // same as Timestamp
     ORDER : [
-        {INDEX: 0, SIZE : 4, NAME : "Timestamp"},
-        {INDEX: 4, SIZE : 1, NAME : "StatusCode"},
-        {INDEX: 5, SIZE : 4, NAME : "EnergyForHeating", RESOLUTION: 0.001},
-        {INDEX: 9, SIZE : 4, NAME : "Volume", RESOLUTION: 0.001},
-        {INDEX: 13, SIZE : 3, NAME : "Power", RESOLUTION: 0.1},
-        {INDEX: 16, SIZE : 3, NAME : "Flow", RESOLUTION: 0.001},
-        {INDEX: 19, SIZE : 2, NAME : "TemperatureT1", RESOLUTION: 0.01, SIGNED: true},
-        {INDEX: 21, SIZE : 2, NAME : "TemperatureT2", RESOLUTION: 0.01, SIGNED: true},
-        {INDEX: 23, SIZE : 4, NAME : "WorkingTimeWithoutError"},
-        {INDEX: 27, SIZE : 4, NAME : "PeriodBetweenMeasurement"},
+        {INDEX: 0, SIZE : 4, NAME : "timestamp"},
+        {INDEX: 4, SIZE : 1, NAME : "statusCode"},
+        {INDEX: 5, SIZE : 4, NAME : "energyForHeating", RESOLUTION: 0.001},
+        {INDEX: 9, SIZE : 4, NAME : "volume", RESOLUTION: 0.001},
+        {INDEX: 13, SIZE : 3, NAME : "power", RESOLUTION: 0.1},
+        {INDEX: 16, SIZE : 3, NAME : "flow", RESOLUTION: 0.001},
+        {INDEX: 19, SIZE : 2, NAME : "temperatureT1", RESOLUTION: 0.01, SIGNED: true},
+        {INDEX: 21, SIZE : 2, NAME : "temperatureT2", RESOLUTION: 0.01, SIGNED: true},
+        {INDEX: 23, SIZE : 4, NAME : "workingTimeWithoutError"},
+        {INDEX: 27, SIZE : 4, NAME : "periodBetweenMeasurement"},
     ],
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 var CONFIG_NORDIC_HEATING = {
     LENGTH    : 48,
     ORDER : [
-        {INDEX: 0, SIZE : 4, NAME : "Timestamp"},
+        {INDEX: 0, SIZE : 4, NAME : "timestamp"},
     ],
     MEASUREMENT_TOTAL : 2,
     MEASUREMENT_INDEX : 4,
     MEASUREMENT : [
-        {SIZE : 4, NAME : "DataloggerTimestamp"},
-        {SIZE : 4, NAME : "EnergyForHeating", RESOLUTION: 0.001},
-        {SIZE : 4, NAME : "Volume", RESOLUTION: 0.001},
-        {SIZE : 3, NAME : "Power", RESOLUTION: 0.001},
-        {SIZE : 3, NAME : "Flow", RESOLUTION: 0.001},
-        {SIZE : 2, NAME : "TemperatureT1", RESOLUTION: 0.01, SIGNED: true},
-        {SIZE : 2, NAME : "TemperatureT2", RESOLUTION: 0.01, SIGNED: true},
+        {SIZE : 4, NAME : "dataloggerTimestamp"},
+        {SIZE : 4, NAME : "energyForHeating", RESOLUTION: 0.001},
+        {SIZE : 4, NAME : "volume", RESOLUTION: 0.001},
+        {SIZE : 3, NAME : "power", RESOLUTION: 0.001},
+        {SIZE : 3, NAME : "flow", RESOLUTION: 0.001},
+        {SIZE : 2, NAME : "temperatureT1", RESOLUTION: 0.01, SIGNED: true},
+        {SIZE : 2, NAME : "temperatureT2", RESOLUTION: 0.01, SIGNED: true},
     ],
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 var CONFIG_NORDIC_HEATING_COOLING = {
     LENGTH    : 30,
     ORDER : [
-        {INDEX: 0, SIZE : 4, NAME : "Timestamp"},
-        {INDEX: 4, SIZE : 4, NAME : "DataloggerTimestamp"},
-        {INDEX: 8, SIZE : 4, NAME : "EnergyForHeating", RESOLUTION: 0.001},
-        {INDEX: 12, SIZE : 4, NAME : "EnergyForCooling", RESOLUTION: 0.001},
-        {INDEX: 16, SIZE : 4, NAME : "Volume", RESOLUTION: 0.001},
-        {INDEX: 20, SIZE : 3, NAME : "Power", RESOLUTION: 0.001},
-        {INDEX: 23, SIZE : 3, NAME : "Flow", RESOLUTION: 0.001},
-        {INDEX: 26, SIZE : 2, NAME : "TemperatureT1", RESOLUTION: 0.01, SIGNED: true},
-        {INDEX: 28, SIZE : 2, NAME : "TemperatureT2", RESOLUTION: 0.01, SIGNED: true},
+        {INDEX: 0, SIZE : 4, NAME : "timestamp"},
+        {INDEX: 4, SIZE : 4, NAME : "dataloggerTimestamp"},
+        {INDEX: 8, SIZE : 4, NAME : "energyForHeating", RESOLUTION: 0.001},
+        {INDEX: 12, SIZE : 4, NAME : "energyForCooling", RESOLUTION: 0.001},
+        {INDEX: 16, SIZE : 4, NAME : "volume", RESOLUTION: 0.001},
+        {INDEX: 20, SIZE : 3, NAME : "power", RESOLUTION: 0.001},
+        {INDEX: 23, SIZE : 3, NAME : "flow", RESOLUTION: 0.001},
+        {INDEX: 26, SIZE : 2, NAME : "temperatureT1", RESOLUTION: 0.01, SIGNED: true},
+        {INDEX: 28, SIZE : 2, NAME : "temperatureT2", RESOLUTION: 0.01, SIGNED: true},
     ],
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 function decodeDeviceDataWithoutListOfMeasurements(bytes, config)
@@ -157,8 +157,8 @@ function decodeDeviceDataWithoutListOfMeasurements(bytes, config)
         }
         if(config.DATALOGGER_TIMESTAMP)
         {
-            decoded.DataloggerTimestamp = decoded.Timestamp - 
-                (decoded.Timestamp % decoded.PeriodBetweenMeasurement);
+            decoded.dataloggerTimestamp = decoded.timestamp - 
+                (decoded.timestamp % decoded.periodBetweenMeasurement);
         }
     }catch(error)
     {
@@ -198,15 +198,15 @@ function decodeDeviceDataWithListOfMeasurements(bytes, config)
                 decoded[info.NAME] = value;
             }
         }
-        decoded.ListOfMeasurements = [];
+        decoded.listOfMeasurements = [];
         for(var j=0; j<config.MEASUREMENT_TOTAL; j=j+1)
         {
             var measurements = {};
             if(config.MEASUREMENT_TIMESTAMP)
             {
-                measurements.DataloggerTimestamp = decoded.Timestamp - 
-                    (decoded.Timestamp % decoded.PeriodBetweenMeasurement) - 
-                    j*decoded.PeriodBetweenMeasurement;
+                measurements.dataloggerTimestamp = decoded.timestamp - 
+                    (decoded.timestamp % decoded.periodBetweenMeasurement) - 
+                    j*decoded.periodBetweenMeasurement;
             }
             for(var k=0; k<config.MEASUREMENT.length; k=k+1)
             {
@@ -234,7 +234,7 @@ function decodeDeviceDataWithListOfMeasurements(bytes, config)
                 }
                 index = index + info.SIZE;
             }
-            decoded.ListOfMeasurements.push(measurements);
+            decoded.listOfMeasurements.push(measurements);
         }
     }catch(error)
     {
@@ -340,35 +340,33 @@ function getSignedIntegerFromInteger(integer, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    var decoded = {};
     if(fPort == 0)
     {
-        return {mac: "MAC command received", fPort: fPort};
-    }
-    if(bytes.length == CONFIG_BASIC_HEATING.LENGTH)
+        decoded = {mac: "MAC command received", fPort: fPort};
+    }else if(bytes.length == CONFIG_BASIC_HEATING.LENGTH)
     {
-        return decodeDeviceDataWithListOfMeasurements(bytes, CONFIG_BASIC_HEATING);
-    }
-    if(bytes.length == CONFIG_BASIC_COOLING.LENGTH)
+        decoded = decodeDeviceDataWithListOfMeasurements(bytes, CONFIG_BASIC_HEATING);
+    }else if(bytes.length == CONFIG_BASIC_COOLING.LENGTH)
     {
-        return decodeDeviceDataWithListOfMeasurements(bytes, CONFIG_BASIC_COOLING);
-    }
-    if(bytes.length == CONFIG_BASIC_LT_HEATING_COOLING.LENGTH)
+        decoded = decodeDeviceDataWithListOfMeasurements(bytes, CONFIG_BASIC_COOLING);
+    }else if(bytes.length == CONFIG_BASIC_LT_HEATING_COOLING.LENGTH)
     {
-        return decodeDeviceDataWithoutListOfMeasurements(bytes, CONFIG_BASIC_LT_HEATING_COOLING);
-    }
-    if(bytes.length == CONFIG_BASIC_LT_HEATING.LENGTH)
+        decoded = decodeDeviceDataWithoutListOfMeasurements(bytes, CONFIG_BASIC_LT_HEATING_COOLING);
+    }else if(bytes.length == CONFIG_BASIC_LT_HEATING.LENGTH)
     {
-        return decodeDeviceDataWithoutListOfMeasurements(bytes, CONFIG_BASIC_LT_HEATING);
-    }
-    if(bytes.length == CONFIG_NORDIC_HEATING.LENGTH)
+        decoded = decodeDeviceDataWithoutListOfMeasurements(bytes, CONFIG_BASIC_LT_HEATING);
+    }else if(bytes.length == CONFIG_NORDIC_HEATING.LENGTH)
     {
-        return decodeDeviceDataWithListOfMeasurements(bytes, CONFIG_NORDIC_HEATING);
-    }
-    if(bytes.length == CONFIG_NORDIC_HEATING_COOLING.LENGTH)
+        decoded = decodeDeviceDataWithListOfMeasurements(bytes, CONFIG_NORDIC_HEATING);
+    }else if(bytes.length == CONFIG_NORDIC_HEATING_COOLING.LENGTH)
     {
-        return decodeDeviceDataWithoutListOfMeasurements(bytes, CONFIG_NORDIC_HEATING_COOLING);
+        decoded = decodeDeviceDataWithoutListOfMeasurements(bytes, CONFIG_NORDIC_HEATING_COOLING);
+    }else
+    {
+        decoded = {error: "unknown payload"};
     }
-    return {error: "unknown payload"};
+    return decoded;
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)
@@ -410,5 +408,7 @@ function encodeDownlink(input) {
         bytes: Encode(null, input.data, input.variables)
     };
 }
+
+
 
 

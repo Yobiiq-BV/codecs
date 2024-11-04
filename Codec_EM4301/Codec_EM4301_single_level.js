@@ -1,92 +1,105 @@
 /**
  * Codec for EM4301 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 11 June 2023
- * Update  Date : 25 April 2024
+ * Update  Date : 04 November 2024
  */
+
+// Version Control
+var VERSION_CONTROL = {
+    CODEC : {VERSION: "1.0.0", NAME: "codecVersion"},
+    DEVICE: {MODEL : "EM4301", NAME: "genericModel"},
+    PRODUCT: {CODE : "P100xxxx", NAME: "productCode"},
+    MANUFACTURER: {COMPANY : "YOBIIQ B.V.", NAME: "manufacturer"},
+}
+
 
 // Configuration constants for device basic info
 var CONFIG_INFO = {
-    PORT     : 50,
+    FPORT     : 50,
     CHANNEL  : parseInt("0xFF", 16),
     TYPES    : {
-        "0x09" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
-        "0x0A" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x16" : {SIZE : 4, NAME : "DeviceSerialNumber"},
-        "0x0F" : {SIZE : 1, NAME : "DeviceClass",
+        "0x09" : {SIZE : 2, NAME : "hardwareVersion", DIGIT: false},
+        "0x0A" : {SIZE : 2, NAME : "firmwareVersion", DIGIT: false},
+        "0x16" : {SIZE : 4, NAME : "deviceSerialNumber"},
+        "0x0F" : {SIZE : 1, NAME : "deviceClass",
             VALUES     : {
                 "0x00" : "Class A",
                 "0x01" : "Class B",
                 "0x02" : "Class C",
             },
         },
-        "0x0B" : {SIZE : 1, NAME : "PowerEvent",
+        "0x0B" : {SIZE : 1, NAME : "powerEvent",
             VALUES     : {
                 "0x00" : "AC Power Off",
                 "0x01" : "AC Power On",
             },
         },
-        "0x1E" : {SIZE : 2, NAME : "PrimaryCurrentTransformerRatio",},
-        "0x1F" : {SIZE : 1, NAME : "SecondaryCurrentTransformerRatio",},
-        "0x20" : {SIZE : 4, NAME : "PrimaryVoltageTransformerRatio",},
-        "0x21" : {SIZE : 2, NAME : "SecondaryVoltageTransformerRatio",},
-        "0x28" : {SIZE : 0, NAME : "DeviceModel",},
+        "0x1E" : {SIZE : 2, NAME : "primaryCurrentTransformerRatio",},
+        "0x1F" : {SIZE : 1, NAME : "secondaryCurrentTransformerRatio",},
+        "0x20" : {SIZE : 4, NAME : "primaryVoltageTransformerRatio",},
+        "0x21" : {SIZE : 2, NAME : "secondaryVoltageTransformerRatio",},
+        "0x28" : {SIZE : 0, NAME : "deviceModel",},
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for measurement registers
  var CONFIG_MEASUREMENT = {
-    "0x00" : {SIZE : 4, NAME : "Index",},
-    "0x01" : {SIZE : 4, NAME : "Timestamp",},
-    "0x03" : {SIZE : 4, NAME : "DataloggerTimestamp",},
-    "0x04" : {SIZE : 4, NAME : "ActiveEnergyImportL123T1", UNIT : "Wh",},
-    "0x05" : {SIZE : 4, NAME : "ActiveEnergyImportL123T2", UNIT : "Wh",},
-    "0x06" : {SIZE : 4, NAME : "ActiveEnergyExportL123T1", UNIT : "Wh",},
-    "0x07" : {SIZE : 4, NAME : "ActiveEnergyExportL123T2", UNIT : "Wh",},
-    "0x08" : {SIZE : 4, NAME : "ReactiveEnergyImportL123T1", UNIT : "varh",},
-    "0x09" : {SIZE : 4, NAME : "ReactiveEnergyImportL123T2", UNIT : "varh",},
-    "0x0A" : {SIZE : 4, NAME : "ReactiveEnergyExportL123T1", UNIT : "varh",},
-    "0x0B" : {SIZE : 4, NAME : "ReactiveEnergyExportL123T2", UNIT : "varh",},
-    "0x0C" : {SIZE : 4, NAME : "VoltageL1N", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
-    "0x0D" : {SIZE : 4, NAME : "VoltageL2N", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
-    "0x0E" : {SIZE : 4, NAME : "VoltageL3N", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
-    "0x0F" : {SIZE : 4, NAME : "CurrentL123", UNIT : "mA", SIGNED : true,},
-    "0x10" : {SIZE : 4, NAME : "CurrentL1", UNIT : "mA", SIGNED : true,},
-    "0x11" : {SIZE : 4, NAME : "CurrentL2", UNIT : "mA", SIGNED : true,},
-    "0x12" : {SIZE : 4, NAME : "CurrentL3", UNIT : "mA", SIGNED : true,},
-    "0x13" : {SIZE : 4, NAME : "ActivePowerL123", UNIT : "W", SIGNED : true,},
-    "0x14" : {SIZE : 4, NAME : "ActivePowerL1", UNIT : "W", SIGNED : true,},
-    "0x15" : {SIZE : 4, NAME : "ActivePowerL2", UNIT : "W", SIGNED : true,},
-    "0x16" : {SIZE : 4, NAME : "ActivePowerL3", UNIT : "W", SIGNED : true,},
-    "0x17" : {SIZE : 4, NAME : "ReactivePowerL1", UNIT : "kvar", RESOLUTION : 0.001, SIGNED : true,},
-    "0x18" : {SIZE : 4, NAME : "ReactivePowerL2", UNIT : "kvar", RESOLUTION : 0.001, SIGNED : true,},
-    "0x19" : {SIZE : 4, NAME : "ReactivePowerL3", UNIT : "kvar", RESOLUTION : 0.001, SIGNED : true,},
-    "0x1A" : {SIZE : 4, NAME : "ApparentPowerL1", UNIT : "kVA", RESOLUTION : 0.001, SIGNED : true,},
-    "0x1B" : {SIZE : 4, NAME : "ApparentPowerL2", UNIT : "kVA", RESOLUTION : 0.001, SIGNED : true,},
-    "0x1C" : {SIZE : 4, NAME : "ApparentPowerL3", UNIT : "kVA", RESOLUTION : 0.001, SIGNED : true,},
-    "0x1D" : {SIZE : 1, NAME : "PowerFactorL1", RESOLUTION : 0.01, SIGNED : true,},
-    "0x1E" : {SIZE : 1, NAME : "PowerFactorL2", RESOLUTION : 0.01, SIGNED : true,},
-    "0x1F" : {SIZE : 1, NAME : "PowerFactorL3", RESOLUTION : 0.01, SIGNED : true,},
-    "0x20" : {SIZE : 2, NAME : "PhaseAngleL1", UNIT : "degree", RESOLUTION : 0.01, SIGNED : true,},
-    "0x21" : {SIZE : 2, NAME : "PhaseAngleL2", UNIT : "degree", RESOLUTION : 0.01, SIGNED : true,},
-    "0x22" : {SIZE : 2, NAME : "PhaseAngleL3", UNIT : "degree", RESOLUTION : 0.01, SIGNED : true,},
-    "0x23" : {SIZE : 2, NAME : "Frequency", UNIT : "Hz", RESOLUTION : 0.01, SIGNED : true,},
-    "0x24" : {SIZE : 4, NAME : "TotalSystemActivePower", UNIT : "kW",},
-    "0x25" : {SIZE : 4, NAME : "TotalSystemReactivePower", UNIT : "kvar", RESOLUTION : 0.001,},
-    "0x26" : {SIZE : 4, NAME : "TotalSystemApparentPower", UNIT : "kVA", RESOLUTION : 0.001,},
-    "0x27" : {SIZE : 4, NAME : "MaximumL1CurrentDemand", UNIT : "mA", SIGNED : true,},
-    "0x28" : {SIZE : 4, NAME : "MaximumL2CurrentDemand", UNIT : "mA", SIGNED : true,},
-    "0x29" : {SIZE : 4, NAME : "MaximumL3CurrentDemand", UNIT : "mA", SIGNED : true,},
-    "0x2A" : {SIZE : 4, NAME : "AveragePower", UNIT : "W", SIGNED : true,},
-    "0x2B" : {SIZE : 4, NAME : "MIDYearOfCertification",},
-    "0xF0" : {SIZE : 2, NAME : "ManufacturedYear", DIGIT: true,},
-    "0xF1" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false,},
-    "0xF2" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false,},
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    FPORT_MIN : 1,
+    FPORT_MAX : 10,
+    TYPES : {
+        "0x00" : {SIZE : 4, NAME : "index",},
+        "0x01" : {SIZE : 4, NAME : "timestamp",},
+        "0x03" : {SIZE : 4, NAME : "dataloggerTimestamp",},
+        "0x04" : {SIZE : 4, NAME : "activeEnergyImportL123T1", UNIT : "Wh",},
+        "0x05" : {SIZE : 4, NAME : "activeEnergyImportL123T2", UNIT : "Wh",},
+        "0x06" : {SIZE : 4, NAME : "activeEnergyExportL123T1", UNIT : "Wh",},
+        "0x07" : {SIZE : 4, NAME : "activeEnergyExportL123T2", UNIT : "Wh",},
+        "0x08" : {SIZE : 4, NAME : "reactiveEnergyImportL123T1", UNIT : "varh",},
+        "0x09" : {SIZE : 4, NAME : "reactiveEnergyImportL123T2", UNIT : "varh",},
+        "0x0A" : {SIZE : 4, NAME : "reactiveEnergyExportL123T1", UNIT : "varh",},
+        "0x0B" : {SIZE : 4, NAME : "reactiveEnergyExportL123T2", UNIT : "varh",},
+        "0x0C" : {SIZE : 4, NAME : "voltageL1N", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
+        "0x0D" : {SIZE : 4, NAME : "voltageL2N", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
+        "0x0E" : {SIZE : 4, NAME : "voltageL3N", UNIT : "V", RESOLUTION : 0.1, SIGNED : true,},
+        "0x0F" : {SIZE : 4, NAME : "currentL123", UNIT : "mA", SIGNED : true,},
+        "0x10" : {SIZE : 4, NAME : "currentL1", UNIT : "mA", SIGNED : true,},
+        "0x11" : {SIZE : 4, NAME : "currentL2", UNIT : "mA", SIGNED : true,},
+        "0x12" : {SIZE : 4, NAME : "currentL3", UNIT : "mA", SIGNED : true,},
+        "0x13" : {SIZE : 4, NAME : "activePowerL123", UNIT : "W", SIGNED : true,},
+        "0x14" : {SIZE : 4, NAME : "activePowerL1", UNIT : "W", SIGNED : true,},
+        "0x15" : {SIZE : 4, NAME : "activePowerL2", UNIT : "W", SIGNED : true,},
+        "0x16" : {SIZE : 4, NAME : "activePowerL3", UNIT : "W", SIGNED : true,},
+        "0x17" : {SIZE : 4, NAME : "reactivePowerL1", UNIT : "kvar", RESOLUTION : 0.001, SIGNED : true,},
+        "0x18" : {SIZE : 4, NAME : "reactivePowerL2", UNIT : "kvar", RESOLUTION : 0.001, SIGNED : true,},
+        "0x19" : {SIZE : 4, NAME : "reactivePowerL3", UNIT : "kvar", RESOLUTION : 0.001, SIGNED : true,},
+        "0x1A" : {SIZE : 4, NAME : "apparentPowerL1", UNIT : "kVA", RESOLUTION : 0.001, SIGNED : true,},
+        "0x1B" : {SIZE : 4, NAME : "apparentPowerL2", UNIT : "kVA", RESOLUTION : 0.001, SIGNED : true,},
+        "0x1C" : {SIZE : 4, NAME : "apparentPowerL3", UNIT : "kVA", RESOLUTION : 0.001, SIGNED : true,},
+        "0x1D" : {SIZE : 1, NAME : "powerFactorL1", RESOLUTION : 0.01, SIGNED : true,},
+        "0x1E" : {SIZE : 1, NAME : "powerFactorL2", RESOLUTION : 0.01, SIGNED : true,},
+        "0x1F" : {SIZE : 1, NAME : "powerFactorL3", RESOLUTION : 0.01, SIGNED : true,},
+        "0x20" : {SIZE : 2, NAME : "phaseAngleL1", UNIT : "degree", RESOLUTION : 0.01, SIGNED : true,},
+        "0x21" : {SIZE : 2, NAME : "phaseAngleL2", UNIT : "degree", RESOLUTION : 0.01, SIGNED : true,},
+        "0x22" : {SIZE : 2, NAME : "phaseAngleL3", UNIT : "degree", RESOLUTION : 0.01, SIGNED : true,},
+        "0x23" : {SIZE : 2, NAME : "frequency", UNIT : "Hz", RESOLUTION : 0.01, SIGNED : true,},
+        "0x24" : {SIZE : 4, NAME : "totalSystemActivePower", UNIT : "kW",},
+        "0x25" : {SIZE : 4, NAME : "totalSystemReactivePower", UNIT : "kvar", RESOLUTION : 0.001,},
+        "0x26" : {SIZE : 4, NAME : "totalSystemApparentPower", UNIT : "kVA", RESOLUTION : 0.001,},
+        "0x27" : {SIZE : 4, NAME : "maximumL1CurrentDemand", UNIT : "mA", SIGNED : true,},
+        "0x28" : {SIZE : 4, NAME : "maximumL2CurrentDemand", UNIT : "mA", SIGNED : true,},
+        "0x29" : {SIZE : 4, NAME : "maximumL3CurrentDemand", UNIT : "mA", SIGNED : true,},
+        "0x2A" : {SIZE : 4, NAME : "averagePower", UNIT : "W", SIGNED : true,},
+        "0x2B" : {SIZE : 4, NAME : "midYearOfCertification",},
+        "0xF0" : {SIZE : 2, NAME : "manufacturedYear", DIGIT: true,},
+        "0xF1" : {SIZE : 2, NAME : "firmwareVersion", DIGIT: false,},
+        "0xF2" : {SIZE : 2, NAME : "hardwareVersion", DIGIT: false,},
+    },
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 function decodeBasicInformation(bytes)
@@ -207,7 +220,7 @@ function decodeDeviceData(bytes)
 
             // No channel checking
 
-            var measurement = CONFIG_MEASUREMENT[type];
+            var measurement = CONFIG_MEASUREMENT.TYPES[type];
             size = measurement.SIZE;
             // Decoding
             var value = 0;
@@ -351,14 +364,26 @@ function getSignedIntegerFromInteger(integer, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
-    if(fPort == CONFIG_INFO.PORT)
+    var decoded = {};
+    if(fPort == 0)
     {
-        return decodeBasicInformation(bytes);
-    }else if(fPort <= 10)
-    {
-        return decodeDeviceData(bytes);
+        decoded = {mac: "MAC command received", fPort: fPort};
     }
-    return {error: "Incorrect fPort", fPort : fPort};
+    else if(fPort == CONFIG_INFO.FPORT)
+    {
+        decoded = decodeBasicInformation(bytes);
+    }else if(fPort >= CONFIG_MEASUREMENT.FPORT_MIN && fPort <= CONFIG_MEASUREMENT.FPORT_MAX)
+    {
+        decoded = decodeDeviceData(bytes);
+    }else
+    {
+        decoded = {error: "Incorrect fPort", fPort : fPort};
+    }
+    decoded[VERSION_CONTROL.CODEC.NAME] = VERSION_CONTROL.CODEC.VERSION;
+    decoded[VERSION_CONTROL.DEVICE.NAME] = VERSION_CONTROL.DEVICE.MODEL;
+    decoded[VERSION_CONTROL.PRODUCT.NAME] = VERSION_CONTROL.PRODUCT.CODE;
+    decoded[VERSION_CONTROL.MANUFACTURER.NAME] = VERSION_CONTROL.MANUFACTURER.COMPANY;
+    return decoded;
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)
@@ -418,14 +443,14 @@ function encodeDownlink(input) {
 
 // Constants for device configuration 
 var CONFIG_DEVICE = {
-    PORT : 50,
+    FPORT : 50,
     CHANNEL : parseInt("0xFF", 16),
     TYPES : {
-        "Restart" : {TYPE : parseInt("0x0B", 16), SIZE : 1, MIN : 1, MAX : 1,},
-        "PrimaryCurrentTransformerRatio" : {TYPE : parseInt("0x1E", 16), SIZE : 2, MIN : 0, MAX : 9999,},
-        "SecondaryCurrentTransformerRatio" : {TYPE : parseInt("0x1F", 16), SIZE : 1, MIN : 0, MAX : 5,},
-        "PrimaryVoltageTransformerRatio" : {TYPE : parseInt("0x20", 16), SIZE : 4, MIN : 30, MAX : 500000,},
-        "SecondaryVoltageTransformerRatio" : {TYPE : parseInt("0x21", 16), SIZE : 2, MIN : 30, MAX : 500,},
+        "restart" : {TYPE : parseInt("0x0B", 16), SIZE : 1, MIN : 1, MAX : 1,},
+        "primaryCurrentTransformerRatio" : {TYPE : parseInt("0x1E", 16), SIZE : 2, MIN : 0, MAX : 9999,},
+        "secondaryCurrentTransformerRatio" : {TYPE : parseInt("0x1F", 16), SIZE : 1, MIN : 0, MAX : 5,},
+        "primaryVoltageTransformerRatio" : {TYPE : parseInt("0x20", 16), SIZE : 4, MIN : 30, MAX : 500000,},
+        "secondaryVoltageTransformerRatio" : {TYPE : parseInt("0x21", 16), SIZE : 2, MIN : 30, MAX : 500,},
     }
 }
 
@@ -439,52 +464,52 @@ var CONFIG_PERIODIC = {
         "Measurement" : {TYPE : parseInt("0x17", 16), SIZE : 1, MIN : 0, MAX : 10,},
     },
     MEASUREMENTS : {
-        Index : "0x00",
-        Timestamp : "0x01",
-        DataloggerTimestamp : "0x03",
-        ActiveEnergyImportL123T1 : "0x04",
-        ActiveEnergyImportL123T2 : "0x05",
-        ActiveEnergyExportL123T1 : "0x06",
-        ActiveEnergyExportL123T2 : "0x07",
-        ReactiveEnergyImportL123T1 : "0x08",
-        ReactiveEnergyImportL123T2 : "0x09",
-        ReactiveEnergyExportL123T1 : "0x0A",
-        ReactiveEnergyExportL123T2 : "0x0B",
-        VoltageL1N : "0x0C",
-        VoltageL2N : "0x0D",
-        VoltageL3N : "0x0E",
-        CurrentL123 : "0x0F",
-        CurrentL1 : "0x10",
-        CurrentL2 : "0x11",
-        CurrentL3 : "0x12",
-        ActivePowerL123 : "0x13",
-        ActivePowerL1 : "0x14",
-        ActivePowerL2 : "0x15",
-        ActivePowerL3 : "0x16",
-        ReactivePowerL1 : "0x17",
-        ReactivePowerL2 : "0x18",
-        ReactivePowerL3 : "0x19",
-        ApparentPowerL1 : "0x1A",
-        ApparentPowerL2 : "0x1B",
-        ApparentPowerL3 : "0x1C",
-        PowerFactorL1 : "0x1D",
-        PowerFactorL2 : "0x1E",
-        PowerFactorL3 : "0x1F",
-        PhaseAngleL1 : "0x20",
-        PhaseAngleL2 : "0x21",
-        PhaseAngleL3 : "0x22",
-        Frequency : "0x23",
-        TotalSystemActivePower : "0x24",
-        TotalSystemReactivePower : "0x25",
-        TotalSystemApparentPower : "0x26",
-        MaximumL1CurrentDemand : "0x27",
-        MaximumL2CurrentDemand : "0x28",
-        MaximumL3CurrentDemand : "0x29",
-        AveragePower : "0x2A",
-        MIDYearOfCertification : "0x2B",
-        ManufacturedYear : "0xF0",
-        FirmwareVersion : "0xF1",
-        HardwareVersion : "0xF2",
+        index : "0x00",
+        timestamp : "0x01",
+        dataloggerTimestamp : "0x03",
+        activeEnergyImportL123T1 : "0x04",
+        activeEnergyImportL123T2 : "0x05",
+        activeEnergyExportL123T1 : "0x06",
+        activeEnergyExportL123T2 : "0x07",
+        reactiveEnergyImportL123T1 : "0x08",
+        reactiveEnergyImportL123T2 : "0x09",
+        reactiveEnergyExportL123T1 : "0x0A",
+        reactiveEnergyExportL123T2 : "0x0B",
+        voltageL1N : "0x0C",
+        voltageL2N : "0x0D",
+        voltageL3N : "0x0E",
+        currentL123 : "0x0F",
+        currentL1 : "0x10",
+        currentL2 : "0x11",
+        currentL3 : "0x12",
+        activePowerL123 : "0x13",
+        activePowerL1 : "0x14",
+        activePowerL2 : "0x15",
+        activePowerL3 : "0x16",
+        reactivePowerL1 : "0x17",
+        reactivePowerL2 : "0x18",
+        reactivePowerL3 : "0x19",
+        apparentPowerL1 : "0x1A",
+        apparentPowerL2 : "0x1B",
+        apparentPowerL3 : "0x1C",
+        powerFactorL1 : "0x1D",
+        powerFactorL2 : "0x1E",
+        powerFactorL3 : "0x1F",
+        phaseAngleL1 : "0x20",
+        phaseAngleL2 : "0x21",
+        phaseAngleL3 : "0x22",
+        frequency : "0x23",
+        totalSystemActivePower : "0x24",
+        totalSystemReactivePower : "0x25",
+        totalSystemApparentPower : "0x26",
+        maximumL1CurrentDemand : "0x27",
+        maximumL2CurrentDemand : "0x28",
+        maximumL3CurrentDemand : "0x29",
+        averagePower : "0x2A",
+        midYearOfCertification : "0x2B",
+        manufacturedYear : "0xF0",
+        firmwareVersion : "0xF1",
+        hardwareVersion : "0xF2",
     }
 }
 
@@ -599,3 +624,6 @@ function encodePeriodicPackage(obj, variables)
 
     return encoded;
 }
+
+
+

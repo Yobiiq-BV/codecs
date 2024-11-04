@@ -3,7 +3,7 @@
 {
     "Type" : "Config",
     "Config" : {
-        "Param" : "Restart",
+        "Param" : "restart",
         "Value" : 1
     }
 }
@@ -14,7 +14,7 @@
 {
     "Type" : "Config",
     "Config" : {
-        "Param" : "PrimaryCurrentTransformerRatio",
+        "Param" : "primaryCurrentTransformerRatio",
         "Value" : 5
     }
 }
@@ -25,7 +25,7 @@
 {
     "Type" : "Config",
     "Config" : {
-        "Param" : "SecondaryCurrentTransformerRatio",
+        "Param" : "secondaryCurrentTransformerRatio",
         "Value" : 5
     }
 }
@@ -36,7 +36,7 @@
 {
     "Type" : "Config",
     "Config" : {
-        "Param" : "PrimaryVoltageTransformerRatio",
+        "Param" : "primaryVoltageTransformerRatio",
         "Value" : 230
     }
 }
@@ -47,7 +47,7 @@
 {
     "Type" : "Config",
     "Config" : {
-        "Param" : "SecondaryVoltageTransformerRatio",
+        "Param" : "secondaryVoltageTransformerRatio",
         "Value" : 230
     }
 }

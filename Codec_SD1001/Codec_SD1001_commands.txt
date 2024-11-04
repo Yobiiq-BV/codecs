@@ -3,7 +3,7 @@
 {
     "Type" : "Config",
     "Config" : {
-        "Param" : "ReportingInterval",
+        "Param" : "reportingInterval",
         "Value" : 720
     }
 }
@@ -13,7 +13,7 @@
 {
     "Type" : "Config",
     "Config" : {
-        "Param" : "ReportingInterval",
+        "Param" : "reportingInterval",
         "Value" : 5
     }
 }
@@ -24,7 +24,7 @@
 {
     "Type" : "Config",
     "Config" : {
-        "Param" : "SilenceBuzzer",
+        "Param" : "silenceBuzzer",
         "Value" : 5
     }
 }
@@ -33,7 +33,7 @@
 {
     "Type" : "Config",
     "Config" : {
-        "Param" : "ConfirmedUplink",
+        "Param" : "confirmedUplink",
         "Value" : 1
     }
 }
@@ -42,7 +42,7 @@
 {
     "Type" : "Config",
     "Config" : {
-        "Param" : "ConfirmedUplink",
+        "Param" : "confirmedUplink",
         "Value" : 0
     }
 }

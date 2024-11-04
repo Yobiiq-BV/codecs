@@ -5,7 +5,7 @@ Downlink fPort  : 50
 {
     "Type" : "Config",
     "Config" : {
-        "Param" : "Restart",
+        "Param" : "restart",
         "Value" : 1
     }
 }
@@ -15,7 +15,7 @@ Downlink fPort  : 50
 {
     "Type" : "Relay",
     "Relay" : {
-        "Param" : "Reset",
+        "Param" : "reset",
         "Value" : 1
     }
 }
@@ -25,7 +25,7 @@ Downlink fPort  : 50
 {
     "Type" : "Relay",
     "Relay" : {
-        "Param" : "ControlMode",
+        "Param" : "controlMode",
         "Value" : 0
     }
 }
@@ -35,7 +35,7 @@ Downlink fPort  : 50
 {
     "Type" : "Relay",
     "Relay" : {
-        "Param" : "ControlMode",
+        "Param" : "controlMode",
         "Value" : 1
     }
 }
@@ -45,7 +45,7 @@ Downlink fPort  : 50
 {
     "Type" : "Relay",
     "Relay" : {
-        "Param" : "RelayCommand",
+        "Param" : "relayCommand",
         "Value" : 0
     }
 }
@@ -55,7 +55,7 @@ Downlink fPort  : 50
 {
     "Type" : "Relay",
     "Relay" : {
-        "Param" : "RelayCommand",
+        "Param" : "relayCommand",
         "Value" : 1
     }
 }
@@ -68,7 +68,7 @@ Downlink fPort  : 50
 {
     "Type" : "Dynamic",
     "Dynamic" : {
-        "Param" : "CurrentLimit",
+        "Param" : "currentLimit",
         "Value" : 200
     }
 }
@@ -79,7 +79,7 @@ Downlink fPort  : 50
 {
     "Type" : "Dynamic",
     "Dynamic" : {
-        "Param" : "VoltageLimit",
+        "Param" : "voltageLimit",
         "Value" : 240
     }
 }
@@ -89,7 +89,7 @@ Downlink fPort  : 50
 {
     "Type" : "Dynamic",
     "Dynamic" : {
-        "Param" : "DeactivationDelay",
+        "Param" : "deactivationDelay",
         "Value" : 250
     }
 }
@@ -99,7 +99,7 @@ Downlink fPort  : 50
 {
     "Type" : "Dynamic",
     "Dynamic" : {
-        "Param" : "ResetTime",
+        "Param" : "resetTime",
         "Value" : 500
     }
 }
@@ -110,7 +110,7 @@ Downlink fPort  : 50
 {
     "Type" : "Dynamic",
     "Dynamic" : {
-        "Param" : "ResetAmount",
+        "Param" : "resetAmount",
         "Value" : 10
     }
 }
@@ -121,16 +121,16 @@ Downlink fPort  : 50
 {
     "Type" : "RequestSettings",
     "RequestSettings" : [
-        "CurrentLimitFallback",
-        "VoltageLimitFallback",
-        "PowerLimitFallback",
-        "DeactivationDelayFallback",
-        "ActivationDelayFallback",
-        "OffsetCurrentFallback",
-        "OffsetDelayFallback",
-        "ResetTimeFallback",
-        "ResetAmountFallback",
-        "CurrentLimitDynamic"
+        "currentLimitFallback",
+        "voltageLimitFallback",
+        "powerLimitFallback",
+        "deactivationDelayFallback",
+        "activationDelayFallback",
+        "offsetCurrentFallback",
+        "offsetDelayFallback",
+        "resetTimeFallback",
+        "resetAmountFallback",
+        "currentLimitDynamic"
     ]
 }
 
@@ -138,21 +138,21 @@ Note : Please limit to 10 settings per request
 
 ******************  List of settings ********************
 
-CurrentLimitFallback
-VoltageLimitFallback
-PowerLimitFallback
-DeactivationDelayFallback
-ActivationDelayFallback
-OffsetCurrentFallback
-OffsetDelayFallback
-ResetTimeFallback
-ResetAmountFallback
-CurrentLimitDynamic
-VoltageLimitDynamic
-PowerLimitDynamic
-DeactivationDelayDynamic
-ActivationDelayDynamic
-OffsetCurrentDynamic
-OffsetDelayDynamic
-ResetTimeDynamic
-ResetAmountDynamic
+currentLimitFallback
+voltageLimitFallback
+powerLimitFallback
+deactivationDelayFallback
+activationDelayFallback
+offsetCurrentFallback
+offsetDelayFallback
+resetTimeFallback
+resetAmountFallback
+currentLimitDynamic
+voltageLimitDynamic
+powerLimitDynamic
+deactivationDelayDynamic
+activationDelayDynamic
+offsetCurrentDynamic
+offsetDelayDynamic
+resetTimeDynamic
+resetAmountDynamic

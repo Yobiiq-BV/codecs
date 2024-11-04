@@ -1,106 +1,114 @@
 /**
  * Codec for OTM device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 04 November 2023
- * Update  Date : 27 March 2024
+ * Update  Date : 04 November 2024
  */
+
+// Version Control
+var VERSION_CONTROL = {
+    CODEC : {VERSION: "1.0.0", NAME: "codecVersion"},
+    DEVICE: {MODEL : "OTM", NAME: "genericModel"},
+    PRODUCT: {CODE : "P1002004", NAME: "productCode"},
+    MANUFACTURER: {COMPANY : "YOBIIQ B.V.", NAME: "manufacturer"},
+}
 
 // Configuration constants for device basic info
 var CONFIG_INFO = {
     FPORT    : 50,
     CHANNEL  : parseInt("0xFF", 16),
     TYPES    : {
-        "0x05" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
-        "0x04" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x03" : {SIZE : 4, NAME : "DeviceSerialNumber"},
-        "0x01" : {SIZE : 0, NAME : "Manufacturer"}, // size to be determinated
-        "0x02" : {SIZE : 0, NAME : "DeviceModel"},  // size to be determinated
-        "0x07" : {SIZE : 1, NAME : "BatteryPercentage"},
-        "0x08" : {SIZE : 1, NAME : "BatteryVoltage", RESOLUTION: 0.1},
-        "0x11" : {SIZE : 1, NAME : "DeviceClass",
+        "0x05" : {SIZE : 2, NAME : "hardwareVersion", DIGIT: false},
+        "0x04" : {SIZE : 2, NAME : "firmwareVersion", DIGIT: false},
+        "0x03" : {SIZE : 4, NAME : "deviceSerialNumber"},
+        "0x01" : {SIZE : 0, NAME : "manufacturer"}, // size to be determinated
+        "0x02" : {SIZE : 0, NAME : "deviceModel"},  // size to be determinated
+        "0x07" : {SIZE : 1, NAME : "batteryPercentage"},
+        "0x08" : {SIZE : 1, NAME : "batteryVoltage", RESOLUTION: 0.1},
+        "0x11" : {SIZE : 1, NAME : "deviceClass",
             VALUES     : {
                 "0x00" : "Class A",
                 "0x01" : "Class B",
                 "0x02" : "Class C",
             },
         },
-        "0x06" : {SIZE : 1, NAME : "PowerEvent",
+        "0x06" : {SIZE : 1, NAME : "powerEvent",
             VALUES     : {
                 "0x00" : "AC Power Off",
                 "0x01" : "AC Power On",
             },
         }
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
-var FLAG_MASTER_STATUS = {NAME : "MasterStatus", 
+var FLAG_MASTER_STATUS = {NAME : "masterStatus", 
     FLAGS : [
-        {NAME : "CentralHeating" , false: "disabled", true: "enabled"},
-        {NAME : "DomesticHotWater" , false: "disabled", true: "enabled"},
-        {NAME : "Cooling" , false: "disabled", true: "enabled"},
-        {NAME : "OutsideTemperatureCompensation" , false: "disabled", true: "enabled"},
-        {NAME : "CentralHeating2" , false: "disabled", true: "enabled"}
+        {NAME : "centralHeating" , false: "disabled", true: "enabled"},
+        {NAME : "domesticHotWater" , false: "disabled", true: "enabled"},
+        {NAME : "cooling" , false: "disabled", true: "enabled"},
+        {NAME : "outsideTemperatureCompensation" , false: "disabled", true: "enabled"},
+        {NAME : "centralHeating2" , false: "disabled", true: "enabled"}
     ]
 }
-var FLAG_SLAVE_STATUS = {NAME : "SlaveStatus", 
+var FLAG_SLAVE_STATUS = {NAME : "slaveStatus", 
     FLAGS : [
-        {NAME : "FaultIndication" , false: "no fault", true: "fault"},
-        {NAME : "CentralHeatingMode" , false: "inactive", true: "active"},
-        {NAME : "DomesticHotWaterMode" , false: "inactive", true: "active"},
-        {NAME : "Flame" , false: "inactive", true: "active"},
-        {NAME : "CoolingMode" , false: "inactive", true: "active"},
-        {NAME : "CentralHeating2Mode" , false: "inactive", true: "active"},
-        {NAME : "DiagnosticIndication" , false: "no diagnostics", true: "diagnostic event"}
-    ]
-}
-
-var FLAG_SLAVE_CONFIG = {NAME : "SlaveConfigurationFlags", 
-    FLAGS : [
-        {NAME : "DomesticHotWaterPresence" , false: "not present", true: "present"},
-        {NAME : "ControlType" , false: "modulating", true: "on/off"},
-        {NAME : "CoolingConfig" , false: "not supported", true: "supported"},
-        {NAME : "DomesticHotWaterConfig" , false: "instantaneous or not-specified", true: "storage tank"},
-        {NAME : "PumpControlFunction" , false: "allowed", true: "not allowed"},
-        {NAME : "CentralHeating2Presence" , false: "not present", true: "present"}
+        {NAME : "faultIndication" , false: "no fault", true: "fault"},
+        {NAME : "centralHeatingMode" , false: "inactive", true: "active"},
+        {NAME : "domesticHotWaterMode" , false: "inactive", true: "active"},
+        {NAME : "flame" , false: "inactive", true: "active"},
+        {NAME : "coolingMode" , false: "inactive", true: "active"},
+        {NAME : "centralHeating2Mode" , false: "inactive", true: "active"},
+        {NAME : "diagnosticIndication" , false: "no diagnostics", true: "diagnostic event"}
     ]
 }
 
-var FLAG_APP_FAULT = {NAME : "ApplicationSpecificFaultFlags", 
+var FLAG_SLAVE_CONFIG = {NAME : "slaveConfigurationFlags", 
     FLAGS : [
-        {NAME : "ServiceRequest" , false: "not required", true: "required"},
-        {NAME : "RemoteReset" , false: "disabled", true: "enabled"},
-        {NAME : "LowWaterPressure" , false: "no fault", true: "fault"},
-        {NAME : "GasOrFlame" , false: "no fault", true: "fault"},
-        {NAME : "AirPressure" , false: "no fault", true: "fault"},
-        {NAME : "WaterOverTemperature" , false: "no fault", true: "fault"}
+        {NAME : "domesticHotWaterPresence" , false: "not present", true: "present"},
+        {NAME : "controlType" , false: "modulating", true: "on/off"},
+        {NAME : "coolingConfig" , false: "not supported", true: "supported"},
+        {NAME : "domesticHotWaterConfig" , false: "instantaneous or not-specified", true: "storage tank"},
+        {NAME : "pumpControlFunction" , false: "allowed", true: "not allowed"},
+        {NAME : "centralHeating2Presence" , false: "not present", true: "present"}
     ]
 }
 
-var FLAG_REMOTE_PARAM_XFER = {NAME : "RemoteParameterTransferFlags", 
+var FLAG_APP_FAULT = {NAME : "applicationSpecificFaultFlags", 
     FLAGS : [
-        {NAME : "DomesticHotWaterSetpoint" , false: "disabled", true: "enabled"},
-        {NAME : "CentralHeatingSetpointMaximum" , false: "disabled", true: "enabled"}
+        {NAME : "serviceRequest" , false: "not required", true: "required"},
+        {NAME : "remoteReset" , false: "disabled", true: "enabled"},
+        {NAME : "lowWaterPressure" , false: "no fault", true: "fault"},
+        {NAME : "gasOrFlame" , false: "no fault", true: "fault"},
+        {NAME : "airPressure" , false: "no fault", true: "fault"},
+        {NAME : "waterOverTemperature" , false: "no fault", true: "fault"}
     ]
 }
 
-var FLAG_REMOTE_PARAM_RW = {NAME : "RemoteParameterReadOrWriteFlags", 
+var FLAG_REMOTE_PARAM_XFER = {NAME : "remoteParameterTransferFlags", 
     FLAGS : [
-        {NAME : "DomesticHotWaterSetpoint" , false: "read-only", true: "read/write"},
-        {NAME : "CentralHeatingSetpointMaximum" , false: "read-only", true: "read/write"}
+        {NAME : "domesticHotWaterSetpoint" , false: "disabled", true: "enabled"},
+        {NAME : "dentralHeatingSetpointMaximum" , false: "disabled", true: "enabled"}
     ]
 }
 
-var FLAG_REMOTE_OVERRIDE_FUNCTION = {NAME : "RemoteOverrideFunction", 
+var FLAG_REMOTE_PARAM_RW = {NAME : "remoteParameterReadOrWriteFlags", 
     FLAGS : [
-        {NAME : "ManualChangePriority" , false: "disabled", true: "enabled"},
-        {NAME : "ProgramChangePriority" , false: "disabled", true: "enabled"}
+        {NAME : "domesticHotWaterSetpoint" , false: "read-only", true: "read/write"},
+        {NAME : "centralHeatingSetpointMaximum" , false: "read-only", true: "read/write"}
+    ]
+}
+
+var FLAG_REMOTE_OVERRIDE_FUNCTION = {NAME : "remoteOverrideFunction", 
+    FLAGS : [
+        {NAME : "manualChangePriority" , false: "disabled", true: "enabled"},
+        {NAME : "programChangePriority" , false: "disabled", true: "enabled"}
     ]
 }
 
 var REMOTE_COMMAND = {
-    HIGH_BYTE : {NAME: "CommandCode", VALUES: {"0x01" : "BoilerReset", "0x02" : "CentralHeatingWaterFilling"}},
-    LOW_BYTE : {NAME: "ResponseCode", CENTER: 128}
+    HIGH_BYTE : {NAME: "commandCode", VALUES: {"0x01" : "BoilerReset", "0x02" : "CentralHeatingWaterFilling"}},
+    LOW_BYTE : {NAME: "responseCode", CENTER: 128}
 }
 
 // Configuration constants for opentherm data
@@ -112,66 +120,66 @@ var REMOTE_COMMAND = {
     DATAPOINT_AVAILABLE_REFRESHED : parseInt("0xAA", 16),
     DATAPOINT_AVAILABLE_NOT_REFRESHED : parseInt("0xAB", 16),
     TYPES : {
-        "0xFE" : {SIZE: 4, TYPE: "U32", NAME : "Timestamp"},
-        "0xFD" : {SIZE: 4, TYPE: "U32", NAME : "DataloggerTimestamp"},
+        "0xFE" : {SIZE: 4, TYPE: "U32", NAME : "timestamp"},
+        "0xFD" : {SIZE: 4, TYPE: "U32", NAME : "dataloggerTimestamp"},
         "0x00" : {TYPE: "F8F8", FLAG_HB: FLAG_MASTER_STATUS, FLAG_LB: FLAG_SLAVE_STATUS},
-        "0x01" : {TYPE: "FLOAT", NAME : "ControlSetpointTemperature"},
-        "0x02" : {TYPE: "F8U8", FLAG_HB: null, NAME_LB: "MasterMemberIdCode"},
-        "0x03" : {TYPE: "F8U8", FLAG_HB: FLAG_SLAVE_CONFIG, NAME_LB: "SlaveMemberIdCode"},
-        "0x04" : {TYPE: "RCMD", NAME : "RemoteCommand"},
-        "0x05" : {TYPE: "F8U8", FLAG_HB: FLAG_APP_FAULT, NAME_LB: "EquipmentManufacturerFaultCode"},
+        "0x01" : {TYPE: "FLOAT", NAME : "controlSetpointTemperature"},
+        "0x02" : {TYPE: "F8U8", FLAG_HB: null, NAME_LB: "masterMemberIdCode"},
+        "0x03" : {TYPE: "F8U8", FLAG_HB: FLAG_SLAVE_CONFIG, NAME_LB: "slaveMemberIdCode"},
+        "0x04" : {TYPE: "RCMD", NAME : "remoteCommand"},
+        "0x05" : {TYPE: "F8U8", FLAG_HB: FLAG_APP_FAULT, NAME_LB: "equipmentManufacturerFaultCode"},
         "0x06" : {TYPE: "F8F8", FLAG_HB: FLAG_REMOTE_PARAM_XFER, FLAG_LB: FLAG_REMOTE_PARAM_RW},
-        "0x07" : {TYPE: "FLOAT", NAME: "CoolingControlSignalPercentage"},
-        "0x08" : {TYPE: "FLOAT", NAME: "ControlSetpointTemperature2"},
-        "0x09" : {TYPE: "BOOL", NAME: "RemoteOverrideRoomSetpoint"},
-        "0x0A" : {TYPE: "U8U8", NAME_HB: "NumberOfTransparentSlaveParameters", NAME_LB: null},
-        "0x0B" : {TYPE: "INDEX", NAME: "TransparentSlaveParameter"},
-        "0x0C" : {TYPE: "U8U8", NAME_HB: "FaultBufferSize", NAME_LB: null},
-        "0x0D" : {TYPE: "INDEX", NAME: "FaultHistoryBuffer"},
-        "0x0E" : {TYPE: "FLOAT", NAME: "MaximumRelativeModulationLevel"},
-        "0x0F" : {TYPE: "U8U8", NAME_HB: "MaximumBoilerCapacity", NAME_LB:"MinimumModulationLevel"},
-        "0x10" : {TYPE: "FLOAT", NAME: "RoomSetpointTemperature"},
-        "0x11" : {TYPE: "FLOAT", NAME: "RelativeModulationLevel"},
-        "0x12" : {TYPE: "FLOAT", NAME: "WaterPressure"},
-        "0x13" : {TYPE: "FLOAT", NAME: "DomesticHotWaterFlowRate"},
-        "0x14" : {TYPE: "TIME", NAME: "BoilerTime"},
-        "0x15" : {TYPE: "DATE", NAME: "CalendarDate"},
-        "0x16" : {TYPE: "U16",  NAME: "CalendarYear"},
-        "0x17" : {TYPE: "FLOAT", NAME: "RoomSetpointTemperature2"},
-        "0x18" : {TYPE: "FLOAT", NAME: "RoomTemperature"},
-        "0x19" : {TYPE: "FLOAT", NAME: "BoilerFlowWaterTemperature"},
-        "0x1A" : {TYPE: "FLOAT", NAME: "DomesticHotWaterTemperature1"},
-        "0x1B" : {TYPE: "FLOAT", NAME: "OutsideTemperature"},
-        "0x1C" : {TYPE: "FLOAT", NAME: "ReturnWaterTemperature"},
-        "0x1D" : {TYPE: "FLOAT", NAME: "SolarStorageTemperature"},
-        "0x1E" : {TYPE: "FLOAT", NAME: "SolarCollectorTemperature"},
-        "0x1F" : {TYPE: "FLOAT", NAME: "FlowWaterTemperature2"},
-        "0x20" : {TYPE: "FLOAT", NAME: "DomesticHotWaterTemperature2"},
-        "0x21" : {TYPE: "S16",  NAME: "BoilerExhaustTemperature"},
-        "0x30" : {TYPE: "S8S8", NAME: "DomesticHotWaterSetpointAdjustmentBounds",},
-        "0x31" : {TYPE: "S8S8", NAME: "CentralHeatingWaterMaximumSetpointAdjustmentBounds"},
-        "0x32" : {TYPE: "S8S8", NAME: "OutsideTemperatureCompensationHeatCurveRatioAdjustmentBounds"},
-        "0x38" : {TYPE: "FLOAT", NAME: "DomesticHotWaterSetpointTemperature"},
-        "0x39" : {TYPE: "FLOAT", NAME: "CentralHeatingWaterMaximumSetpointTemperature"},
-        "0x3A" : {TYPE: "FLOAT", NAME: "OutsideTemperatureCompensationHeatCurveRatio"},
+        "0x07" : {TYPE: "FLOAT", NAME: "coolingControlSignalPercentage"},
+        "0x08" : {TYPE: "FLOAT", NAME: "controlSetpointTemperature2"},
+        "0x09" : {TYPE: "BOOL", NAME: "remoteOverrideRoomSetpoint"},
+        "0x0A" : {TYPE: "U8U8", NAME_HB: "numberOfTransparentSlaveParameters", NAME_LB: null},
+        "0x0B" : {TYPE: "INDEX", NAME: "transparentSlaveParameter"},
+        "0x0C" : {TYPE: "U8U8", NAME_HB: "faultBufferSize", NAME_LB: null},
+        "0x0D" : {TYPE: "INDEX", NAME: "faultHistoryBuffer"},
+        "0x0E" : {TYPE: "FLOAT", NAME: "maximumRelativeModulationLevel"},
+        "0x0F" : {TYPE: "U8U8", NAME_HB: "maximumBoilerCapacity", NAME_LB:"minimumModulationLevel"},
+        "0x10" : {TYPE: "FLOAT", NAME: "roomSetpointTemperature"},
+        "0x11" : {TYPE: "FLOAT", NAME: "relativeModulationLevel"},
+        "0x12" : {TYPE: "FLOAT", NAME: "waterPressure"},
+        "0x13" : {TYPE: "FLOAT", NAME: "domesticHotWaterFlowRate"},
+        "0x14" : {TYPE: "TIME", NAME: "boilerTime"},
+        "0x15" : {TYPE: "DATE", NAME: "calendarDate"},
+        "0x16" : {TYPE: "U16",  NAME: "calendarYear"},
+        "0x17" : {TYPE: "FLOAT", NAME: "roomSetpointTemperature2"},
+        "0x18" : {TYPE: "FLOAT", NAME: "roomTemperature"},
+        "0x19" : {TYPE: "FLOAT", NAME: "boilerFlowWaterTemperature"},
+        "0x1A" : {TYPE: "FLOAT", NAME: "domesticHotWaterTemperature1"},
+        "0x1B" : {TYPE: "FLOAT", NAME: "outsideTemperature"},
+        "0x1C" : {TYPE: "FLOAT", NAME: "returnWaterTemperature"},
+        "0x1D" : {TYPE: "FLOAT", NAME: "solarStorageTemperature"},
+        "0x1E" : {TYPE: "FLOAT", NAME: "solarCollectorTemperature"},
+        "0x1F" : {TYPE: "FLOAT", NAME: "flowWaterTemperature2"},
+        "0x20" : {TYPE: "FLOAT", NAME: "domesticHotWaterTemperature2"},
+        "0x21" : {TYPE: "S16",  NAME: "boilerExhaustTemperature"},
+        "0x30" : {TYPE: "S8S8", NAME: "domesticHotWaterSetpointAdjustmentBounds",},
+        "0x31" : {TYPE: "S8S8", NAME: "centralHeatingWaterMaximumSetpointAdjustmentBounds"},
+        "0x32" : {TYPE: "S8S8", NAME: "outsideTemperatureCompensationHeatCurveRatioAdjustmentBounds"},
+        "0x38" : {TYPE: "FLOAT", NAME: "domesticHotWaterSetpointTemperature"},
+        "0x39" : {TYPE: "FLOAT", NAME: "centralHeatingWaterMaximumSetpointTemperature"},
+        "0x3A" : {TYPE: "FLOAT", NAME: "outsideTemperatureCompensationHeatCurveRatio"},
         "0x64" : {TYPE: "F8U8", FLAG_HB: FLAG_REMOTE_OVERRIDE_FUNCTION, NAME_LB: null},
-        "0x73" : {TYPE: "U16", NAME: "OriginalEquipmentManufacturerDiagnosticCode"},
-        "0x74" : {TYPE: "U16", NAME: "NumberOfStartsBurner"},
-        "0x75" : {TYPE: "U16", NAME: "NumberOfStartsCentralHeatingPump"},
-        "0x76" : {TYPE: "U16", NAME: "NumberOfStartsDomesticHotWaterPumpOrValve"},
-        "0x77" : {TYPE: "U16", NAME: "NumberOfStartsBurnerDuringDomesticHotWaterMode"},
-        "0x78" : {TYPE: "U16", NAME: "NumberOfHoursWhenBurnerOperating"},
-        "0x79" : {TYPE: "U16", NAME: "NumberOfHoursWhenCentralHeatingPumpOperating"},
-        "0x7A" : {TYPE: "U16", NAME: "NumberOfHoursWhenDomesticHotWaterPumpOrValveOperating"},
-        "0x7B" : {TYPE: "U16", NAME: "NumberOfHoursOfBurnerOperatingDuringDomesticHotWaterMode"},
-        "0x7C" : {TYPE: "FLOAT", NAME: "MasterOpenThermProtocolVersion"},
-        "0x7D" : {TYPE: "FLOAT", NAME: "SlaveOpenThermProtocolVersion"},
-        "0x7E" : {TYPE: "U8U8", NAME_HB: "MasterProductType", NAME_LB: "MasterProductVersion"},
-        "0x7F" : {TYPE: "U8U8", NAME_HB: "SlaveProductType",  NAME_LB: "SlaveProductVersion"},
+        "0x73" : {TYPE: "U16", NAME: "originalEquipmentManufacturerDiagnosticCode"},
+        "0x74" : {TYPE: "U16", NAME: "numberOfStartsBurner"},
+        "0x75" : {TYPE: "U16", NAME: "numberOfStartsCentralHeatingPump"},
+        "0x76" : {TYPE: "U16", NAME: "numberOfStartsDomesticHotWaterPumpOrValve"},
+        "0x77" : {TYPE: "U16", NAME: "numberOfStartsBurnerDuringDomesticHotWaterMode"},
+        "0x78" : {TYPE: "U16", NAME: "numberOfHoursWhenBurnerOperating"},
+        "0x79" : {TYPE: "U16", NAME: "numberOfHoursWhenCentralHeatingPumpOperating"},
+        "0x7A" : {TYPE: "U16", NAME: "numberOfHoursWhenDomesticHotWaterPumpOrValveOperating"},
+        "0x7B" : {TYPE: "U16", NAME: "numberOfHoursOfBurnerOperatingDuringDomesticHotWaterMode"},
+        "0x7C" : {TYPE: "FLOAT", NAME: "masterOpenThermProtocolVersion"},
+        "0x7D" : {TYPE: "FLOAT", NAME: "slaveOpenThermProtocolVersion"},
+        "0x7E" : {TYPE: "U8U8", NAME_HB: "masterProductType", NAME_LB: "masterProductVersion"},
+        "0x7F" : {TYPE: "U8U8", NAME_HB: "slaveProductType",  NAME_LB: "slaveProductVersion"},
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 
@@ -180,8 +188,8 @@ var CONFIG_ALARM = {
     FPORT : 11,
     CHANNEL : parseInt("0xAA", 16),
     TYPES : {
-        "0xFE" : {SIZE: 4, NAME : "Timestamp"},
-        "0x00" : {SIZE: 1, NAME : "ConfigurationAlarm",
+        "0xFE" : {SIZE: 4, NAME : "timestamp"},
+        "0x00" : {SIZE: 1, NAME : "configurationAlarm",
             VALUES     : {
                 "0x00" : "normal",
                 "0x01" : "alarm triggered by No Boiler Setpoint Mode but the device is in Controller Mode",
@@ -191,22 +199,22 @@ var CONFIG_ALARM = {
                 "0x05" : "alarm triggered by Delta Room Temperature",
             },
         },
-        "0x01" : {SIZE: 1, NAME : "BoilerWatchdog",
+        "0x01" : {SIZE: 1, NAME : "boilerWatchdog",
             VALUES     : {
                 "0x00" : "normal",
                 "0x01" : "alarm",
             },
         },
-        "0x02" : {SIZE : 1, NAME : "ThermostatWatchdog",
+        "0x02" : {SIZE : 1, NAME : "thermostatWatchdog",
             VALUES     : {
                 "0x00" : "normal",
                 "0x01" : "alarm",
             },
         }
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for parameters reading
@@ -214,8 +222,8 @@ var CONFIG_PARAMETER = {
     FPORT : 100,
     CHANNEL : parseInt("0xFF", 16),
     TYPES : {
-        "0x12": {NAME: "ADR", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x13": {NAME: "SF", SIZE: 1, VALUES: {
+        "0x12": {NAME: "adr", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x13": {NAME: "sf", SIZE: 1, VALUES: {
                 "0x00" : "SF12BW125",
                 "0x01" : "SF11BW125",
                 "0x02" : "SF10BW125",
@@ -225,10 +233,10 @@ var CONFIG_PARAMETER = {
                 "0x06" : "SF7BW250",
             }
         },
-        "0x64": {NAME : "WatchdogThermostatTimeout", SIZE: 2, RESOLUTION: 1,},
-        "0x65": {NAME : "WatchdogBoilerTimeout", SIZE: 2, RESOLUTION: 1,},
-        "0x66": {NAME : "DeviceOperationMode", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "controller",}},
-        "0x67": {NAME : "BoilerSetpointMode", SIZE: 1, VALUES: {
+        "0x64": {NAME : "watchdogThermostatTimeout", SIZE: 2, RESOLUTION: 1,},
+        "0x65": {NAME : "watchdogBoilerTimeout", SIZE: 2, RESOLUTION: 1,},
+        "0x66": {NAME : "deviceOperationMode", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "controller",}},
+        "0x67": {NAME : "boilerSetpointMode", SIZE: 1, VALUES: {
                 "0x00" : "n/a",
                 "0x01" : "MODE1",
                 "0x02" : "MODE2",
@@ -236,33 +244,33 @@ var CONFIG_PARAMETER = {
                 "0x04" : "MODE4",
             }
         },
-        "0x70": {NAME : "RealThermostat", SIZE: 1, VALUES: {"0x00" : "not present", "0x01" : "present",}},
-        "0x71": {NAME : "BoilerCentralHeating", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x72": {NAME : "BoilerDomesticHotWater", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x73": {NAME : "BoilerCooling", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x74": {NAME : "BoilerOutsideTemperatureCompensation", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x75": {NAME : "BoilerCentralHeating2", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x95": {NAME : "OutsideTemperature", SIZE: 2, RESOLUTION: 0.01,},
-        "0x96": {NAME : "DewpointOffsetTemperature", SIZE: 2, RESOLUTION: 0.01,},
-        "0x97": {NAME : "DewpointTemperature", SIZE: 2, RESOLUTION: 0.01,},
-        "0x98": {NAME : "DeltaRoomTemperature", SIZE: 2, RESOLUTION: 0.01,},
-        "0x99": {NAME : "HeatcurveMinimumTemperature", SIZE: 2, RESOLUTION: 0.01,},
-        "0x9A": {NAME : "HeatcurveMaximumTemperature", SIZE: 2, RESOLUTION: 0.01,},
-        "0x9B": {NAME : "OutsideTemperature1", SIZE: 2, RESOLUTION: 0.01,},
-        "0x9C": {NAME : "SupplyTemperature1", SIZE: 2, RESOLUTION: 0.01,},
-        "0x9D": {NAME : "OutsideTemperature2", SIZE: 2, RESOLUTION: 0.01,},
-        "0x9E": {NAME : "SupplyTemperature2", SIZE: 2, RESOLUTION: 0.01,},
-        "0x9F": {NAME : "CompensationFactorHigher", SIZE: 1, RESOLUTION: 1,},
-        "0xA0": {NAME : "CompensationFactorLower", SIZE: 1, RESOLUTION: 1,},
-        "0xA1": {NAME : "CompensationValueMinimum", SIZE: 1, RESOLUTION: 1,},
-        "0xA2": {NAME : "CompensationValueMaximum", SIZE: 1, RESOLUTION: 1,},
-        "0xA3": {NAME : "CalculatedHeatingCurveValue", SIZE: 2, RESOLUTION: 0.01,},
-        "0xA4": {NAME : "CalculatedSetpointBoiler", SIZE: 2, RESOLUTION: 0.01,},
-        "0xA5": {NAME : "ExternalHeatDemand", SIZE: 2, RESOLUTION: 0.01,},
+        "0x70": {NAME : "realThermostat", SIZE: 1, VALUES: {"0x00" : "not present", "0x01" : "present",}},
+        "0x71": {NAME : "boilerCentralHeating", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x72": {NAME : "boilerDomesticHotWater", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x73": {NAME : "boilerCooling", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x74": {NAME : "boilerOutsideTemperatureCompensation", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x75": {NAME : "boilerCentralHeating2", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x95": {NAME : "outsideTemperature", SIZE: 2, RESOLUTION: 0.01,},
+        "0x96": {NAME : "dewpointOffsetTemperature", SIZE: 2, RESOLUTION: 0.01,},
+        "0x97": {NAME : "dewpointTemperature", SIZE: 2, RESOLUTION: 0.01,},
+        "0x98": {NAME : "deltaRoomTemperature", SIZE: 2, RESOLUTION: 0.01,},
+        "0x99": {NAME : "heatcurveMinimumTemperature", SIZE: 2, RESOLUTION: 0.01,},
+        "0x9A": {NAME : "heatcurveMaximumTemperature", SIZE: 2, RESOLUTION: 0.01,},
+        "0x9B": {NAME : "outsideTemperature1", SIZE: 2, RESOLUTION: 0.01,},
+        "0x9C": {NAME : "supplyTemperature1", SIZE: 2, RESOLUTION: 0.01,},
+        "0x9D": {NAME : "outsideTemperature2", SIZE: 2, RESOLUTION: 0.01,},
+        "0x9E": {NAME : "supplyTemperature2", SIZE: 2, RESOLUTION: 0.01,},
+        "0x9F": {NAME : "compensationFactorHigher", SIZE: 1, RESOLUTION: 1,},
+        "0xA0": {NAME : "compensationFactorLower", SIZE: 1, RESOLUTION: 1,},
+        "0xA1": {NAME : "compensationValueMinimum", SIZE: 1, RESOLUTION: 1,},
+        "0xA2": {NAME : "compensationValueMaximum", SIZE: 1, RESOLUTION: 1,},
+        "0xA3": {NAME : "calculatedHeatingCurveValue", SIZE: 2, RESOLUTION: 0.01,},
+        "0xA4": {NAME : "calculatedSetpointBoiler", SIZE: 2, RESOLUTION: 0.01,},
+        "0xA5": {NAME : "externalHeatDemand", SIZE: 2, RESOLUTION: 0.01,},
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 
 }
 
@@ -962,24 +970,31 @@ function getSignedIntegerFromInteger(integer, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    var decoded = {};
     if(fPort == 0)
     {
-        return {mac: "MAC command received", fPort: fPort};
-    }
-    if(fPort == CONFIG_INFO.FPORT)
+        decoded = {mac: "MAC command received", fPort: fPort};
+    }else if(fPort == CONFIG_INFO.FPORT)
     {
-        return decodeBasicInformation(bytes);
+        decoded = decodeBasicInformation(bytes);
     }else if(fPort >= CONFIG_OPENTHERM.FPORT_MIN && fPort <= CONFIG_OPENTHERM.FPORT_MAX)
     {
-        return decodeDeviceData(bytes);
+        decoded = decodeDeviceData(bytes);
     }else if(fPort == CONFIG_ALARM.FPORT)
     {
-        return decodeAlarmPacket(bytes);
+        decoded = decodeAlarmPacket(bytes);
     }else if(fPort == CONFIG_PARAMETER.FPORT)
     {
-        return decodeParameters(bytes);
+        decoded = decodeParameters(bytes);
+    }else
+    {
+        decoded = {error: "Incorrect fPort", fPort : fPort};
     }
-    return {error: "Incorrect fPort", fPort : fPort};
+    decoded[VERSION_CONTROL.CODEC.NAME] = VERSION_CONTROL.CODEC.VERSION;
+    decoded[VERSION_CONTROL.DEVICE.NAME] = VERSION_CONTROL.DEVICE.MODEL;
+    decoded[VERSION_CONTROL.PRODUCT.NAME] = VERSION_CONTROL.PRODUCT.CODE;
+    decoded[VERSION_CONTROL.MANUFACTURER.NAME] = VERSION_CONTROL.MANUFACTURER.COMPANY;
+    return decoded;
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)
@@ -1059,36 +1074,36 @@ var CONFIG_DEVICE = {
     READING_TYPE : parseInt("0xCC", 16),
     DATA_MAX_SIZE : 9,
     REGISTERS : {
-        "Restart": {TYPE: parseInt("0x0B", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY"},
-        "ADR": {TYPE: parseInt("0x12", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "SF": {TYPE: parseInt("0x13", 16), SIZE: 1, MIN: 0, MAX: 6,},
-        "WatchdogThermostatTimeout": {TYPE : parseInt("0x64", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "WatchdogBoilerTimeout": {TYPE : parseInt("0x65", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "DeviceOperationMode": {TYPE : parseInt("0x66", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "BoilerSetpointMode": {TYPE : parseInt("0x67", 16), SIZE: 1, MIN: 0, MAX: 4,},
-        "RealThermostat": {TYPE : parseInt("0x70", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "BoilerCentralHeating": {TYPE : parseInt("0x71", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "BoilerDomesticHotWater": {TYPE : parseInt("0x72", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "BoilerCooling": {TYPE : parseInt("0x73", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "BoilerOutsideTemperatureCompensation": {TYPE : parseInt("0x74", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "BoilerCentralHeating2": {TYPE : parseInt("0x75", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "OutsideTemperature": {TYPE : parseInt("0x95", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "DewpointOffsetTemperature": {TYPE : parseInt("0x96", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "DewpointTemperature": {TYPE : parseInt("0x97", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "DeltaRoomTemperature": {TYPE : parseInt("0x98", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "HeatcurveMinimumTemperature": {TYPE : parseInt("0x99", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "HeatcurveMaximumTemperature": {TYPE : parseInt("0x9A", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "OutsideTemperature1": {TYPE : parseInt("0x9B", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "SupplyTemperature1": {TYPE : parseInt("0x9C", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "OutsideTemperature2": {TYPE : parseInt("0x9D", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "SupplyTemperature2": {TYPE : parseInt("0x9E", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "CompensationFactorHigher": {TYPE : parseInt("0x9F", 16), SIZE: 1, MIN: -128, MAX: 127,},
-        "CompensationFactorLower": {TYPE : parseInt("0xA0", 16), SIZE: 1, MIN: -128, MAX: 127,},
-        "CompensationValueMinimum": {TYPE : parseInt("0xA1", 16), SIZE: 1, MIN: -128, MAX: 127,},
-        "CompensationValueMaximum": {TYPE : parseInt("0xA2", 16), SIZE: 1, MIN: -128, MAX: 127,},
-        "CalculatedHeatingCurveValue": {TYPE : parseInt("0xA3", 16), SIZE: 2, MIN: -32768, MAX: 32767, RIGHT:"READ_ONLY"},
-        "CalculatedSetpointBoiler": {TYPE : parseInt("0xA4", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "ExternalHeatDemand": {TYPE : parseInt("0xA5", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "restart": {TYPE: parseInt("0x0B", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY"},
+        "adr": {TYPE: parseInt("0x12", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "sf": {TYPE: parseInt("0x13", 16), SIZE: 1, MIN: 0, MAX: 6,},
+        "watchdogThermostatTimeout": {TYPE : parseInt("0x64", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "watchdogBoilerTimeout": {TYPE : parseInt("0x65", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "deviceOperationMode": {TYPE : parseInt("0x66", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "boilerSetpointMode": {TYPE : parseInt("0x67", 16), SIZE: 1, MIN: 0, MAX: 4,},
+        "realThermostat": {TYPE : parseInt("0x70", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "boilerCentralHeating": {TYPE : parseInt("0x71", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "boilerDomesticHotWater": {TYPE : parseInt("0x72", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "boilerCooling": {TYPE : parseInt("0x73", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "boilerOutsideTemperatureCompensation": {TYPE : parseInt("0x74", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "boilerCentralHeating2": {TYPE : parseInt("0x75", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "outsideTemperature": {TYPE : parseInt("0x95", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "dewpointOffsetTemperature": {TYPE : parseInt("0x96", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "dewpointTemperature": {TYPE : parseInt("0x97", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "deltaRoomTemperature": {TYPE : parseInt("0x98", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "heatcurveMinimumTemperature": {TYPE : parseInt("0x99", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "heatcurveMaximumTemperature": {TYPE : parseInt("0x9A", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "outsideTemperature1": {TYPE : parseInt("0x9B", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "supplyTemperature1": {TYPE : parseInt("0x9C", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "outsideTemperature2": {TYPE : parseInt("0x9D", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "supplyTemperature2": {TYPE : parseInt("0x9E", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "compensationFactorHigher": {TYPE : parseInt("0x9F", 16), SIZE: 1, MIN: -128, MAX: 127,},
+        "compensationFactorLower": {TYPE : parseInt("0xA0", 16), SIZE: 1, MIN: -128, MAX: 127,},
+        "compensationValueMinimum": {TYPE : parseInt("0xA1", 16), SIZE: 1, MIN: -128, MAX: 127,},
+        "compensationValueMaximum": {TYPE : parseInt("0xA2", 16), SIZE: 1, MIN: -128, MAX: 127,},
+        "calculatedHeatingCurveValue": {TYPE : parseInt("0xA3", 16), SIZE: 2, MIN: -32768, MAX: 32767, RIGHT:"READ_ONLY"},
+        "calculatedSetpointBoiler": {TYPE : parseInt("0xA4", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "externalHeatDemand": {TYPE : parseInt("0xA5", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
     }
 }
 
@@ -1274,4 +1289,6 @@ function encodeParamtersReading(obj, variables)
     }
     return encoded;
 }
+
+
 

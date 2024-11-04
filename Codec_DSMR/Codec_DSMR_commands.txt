@@ -1,0 +1,6 @@
+
+Note :
+    Please use fPort 2 for downlink commands
+
+
+ff1405ff1501ff1601ff1706080a0c

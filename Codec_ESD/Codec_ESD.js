@@ -1,38 +1,46 @@
 /**
  * Codec for ESD device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 08 August 2024
- * Update  Date : 29 August 2024
+ * Update  Date : 04 November 2024
  */
+
+// Version Control
+var VERSION_CONTROL = {
+    CODEC : {VERSION: "1.0.0", NAME: "codecVersion"},
+    DEVICE: {MODEL : "ESD-xxxx", NAME: "genericModel"},
+    PRODUCT: {CODE : "P100xxxx", NAME: "productCode"},
+    MANUFACTURER: {COMPANY : "YOBIIQ B.V.", NAME: "manufacturer"},
+}
 
 // Configuration constants for device basic info
 var CONFIG_INFO = {
     FPORT    : 50,
     CHANNEL  : parseInt("0xFF", 16),
     TYPES    : {
-        "0x05" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
-        "0x04" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x03" : {SIZE : 4, NAME : "DeviceSerialNumber"},
-        "0x01" : {SIZE : 0, NAME : "Manufacturer"}, // size to be determinated
-        "0x02" : {SIZE : 0, NAME : "DeviceModel"},  // size to be determinated
-        "0x07" : {SIZE : 1, NAME : "BatteryPercentage"},
-        "0x08" : {SIZE : 1, NAME : "BatteryVoltage", RESOLUTION: 0.1},
-        "0x11" : {SIZE : 1, NAME : "DeviceClass",
+        "0x05" : {SIZE : 2, NAME : "hardwareVersion", DIGIT: false},
+        "0x04" : {SIZE : 2, NAME : "firmwareVersion", DIGIT: false},
+        "0x03" : {SIZE : 4, NAME : "deviceSerialNumber"},
+        "0x01" : {SIZE : 0, NAME : "manufacturer"}, // size to be determinated
+        "0x02" : {SIZE : 0, NAME : "deviceModel"},  // size to be determinated
+        "0x07" : {SIZE : 1, NAME : "batteryPercentage"},
+        "0x08" : {SIZE : 1, NAME : "batteryVoltage", RESOLUTION: 0.1},
+        "0x11" : {SIZE : 1, NAME : "deviceClass",
             VALUES     : {
                 "0x00" : "Class A",
                 "0x01" : "Class B",
                 "0x02" : "Class C",
             },
         },
-        "0x06" : {SIZE : 1, NAME : "PowerEvent",
+        "0x06" : {SIZE : 1, NAME : "powerEvent",
             VALUES     : {
                 "0x00" : "AC Power Off",
                 "0x01" : "AC Power On",
             },
         }
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for device periodic data
@@ -41,12 +49,12 @@ var CONFIG_INFO = {
     FPORT_MIN : 1,
     FPORT_MAX : 5,
     TYPES : {
-        "0xFE" : {SIZE: 4, TYPE: "U32", NAME : "Timestamp"},
-        "0xFD" : {SIZE: 4, TYPE: "U32", NAME : "DataloggerTimestamp"},
-        "0x07" : {SIZE : 1, NAME : "BatteryPercentage"},
-        "0x08" : {SIZE : 1, NAME : "BatteryVoltage", RESOLUTION: 0.1},
-        "0x12" : {SIZE: 1, NAME: "ADR", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x13" : {SIZE: 1, NAME: "SF", SIZE: 1, VALUES: {
+        "0xFE" : {SIZE: 4, TYPE: "U32", NAME : "timestamp"},
+        "0xFD" : {SIZE: 4, TYPE: "U32", NAME : "dataloggerTimestamp"},
+        "0x07" : {SIZE : 1, NAME : "batteryPercentage"},
+        "0x08" : {SIZE : 1, NAME : "batteryVoltage", RESOLUTION: 0.1},
+        "0x12" : {SIZE: 1, NAME: "adr", VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x13" : {SIZE: 1, NAME: "sf", SIZE: 1, VALUES: {
                 "0x00" : "SF12BW125",
                 "0x01" : "SF11BW125",
                 "0x02" : "SF10BW125",
@@ -56,44 +64,44 @@ var CONFIG_INFO = {
                 "0x06" : "SF7BW250",
             }
         },
-        "0x14" : {SIZE: 1, NAME : "LorawanWatchdogFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",},},
-        "0x15" : {SIZE: 2, NAME : "LorawanWatchdogTimeout",},
-        "0x16" : {SIZE: 1, NAME : "LorawanWatchdogAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",},},
-        "0x20" : {SIZE: 1, NAME : "DeviceOperationMode", VALUES: {"0x00" : "factory", "0x01" : "production",}},
-        "0xB0" : {SIZE: 2, NAME : "Temperature", RESOLUTION: 0.01, SIGNED:true},
-        "0xB1" : {SIZE: 2, NAME : "Setpoint", RESOLUTION: 0.01, SIGNED:true},
-        "0xB2" : {SIZE: 2, NAME : "Humidity", RESOLUTION: 0.01},
-        "0xB3" : {SIZE: 2, NAME : "OutsideTemperature", RESOLUTION: 0.01, SIGNED:true},
-        "0xB4" : {SIZE: 2, NAME : "Co2"},
-        "0xB5" : {SIZE: 2, NAME : "OutsideHumidity", RESOLUTION: 0.01},
-        "0xB6" : {SIZE: 2, NAME : "VocIndex"},
-        "0xB7" : {SIZE: 2, NAME : "Light"},
-        "0xB8" : {SIZE: 2, NAME : "Motion"},
-        "0xB9" : {SIZE: 2, NAME : "NoxIndex"},
-        "0xA6" : {SIZE: 2, NAME : "VocRawValue"},
-        "0xA9" : {SIZE: 2, NAME : "NoxRawValue"},
-        "0xBA" : {SIZE: 2, NAME : "TemperatureCorrection", RESOLUTION: 0.01, SIGNED:true},
-        "0xBB" : {SIZE: 2, NAME : "HumidityCorrection", RESOLUTION: 0.01, SIGNED:true},
-        "0xBC" : {SIZE: 2, NAME : "Co2Correction", SIGNED:true},
-        "0xBD" : {SIZE: 2, NAME : "VocCorrection", SIGNED:true},
-        "0xBE" : {SIZE: 2, NAME : "LightCorrection", SIGNED:true},
-        "0xBF" : {SIZE: 2, NAME : "MotionCorrection", SIGNED:true},
-        "0xCA" : {SIZE: 2, NAME : "TemperatureInterval"},
-        "0xCB" : {SIZE: 2, NAME : "HumidityInterval"},
-        "0xCC" : {SIZE: 2, NAME : "Co2Interval"},
-        "0xCD" : {SIZE: 2, NAME : "VocInterval"},
-        "0xCE" : {SIZE: 2, NAME : "LightInterval"},
-        "0xCF" : {SIZE: 2, NAME : "MotionInterval"},
-        "0xD0" : {SIZE: 1, NAME : "DisplayShowTemperature", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
-        "0xD1" : {SIZE: 1, NAME : "DisplayShowSetpoint", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
-        "0xD2" : {SIZE: 1, NAME : "DisplayShowHumidity", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
-        "0xD3" : {SIZE: 1, NAME : "DisplayShowWeather", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
-        "0xD4" : {SIZE: 1, NAME : "DisplayShowCo2", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
-        "0xD5" : {SIZE: 1, NAME : "DisplayShowCo2Smiley", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
-        "0xD6" : {SIZE: 1, NAME : "DisplayShowVoc", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
-        "0xD7" : {SIZE: 1, NAME : "DisplayShowLight", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
-        "0xD8" : {SIZE: 1, NAME : "DisplayShowMotion", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
-        "0xDA" : {SIZE: 1, NAME : "DisplayLanguage", VALUES: {
+        "0x14" : {SIZE: 1, NAME : "lorawanWatchdogFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",},},
+        "0x15" : {SIZE: 2, NAME : "lorawanWatchdogTimeout",},
+        "0x16" : {SIZE: 1, NAME : "lorawanWatchdogAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",},},
+        "0x20" : {SIZE: 1, NAME : "deviceOperationMode", VALUES: {"0x00" : "factory", "0x01" : "production",}},
+        "0xB0" : {SIZE: 2, NAME : "temperature", RESOLUTION: 0.01, SIGNED:true},
+        "0xB1" : {SIZE: 2, NAME : "setpoint", RESOLUTION: 0.01, SIGNED:true},
+        "0xB2" : {SIZE: 2, NAME : "humidity", RESOLUTION: 0.01},
+        "0xB3" : {SIZE: 2, NAME : "outsideTemperature", RESOLUTION: 0.01, SIGNED:true},
+        "0xB4" : {SIZE: 2, NAME : "co2"},
+        "0xB5" : {SIZE: 2, NAME : "outsideHumidity", RESOLUTION: 0.01},
+        "0xB6" : {SIZE: 2, NAME : "vocIndex"},
+        "0xB7" : {SIZE: 2, NAME : "light"},
+        "0xB8" : {SIZE: 2, NAME : "motion"},
+        "0xB9" : {SIZE: 2, NAME : "noxIndex"},
+        "0xA6" : {SIZE: 2, NAME : "vocRawValue"},
+        "0xA9" : {SIZE: 2, NAME : "noxRawValue"},
+        "0xBA" : {SIZE: 2, NAME : "temperatureCorrection", RESOLUTION: 0.01, SIGNED:true},
+        "0xBB" : {SIZE: 2, NAME : "humidityCorrection", RESOLUTION: 0.01, SIGNED:true},
+        "0xBC" : {SIZE: 2, NAME : "co2Correction", SIGNED:true},
+        "0xBD" : {SIZE: 2, NAME : "vocCorrection", SIGNED:true},
+        "0xBE" : {SIZE: 2, NAME : "lightCorrection", SIGNED:true},
+        "0xBF" : {SIZE: 2, NAME : "motionCorrection", SIGNED:true},
+        "0xCA" : {SIZE: 2, NAME : "temperatureInterval"},
+        "0xCB" : {SIZE: 2, NAME : "humidityInterval"},
+        "0xCC" : {SIZE: 2, NAME : "co2Interval"},
+        "0xCD" : {SIZE: 2, NAME : "vocInterval"},
+        "0xCE" : {SIZE: 2, NAME : "lightInterval"},
+        "0xCF" : {SIZE: 2, NAME : "motionInterval"},
+        "0xD0" : {SIZE: 1, NAME : "displayShowTemperature", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
+        "0xD1" : {SIZE: 1, NAME : "displayShowSetpoint", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
+        "0xD2" : {SIZE: 1, NAME : "displayShowHumidity", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
+        "0xD3" : {SIZE: 1, NAME : "displayShowWeather", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
+        "0xD4" : {SIZE: 1, NAME : "displayShowCo2", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
+        "0xD5" : {SIZE: 1, NAME : "displayShowCo2Smiley", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
+        "0xD6" : {SIZE: 1, NAME : "displayShowVoc", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
+        "0xD7" : {SIZE: 1, NAME : "displayShowLight", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
+        "0xD8" : {SIZE: 1, NAME : "displayShowMotion", VALUES: {"0x00" : "hidden", "0x01" : "displayed",}},
+        "0xDA" : {SIZE: 1, NAME : "displayLanguage", VALUES: {
             "0x00" : "english", 
             "0x01" : "french",
             "0x02" : "dutch",
@@ -102,19 +110,19 @@ var CONFIG_INFO = {
             "0x05" : "spanish",
             "0x06" : "finnish",}
         },
-        "0xDB" : {SIZE: 1, NAME : "DisplayTemperatureUnit", VALUES: {"0x0C" : "celsius", "0x0F" : "fahrenheit",}},
-        "0xDC" : {SIZE: 2, NAME : "Co2GoodThreshold",},
-        "0xDD" : {SIZE: 2, NAME : "Co2BadThreshold",},
-        "0xDE" : {SIZE: 1, NAME : "WeatherPrediction", VALUES: {
+        "0xDB" : {SIZE: 1, NAME : "displayTemperatureUnit", VALUES: {"0x0C" : "celsius", "0x0F" : "fahrenheit",}},
+        "0xDC" : {SIZE: 2, NAME : "co2GoodThreshold",},
+        "0xDD" : {SIZE: 2, NAME : "co2BadThreshold",},
+        "0xDE" : {SIZE: 1, NAME : "weatherPrediction", VALUES: {
             "0x00" : "sunny",
             "0x01" : "cloudy",
             "0x02" : "rainy",
             "0x03" : "snow",}
         },
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for alarm packet
@@ -122,23 +130,23 @@ var CONFIG_ALARM = {
     FPORT : 11,
     CHANNEL : parseInt("0xAA", 16),
     TYPES : {
-        "0xFE" : {SIZE: 4, NAME : "Timestamp"},
-        "0x00" : {SIZE: 1, NAME : "InternalTemperatureAlarm",
+        "0xFE" : {SIZE: 4, NAME : "timestamp"},
+        "0x00" : {SIZE: 1, NAME : "internalTemperatureAlarm",
             VALUES     : {
                 "0x00" : "normal",
                 "0x01" : "alarm",
             },
         },
-        "0x01" : {SIZE: 1, NAME : "LorawanWatchdogAlarm",
+        "0x01" : {SIZE: 1, NAME : "lorawanWatchdogAlarm",
             VALUES     : {
                 "0x00" : "normal",
                 "0x01" : "alarm",
             },
         },
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for parameters reading
@@ -146,9 +154,9 @@ var CONFIG_PARAMETER = {
     FPORT : 100,
     CHANNEL : parseInt("0xFF", 16),
     TYPES : CONFIG_PERIODIC.TYPES,
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 
 }
 
@@ -548,24 +556,31 @@ function getSignedIntegerFromInteger(integer, size)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    var decoded = {};
     if(fPort == 0)
     {
-        return {mac: "MAC command received", fPort: fPort};
-    }
-    if(fPort == CONFIG_INFO.FPORT)
+        decoded = {mac: "MAC command received", fPort: fPort};
+    }else if(fPort == CONFIG_INFO.FPORT)
     {
-        return decodeBasicInformation(bytes);
+        decoded = decodeBasicInformation(bytes);
     }else if(fPort >= CONFIG_PERIODIC.FPORT_MIN && fPort <= CONFIG_PERIODIC.FPORT_MAX)
     {
-        return decodeDeviceData(bytes);
+        decoded = decodeDeviceData(bytes);
     }else if(fPort == CONFIG_ALARM.FPORT)
     {
-        return decodeAlarmPacket(bytes);
+        decoded = decodeAlarmPacket(bytes);
     }else if(fPort == CONFIG_PARAMETER.FPORT)
     {
-        return decodeParameters(bytes);
+        decoded = decodeParameters(bytes);
+    }else
+    {
+        decoded = {error: "Incorrect fPort", fPort : fPort};
     }
-    return {error: "Incorrect fPort", fPort : fPort};
+    decoded[VERSION_CONTROL.CODEC.NAME] = VERSION_CONTROL.CODEC.VERSION;
+    decoded[VERSION_CONTROL.DEVICE.NAME] = VERSION_CONTROL.DEVICE.MODEL;
+    decoded[VERSION_CONTROL.PRODUCT.NAME] = VERSION_CONTROL.PRODUCT.CODE;
+    decoded[VERSION_CONTROL.MANUFACTURER.NAME] = VERSION_CONTROL.MANUFACTURER.COMPANY;
+    return decoded;
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)
@@ -645,52 +660,52 @@ var CONFIG_DEVICE = {
     READING_TYPE : parseInt("0xCC", 16),
     DATA_MAX_SIZE : 10,
     REGISTERS : {
-        "RebootDevice": {TYPE: parseInt("0x0A", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
-        "Restart": {TYPE: parseInt("0x0B", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
-        "ADR": {TYPE: parseInt("0x12", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "SF": {TYPE: parseInt("0x13", 16), SIZE: 1, MIN: 0, MAX: 6,},
-        "LorawanWatchdogFunction": {TYPE: parseInt("0x14", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "LorawanWatchdogTimeout": {TYPE : parseInt("0x15", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "LorawanWatchdogAlarm": {TYPE: parseInt("0x16", 16), RIGHT:"READ_ONLY"},
-        "DeviceOperationMode": {TYPE: parseInt("0x20", 16), RIGHT:"READ_ONLY"},
-        "Temperature": {TYPE: parseInt("0xB0", 16), RIGHT:"READ_ONLY"},
-        "Setpoint": {TYPE: parseInt("0xB1", 16), RIGHT:"READ_ONLY"},
-        "Humidity": {TYPE: parseInt("0xB2", 16), RIGHT:"READ_ONLY"},
-        "OutsideTemperature": {TYPE: parseInt("0xB3", 16), RIGHT:"READ_ONLY"},
-        "Co2": {TYPE: parseInt("0xB4", 16), RIGHT:"READ_ONLY"},
-        "OutsideHumidity": {TYPE: parseInt("0xB5", 16), RIGHT:"READ_ONLY"},
-        "VocIndex": {TYPE: parseInt("0xB6", 16), RIGHT:"READ_ONLY"},
-        "Light": {TYPE: parseInt("0xB7", 16), RIGHT:"READ_ONLY"},
-        "Motion": {TYPE: parseInt("0xB8", 16), RIGHT:"READ_ONLY"},
-        "NoxIndex": {TYPE: parseInt("0xB9", 16), RIGHT:"READ_ONLY"},
-        "VocRawValue": {TYPE: parseInt("0xA6", 16), RIGHT:"READ_ONLY"},
-        "NoxRawValue": {TYPE: parseInt("0xA9", 16), RIGHT:"READ_ONLY"},
-        "TemperatureCorrection": {TYPE : parseInt("0xBA", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "HumidityCorrection": {TYPE : parseInt("0xBB", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "Co2Correction": {TYPE : parseInt("0xBC", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "VocCorrection": {TYPE : parseInt("0xBD", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "LightCorrection": {TYPE : parseInt("0xBE", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "MotionCorrection": {TYPE : parseInt("0xBF", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
-        "TemperatureInterval": {TYPE : parseInt("0xCA", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "HumidityInterval": {TYPE : parseInt("0xCB", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "Co2Interval": {TYPE : parseInt("0xCC", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "VocInterval": {TYPE : parseInt("0xCD", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "LightInterval": {TYPE : parseInt("0xCE", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "MotionInterval": {TYPE : parseInt("0xCF", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "DisplayShowTemperature": {TYPE: parseInt("0xD0", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "DisplayShowSetpoint": {TYPE: parseInt("0xD1", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "DisplayShowHumidity": {TYPE: parseInt("0xD2", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "DisplayShowWeather": {TYPE: parseInt("0xD3", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "DisplayShowCo2": {TYPE: parseInt("0xD4", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "DisplayShowCo2Smiley": {TYPE: parseInt("0xD5", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "DisplayShowVoc": {TYPE: parseInt("0xD6", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "DisplayShowLight": {TYPE: parseInt("0xD7", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "DisplayShowMotion": {TYPE: parseInt("0xD8", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "DisplayLanguage": {TYPE: parseInt("0xDA", 16), SIZE: 1, MIN: 0, MAX: 6,},
-        "DisplayTemperatureUnit": {TYPE: parseInt("0xDB", 16), SIZE: 1, MIN: 12, MAX: 15,},
-        "Co2GoodThreshold": {TYPE : parseInt("0xDC", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "Co2BadThreshold": {TYPE : parseInt("0xDD", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "WeatherPrediction": {TYPE: parseInt("0xDE", 16), SIZE: 1, MIN: 0, MAX: 3,},
+        "rebootDevice": {TYPE: parseInt("0x0A", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
+        "restart": {TYPE: parseInt("0x0B", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
+        "adr": {TYPE: parseInt("0x12", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "sf": {TYPE: parseInt("0x13", 16), SIZE: 1, MIN: 0, MAX: 6,},
+        "lorawanWatchdogFunction": {TYPE: parseInt("0x14", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "lorawanWatchdogTimeout": {TYPE : parseInt("0x15", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "lorawanWatchdogAlarm": {TYPE: parseInt("0x16", 16), RIGHT:"READ_ONLY"},
+        "deviceOperationMode": {TYPE: parseInt("0x20", 16), RIGHT:"READ_ONLY"},
+        "temperature": {TYPE: parseInt("0xB0", 16), RIGHT:"READ_ONLY"},
+        "setpoint": {TYPE: parseInt("0xB1", 16), RIGHT:"READ_ONLY"},
+        "humidity": {TYPE: parseInt("0xB2", 16), RIGHT:"READ_ONLY"},
+        "outsideTemperature": {TYPE: parseInt("0xB3", 16), RIGHT:"READ_ONLY"},
+        "co2": {TYPE: parseInt("0xB4", 16), RIGHT:"READ_ONLY"},
+        "outsideHumidity": {TYPE: parseInt("0xB5", 16), RIGHT:"READ_ONLY"},
+        "vocIndex": {TYPE: parseInt("0xB6", 16), RIGHT:"READ_ONLY"},
+        "light": {TYPE: parseInt("0xB7", 16), RIGHT:"READ_ONLY"},
+        "motion": {TYPE: parseInt("0xB8", 16), RIGHT:"READ_ONLY"},
+        "noxIndex": {TYPE: parseInt("0xB9", 16), RIGHT:"READ_ONLY"},
+        "vocRawValue": {TYPE: parseInt("0xA6", 16), RIGHT:"READ_ONLY"},
+        "noxRawValue": {TYPE: parseInt("0xA9", 16), RIGHT:"READ_ONLY"},
+        "temperatureCorrection": {TYPE : parseInt("0xBA", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "humidityCorrection": {TYPE : parseInt("0xBB", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "co2Correction": {TYPE : parseInt("0xBC", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "vocCorrection": {TYPE : parseInt("0xBD", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "lightCorrection": {TYPE : parseInt("0xBE", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "motionCorrection": {TYPE : parseInt("0xBF", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "temperatureInterval": {TYPE : parseInt("0xCA", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "humidityInterval": {TYPE : parseInt("0xCB", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "co2Interval": {TYPE : parseInt("0xCC", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "vocInterval": {TYPE : parseInt("0xCD", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "lightInterval": {TYPE : parseInt("0xCE", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "motionInterval": {TYPE : parseInt("0xCF", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "displayShowTemperature": {TYPE: parseInt("0xD0", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "displayShowSetpoint": {TYPE: parseInt("0xD1", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "displayShowHumidity": {TYPE: parseInt("0xD2", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "displayShowWeather": {TYPE: parseInt("0xD3", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "displayShowCo2": {TYPE: parseInt("0xD4", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "displayShowCo2Smiley": {TYPE: parseInt("0xD5", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "displayShowVoc": {TYPE: parseInt("0xD6", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "displayShowLight": {TYPE: parseInt("0xD7", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "displayShowMotion": {TYPE: parseInt("0xD8", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "displayLanguage": {TYPE: parseInt("0xDA", 16), SIZE: 1, MIN: 0, MAX: 6,},
+        "displayTemperatureUnit": {TYPE: parseInt("0xDB", 16), SIZE: 1, MIN: 12, MAX: 15,},
+        "co2GoodThreshold": {TYPE : parseInt("0xDC", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "co2BadThreshold": {TYPE : parseInt("0xDD", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "weatherPrediction": {TYPE: parseInt("0xDE", 16), SIZE: 1, MIN: 0, MAX: 3,},
     }
 }
 

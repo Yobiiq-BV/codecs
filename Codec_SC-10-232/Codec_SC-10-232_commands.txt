@@ -3,7 +3,7 @@
 {
     "Type" : "Config",
     "Config" : [{
-        "Param" : "Restart",
+        "Param" : "restart",
         "Value" : 1
     }]
 }
@@ -14,7 +14,7 @@
 {
     "Type" : "Config",
     "Config" : [{
-        "Param" : "RebootDevice",
+        "Param" : "rebootDevice",
         "Value" : 1
     }]
 }
@@ -25,10 +25,10 @@
 {
     "Type": "Config",
     "Config": [{
-        "Param": "ADR",
+        "Param": "adr",
         "Value": 0
     }, {
-        "Param": "SF",
+        "Param": "sf",
         "Value": 3
     }]
 }

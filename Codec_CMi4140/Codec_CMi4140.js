@@ -1,7 +1,7 @@
 /**
  * Codec for CMi4140 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 21 October 2023
- * Update  Date : 27 March 2024
+ * Update  Date : 04 November 2024
 */
 
 
@@ -17,9 +17,9 @@ var MESSAGE_FORMAT = {
     SCHEDULED_EXTENDED_TELEGRAM1: parseInt("0x3B", 16),
     SCHEDULED_EXTENDED_TELEGRAM2: parseInt("0x3C", 16),
 }
-var WARNING_NAME  = "Warning";
-var ERROR_NAME  = "Error";
-var INFO_NAME = "Info";
+var WARNING_NAME  = "warning";
+var ERROR_NAME  = "error";
+var INFO_NAME = "info";
 
 var UNIT_ENERGY_E1_E3 = {
     "0x3403" : {UNIT: "Wh", RESOLUTION : 1},
@@ -117,36 +117,36 @@ var UNIT_RETURN_TEMPERATURE = {
 var CONFIG_MESSAGE_STANDARD = {
     DIB : [
         {
-            SIZE: 0, TYPE: "INT32", NAME: "EnergyConsumption",
+            SIZE: 0, TYPE: "INT32", NAME: "energyConsumption",
             DETAILS :{SIZE : 6, "0x04FB" : 7},
             DIF : UNIT_ENERGY_E1_E3
         },
         {
-            SIZE: 6, TYPE: "INT32", NAME: "Volume",
+            SIZE: 6, TYPE: "INT32", NAME: "volume",
             DIF : UNIT_VOLUME
         },
         {
-            SIZE: 4, TYPE: "INT16", NAME: "Power",
+            SIZE: 4, TYPE: "INT16", NAME: "power",
             DIF : UNIT_POWER
         },
         {
-            SIZE: 4, TYPE: "INT16", NAME: "Flow",
+            SIZE: 4, TYPE: "INT16", NAME: "flow",
             DIF : UNIT_FLOW
         },
         {
-            SIZE: 4, TYPE: "INT16", NAME: "ForwardTemperature",
+            SIZE: 4, TYPE: "INT16", NAME: "forwardTemperature",
             DIF : UNIT_FORWARD_TEMPERATURE
         },
         {
-            SIZE: 4, TYPE: "INT16", NAME: "ReturnTemperature",
+            SIZE: 4, TYPE: "INT16", NAME: "returnTemperature",
             DIF : UNIT_RETURN_TEMPERATURE
         },
         {
-            SIZE: 6, TYPE: "HEX", NAME: "MeterID",
+            SIZE: 6, TYPE: "HEX", NAME: "meterId",
             DIF : {"0x0C78":null}
         },
         {
-            SIZE: 7, TYPE: "FLAGS", NAME: "ErrorAndWarningFlags",
+            SIZE: 7, TYPE: "FLAGS", NAME: "errorAndWarningFlags",
             DIF : {"0x04FD":null},
         }
     ]
@@ -155,16 +155,16 @@ var CONFIG_MESSAGE_STANDARD = {
 var CONFIG_MESSAGE_COMPACT = {
     DIB : [
         {
-            SIZE: 0, TYPE: "INT32", NAME: "EnergyConsumption",
+            SIZE: 0, TYPE: "INT32", NAME: "energyConsumption",
             DETAILS :{SIZE : 6, "0x04FB" : 7},
             DIF : UNIT_ENERGY_E1_E3
         },
         {
-            SIZE: 6, TYPE: "HEX", NAME: "MeterID",
+            SIZE: 6, TYPE: "HEX", NAME: "meterId",
             DIF : {"0x0C78":null}
         },
         {
-            SIZE: 7, TYPE: "FLAGS", NAME: "ErrorAndWarningFlags",
+            SIZE: 7, TYPE: "FLAGS", NAME: "errorAndWarningFlags",
             DIF : {"0x04FD":null},
         }
     ]
@@ -173,28 +173,28 @@ var CONFIG_MESSAGE_COMPACT = {
 var CONFIG_MESSAGE_SCHEDULED_DAILY_REDUNDANT = {
     DIB : [
         {
-            SIZE: 0, TYPE: "INT32", NAME: "EnergyConsumption",
+            SIZE: 0, TYPE: "INT32", NAME: "energyConsumption",
             DETAILS :{SIZE : 6, "0x04FB" : 7},
             DIF : UNIT_ENERGY_E1_E3
         },
         {
-            SIZE: 6, TYPE: "INT32", NAME: "Volume",
+            SIZE: 6, TYPE: "INT32", NAME: "volume",
             DIF : UNIT_VOLUME
         },
         {
-            SIZE: 6, TYPE: "HEX", NAME: "MeterID",
+            SIZE: 6, TYPE: "HEX", NAME: "meterId",
             DIF : {"0x0C78":null}
         },
         {
-            SIZE: 7, TYPE: "FLAGS", NAME: "ErrorAndWarningFlags",
+            SIZE: 7, TYPE: "FLAGS", NAME: "errorAndWarningFlags",
             DIF : {"0x04FD":null},
         },
         {
-            SIZE: 6, TYPE: "TIME", NAME: "DateTime",
+            SIZE: 6, TYPE: "TIME", NAME: "dateTime",
             DIF : {"0x046D":null}
         },
         {
-            SIZE: 0, TYPE: "INT32", NAME: "AccumulatedEnergyAtMidnight",
+            SIZE: 0, TYPE: "INT32", NAME: "accumulatedEnergyAtMidnight",
             DETAILS :{SIZE : 6, "0x44FB" : 7},
             DIF : UNIT_ENERGY_ACC
         }
@@ -204,12 +204,12 @@ var CONFIG_MESSAGE_SCHEDULED_DAILY_REDUNDANT = {
 var CONFIG_MESSAGE_SCHEDULED_EXTENDED = {
     DIB : [
         {
-            SIZE: 0, TYPE: "INT32", NAME: "EnergyConsumption",
+            SIZE: 0, TYPE: "INT32", NAME: "energyConsumption",
             DETAILS : {SIZE : 6, "0x04FB" : 7},
             DIF : UNIT_ENERGY_E1_E3
         },
         {
-            SIZE: 6, TYPE: "INT32", NAME: "Volume",
+            SIZE: 6, TYPE: "INT32", NAME: "volume",
             DIF : UNIT_VOLUME
         },
         {
@@ -223,7 +223,7 @@ var CONFIG_MESSAGE_SCHEDULED_EXTENDED = {
             DIF : {"0x07FF21":null}
         },
         {
-            SIZE: 6, TYPE: "TIME", NAME: "DateTime",
+            SIZE: 6, TYPE: "TIME", NAME: "dateTime",
             DIF : {"0x046D":null}
         }
     ]
@@ -232,33 +232,33 @@ var CONFIG_MESSAGE_SCHEDULED_EXTENDED = {
 var CONFIG_MESSAGE_COMBINED_HEAT_COOLING = {
     DIB : [
         {
-            SIZE: 0, TYPE: "INT32", NAME: "HeatEnergy",
+            SIZE: 0, TYPE: "INT32", NAME: "heatEnergy",
             DETAILS :{SIZE : 6, "0x04FB" : 7},
             DIF : UNIT_ENERGY_E1_E3
         },
         {
-            SIZE: 0, TYPE: "INT32", NAME: "CoolingEnergy",
+            SIZE: 0, TYPE: "INT32", NAME: "coolingEnergy",
             DETAILS :{SIZE : 6, "0x04FB" : 7},
             DIF : UNIT_ENERGY_E3_ONLY
         },
         {
-            SIZE: 6, TYPE: "INT32", NAME: "Volume",
+            SIZE: 6, TYPE: "INT32", NAME: "volume",
             DIF : UNIT_VOLUME
         },
         {
-            SIZE: 4, TYPE: "INT16", NAME: "ForwardTemperature",
+            SIZE: 4, TYPE: "INT16", NAME: "forwardTemperature",
             DIF : UNIT_FORWARD_TEMPERATURE
         },
         {
-            SIZE: 4, TYPE: "INT16", NAME: "ReturnTemperature",
+            SIZE: 4, TYPE: "INT16", NAME: "returnTemperature",
             DIF : UNIT_RETURN_TEMPERATURE
         },
         {
-            SIZE: 6, TYPE: "HEX", NAME: "MeterID",
+            SIZE: 6, TYPE: "HEX", NAME: "meterId",
             DIF : {"0x0C78":null}
         },
         {
-            SIZE: 7, TYPE: "FLAGS", NAME: "ErrorAndWarningFlags",
+            SIZE: 7, TYPE: "FLAGS", NAME: "errorAndWarningFlags",
             DIF : {"0x04FD":null},
         }
     ]
@@ -267,17 +267,17 @@ var CONFIG_MESSAGE_COMBINED_HEAT_COOLING = {
 var CONFIG_MESSAGE_HEAT_INTELLIGENCE = {
     DIB : [
         {
-            SIZE: 0, TYPE: "INT32", NAME: "HeatEnergy",
+            SIZE: 0, TYPE: "INT32", NAME: "heatEnergy",
             DETAILS :{SIZE : 6, "0x04FB" : 7},
             DIF : UNIT_ENERGY_E1_E3
         },
         {
-            SIZE: 0, TYPE: "INT32", NAME: "CoolingEnergy",
+            SIZE: 0, TYPE: "INT32", NAME: "coolingEnergy",
             DETAILS :{SIZE : 6, "0x04FB" : 7},
             DIF : UNIT_ENERGY_E3_ONLY
         },
         {
-            SIZE: 6, TYPE: "INT32", NAME: "Volume",
+            SIZE: 6, TYPE: "INT32", NAME: "volume",
             DIF : UNIT_VOLUME
         },
         {
@@ -286,12 +286,12 @@ var CONFIG_MESSAGE_HEAT_INTELLIGENCE = {
             DIF : {"0x07FF21":null}
         },
         {
-            SIZE: 7, TYPE: "INT32", NAME: "EnergyE8",
+            SIZE: 7, TYPE: "INT32", NAME: "energyE8",
             DETAILS :{SIZE : 7, "0x04FF" : 7},
             DIF : {"0x04FF07":{UNIT: "m3 * °C"}}
         },
         {
-            SIZE: 7, TYPE: "INT32", NAME: "EnergyE9",
+            SIZE: 7, TYPE: "INT32", NAME: "energyE9",
             DETAILS :{SIZE : 7, "0x04FF" : 7},
             DIF : {"0x04FF08":{UNIT: "m3 * °C"}}
         },
@@ -300,26 +300,26 @@ var CONFIG_MESSAGE_HEAT_INTELLIGENCE = {
 var CONFIG_MESSAGE_SCHEDULED_EXTENDED_TELEGRAM1 = {
     DIB : [
         {
-            SIZE: 0, TYPE: "INT32", NAME: "EnergyConsumption",
+            SIZE: 0, TYPE: "INT32", NAME: "energyConsumption",
             DETAILS : {SIZE : 6, "0x04FB" : 7},
             DIF : UNIT_ENERGY_E1_E3
         },
         {
-            SIZE: 7, TYPE: "INT32", NAME: "EnergyTariff2",
+            SIZE: 7, TYPE: "INT32", NAME: "energyTariff2",
             DETAILS :{SIZE : 7, "0x8402" : 7},
             DIF : {"0x840203":{UNIT: "Wh"}}
         },
         {
-            SIZE: 7, TYPE: "INT32", NAME: "EnergyTariff3",
+            SIZE: 7, TYPE: "INT32", NAME: "energyTariff3",
             DETAILS :{SIZE : 7, "0x8403" : 7},
             DIF : {"0x840303":{UNIT: "Wh"}}
         },
         {
-            SIZE: 6, TYPE: "HEX", NAME: "MeterID",
+            SIZE: 6, TYPE: "HEX", NAME: "meterId",
             DIF : {"0x0C78":null}
         },
         {
-            SIZE: 6, TYPE: "TIME", NAME: "DateTime",
+            SIZE: 6, TYPE: "TIME", NAME: "dateTime",
             DIF : {"0x046D":null}
         }
     ]
@@ -328,35 +328,35 @@ var CONFIG_MESSAGE_SCHEDULED_EXTENDED_TELEGRAM1 = {
 var CONFIG_MESSAGE_SCHEDULED_EXTENDED_TELEGRAM2 = {
     DIB : [
         {
-            SIZE: 6, TYPE: "INT32", NAME: "Volume",
+            SIZE: 6, TYPE: "INT32", NAME: "volume",
             DIF : UNIT_VOLUME
         },
         {
-            SIZE: 4, TYPE: "INT16", NAME: "Power",
+            SIZE: 4, TYPE: "INT16", NAME: "power",
             DIF : UNIT_POWER
         },
         {
-            SIZE: 4, TYPE: "INT16", NAME: "Flow",
+            SIZE: 4, TYPE: "INT16", NAME: "flow",
             DIF : UNIT_FLOW
         },
         {
-            SIZE: 4, TYPE: "INT16", NAME: "ForwardTemperature",
+            SIZE: 4, TYPE: "INT16", NAME: "forwardTemperature",
             DIF : UNIT_FORWARD_TEMPERATURE
         },
         {
-            SIZE: 4, TYPE: "INT16", NAME: "ReturnTemperature",
+            SIZE: 4, TYPE: "INT16", NAME: "returnTemperature",
             DIF : UNIT_RETURN_TEMPERATURE
         },
         {
-            SIZE: 6, TYPE: "HEX", NAME: "MeterID",
+            SIZE: 6, TYPE: "HEX", NAME: "meterId",
             DIF : {"0x0C78":null}
         },
         {
-            SIZE: 6, TYPE: "TIME", NAME: "DateTime",
+            SIZE: 6, TYPE: "TIME", NAME: "dateTime",
             DIF : {"0x046D":null}
         },
         {
-            SIZE: 7, TYPE: "FLAGS", NAME: "ErrorAndWarningFlags",
+            SIZE: 7, TYPE: "FLAGS", NAME: "errorAndWarningFlags",
             DIF : {"0x04FD":null},
         }
     ]
@@ -510,11 +510,11 @@ function decodeMessageJSON(bytes)
     {
         bytes.shift();
         message = JSON.parse(getStringFromBytesBigEndianFormat(bytes, 0, bytes.length));
-        decoded.EnergyConsumption = {}
-        decoded.EnergyConsumption.data = message.E;
-        decoded.EnergyConsumption.unit = message.U;
-        // decoded.EnergyConsumption = message.E;
-        decoded.MeterID = message.ID.toString();
+        decoded.energyConsumption = {}
+        decoded.energyConsumption.data = message.E;
+        decoded.energyConsumption.unit = message.U;
+        // decoded.energyConsumption = message.E;
+        decoded.meterId = message.ID.toString();
     }catch(error)
     {
         decoded[ERROR_NAME] = error.message;
@@ -530,7 +530,6 @@ function getValue(bytes, index, size)
 {
     return getValueFromBytesLittleEndianFormat(bytes, index, size);
 }
-
 
 function getFlags(bytes, index, size)
 {
@@ -548,8 +547,8 @@ function getMultipleValues(bytes, index, type)
     var decoded = {};
     if(type == "INT56")
     {
-        decoded.ErrorAndWarningFlags = getFlags(bytes, index + 3, 4);
-        decoded.MeterID = getDigitStringArrayEvenFormat(bytes, index + 7, 4).join("").toUpperCase();
+        decoded.errorAndWarningFlags = getFlags(bytes, index + 3, 4);
+        decoded.meterId = getDigitStringArrayEvenFormat(bytes, index + 7, 4).join("").toUpperCase();
     }else if(type == "INT64")
     {
         var flowScale = bytes[index + 3] & 0x07;
@@ -562,22 +561,22 @@ function getMultipleValues(bytes, index, type)
         flow = getSignedIntegerFromInteger(flow, 2) * Math.pow(10, flowScale - 3);
         var power = getValueFromBytesLittleEndianFormat(bytes, index + 10, 2);
         power = getSignedIntegerFromInteger(power, 2) * Math.pow(10, powerScale - 3);
-        decoded.ForwardTemperature = {};
-        decoded.ForwardTemperature.data = parseFloat(fwTemperature.toFixed(2));
-        decoded.ForwardTemperature.unit = "°C";
-        // decoded.ForwardTemperature = parseFloat(fwTemperature.toFixed(2));
-        decoded.ReturnTemperature = {};
-        decoded.ReturnTemperature.data = parseFloat(rtTemperature.toFixed(2));
-        decoded.ReturnTemperature.unit = "°C";
-        // decoded.ReturnTemperature = parseFloat(rtTemperature.toFixed(2));
-        decoded.Flow = {};
-        decoded.Flow.data = parseFloat(flow.toFixed(3));
-        decoded.Flow.unit = "m3/h";
-        // decoded.Flow = parseFloat(flow.toFixed(3));
-        decoded.Power = {};
-        decoded.Power.data = parseFloat(power.toFixed(3));
-        decoded.Power.unit = "W";
-        // decoded.Power = parseFloat(power.toFixed(3));
+        decoded.forwardTemperature = {};
+        decoded.forwardTemperature.data = parseFloat(fwTemperature.toFixed(2));
+        decoded.forwardTemperature.unit = "°C";
+        // decoded.forwardTemperature = parseFloat(fwTemperature.toFixed(2));
+        decoded.returnTemperature = {};
+        decoded.returnTemperature.data = parseFloat(rtTemperature.toFixed(2));
+        decoded.returnTemperature.unit = "°C";
+        // decoded.returnTemperature = parseFloat(rtTemperature.toFixed(2));
+        decoded.flow = {};
+        decoded.flow.data = parseFloat(flow.toFixed(3));
+        decoded.flow.unit = "m3/h";
+        // decoded.flow = parseFloat(flow.toFixed(3));
+        decoded.power = {};
+        decoded.power.data = parseFloat(power.toFixed(3));
+        decoded.power.unit = "W";
+        // decoded.power = parseFloat(power.toFixed(3));
     }
     return decoded;
 }
@@ -710,29 +709,41 @@ function parseDateTime(dateTime)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    var decoded = {};
     var format = bytes[0]
     switch (format) {
         case MESSAGE_FORMAT.STANDARD:
-            return decodeMessageWithConfig(bytes, CONFIG_MESSAGE_STANDARD);
+            decoded = decodeMessageWithConfig(bytes, CONFIG_MESSAGE_STANDARD);
+            break;
         case MESSAGE_FORMAT.COMPACT:
-            return decodeMessageWithConfig(bytes, CONFIG_MESSAGE_COMPACT);
+            decoded = decodeMessageWithConfig(bytes, CONFIG_MESSAGE_COMPACT);
+            break;
         case MESSAGE_FORMAT.JSON:
-            return decodeMessageJSON(bytes);
+            decoded = decodeMessageJSON(bytes);
+            break;
         case MESSAGE_FORMAT.SCHEDULED_DAILY_REDUNDANT:
-            return decodeMessageWithConfig(bytes, CONFIG_MESSAGE_SCHEDULED_DAILY_REDUNDANT);
+            decoded = decodeMessageWithConfig(bytes, CONFIG_MESSAGE_SCHEDULED_DAILY_REDUNDANT);
+            break;
         case MESSAGE_FORMAT.SCHEDULED_EXTENDED:
-            return decodeMessageWithConfig(bytes, CONFIG_MESSAGE_SCHEDULED_EXTENDED);
+            decoded = decodeMessageWithConfig(bytes, CONFIG_MESSAGE_SCHEDULED_EXTENDED);
+            break;
         case MESSAGE_FORMAT.COMBINED_HEAT_COOLING:
-            return decodeMessageWithConfig(bytes, CONFIG_MESSAGE_COMBINED_HEAT_COOLING);
+            decoded = decodeMessageWithConfig(bytes, CONFIG_MESSAGE_COMBINED_HEAT_COOLING);
+            break;
         case MESSAGE_FORMAT.HEAT_INTELLIGENCE:
-            return decodeMessageWithConfig(bytes, CONFIG_MESSAGE_HEAT_INTELLIGENCE);
+            decoded = decodeMessageWithConfig(bytes, CONFIG_MESSAGE_HEAT_INTELLIGENCE);
+            break;
         case MESSAGE_FORMAT.SCHEDULED_EXTENDED_TELEGRAM1:
-            return decodeMessageWithConfig(bytes, CONFIG_MESSAGE_SCHEDULED_EXTENDED_TELEGRAM1);
+            decoded = decodeMessageWithConfig(bytes, CONFIG_MESSAGE_SCHEDULED_EXTENDED_TELEGRAM1);
+            break;
         case MESSAGE_FORMAT.SCHEDULED_EXTENDED_TELEGRAM2:
-            return decodeMessageWithConfig(bytes, CONFIG_MESSAGE_SCHEDULED_EXTENDED_TELEGRAM2);
+            decoded = decodeMessageWithConfig(bytes, CONFIG_MESSAGE_SCHEDULED_EXTENDED_TELEGRAM2);
+            break;
         default:
-            return {error: "Unknown message", fPort : fPort};
+            decoded = {error: "Unknown message", fPort : fPort};
+            break;
     }
+    return decoded;
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)
@@ -800,13 +811,13 @@ var CONFIG_DEVICE = {
     PORT : 50,
     REGISTER_CHANNEL : parseInt("0x00", 16),
     REGISTERS : {  // TYPE is TLV in the manual
-        "Reboot": {TYPE: parseInt("0x22", 16), SIZE: 2, PREDEFINED:true, VALUE: parseInt("0x759E", 16)},
-        "Lock": {TYPE: parseInt("0x05", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "TransmitInterval": {TYPE : parseInt("0x06", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "MessageFormat": {TYPE : parseInt("0x07", 16), SIZE: 1, PREDEFINED:true, VALUES: MESSAGE_FORMAT},
-        "EcoMode": {TYPE : parseInt("0x0F", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "TimeRelative": {TYPE : parseInt("0x13", 16), SIZE: 4, MIN: -2147483648, MAX: 2147483647,},
-        "UtcOffset": {TYPE : parseInt("0x17", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
+        "reboot": {TYPE: parseInt("0x22", 16), SIZE: 2, PREDEFINED:true, VALUE: parseInt("0x759E", 16)},
+        "lock": {TYPE: parseInt("0x05", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "transmitInterval": {TYPE : parseInt("0x06", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "messageFormat": {TYPE : parseInt("0x07", 16), SIZE: 1, PREDEFINED:true, VALUES: MESSAGE_FORMAT},
+        "ecoMode": {TYPE : parseInt("0x0F", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "timeRelative": {TYPE : parseInt("0x13", 16), SIZE: 4, MIN: -2147483648, MAX: 2147483647,},
+        "utcOffset": {TYPE : parseInt("0x17", 16), SIZE: 2, MIN: -32768, MAX: 32767,},
     }
 }
 
@@ -907,7 +918,6 @@ function encodeDeviceConfiguration(obj, variables)
     }
     return encoded;
 }
-
 
 
 

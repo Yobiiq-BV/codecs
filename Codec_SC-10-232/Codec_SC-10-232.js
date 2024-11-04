@@ -1,38 +1,46 @@
 /**
  * Codec for SC-10-232 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 13 February 2024
- * Update  Date : 27 March 2024
+ * Update  Date : 04 November 2024
  */
+
+// Version Control
+var VERSION_CONTROL = {
+    CODEC : {VERSION: "1.0.0", NAME: "codecVersion"},
+    DEVICE: {MODEL : "SC-10-232", NAME: "genericModel"},
+    PRODUCT: {CODE : "P1002016", NAME: "productCode"},
+    MANUFACTURER: {COMPANY : "YOBIIQ B.V.", NAME: "manufacturer"},
+}
 
 // Configuration constants for device basic info and current settings
 var CONFIG_INFO = {
     FPORT    : 50,
     CHANNEL  : parseInt("0xFF", 16),
     TYPES    : {
-        "0x05" : {SIZE : 2, NAME : "HardwareVersion", DIGIT: false},
-        "0x04" : {SIZE : 2, NAME : "FirmwareVersion", DIGIT: false},
-        "0x03" : {SIZE : 4, NAME : "DeviceSerialNumber"},
-        "0x01" : {SIZE : 0, NAME : "Manufacturer"}, // size to be determinated
-        "0x02" : {SIZE : 0, NAME : "DeviceModel"},  // size to be determinated
-        "0x07" : {SIZE : 1, NAME : "BatteryPercentage"},
-        "0x08" : {SIZE : 1, NAME : "BatteryVoltage", RESOLUTION: 0.1},
-        "0x11" : {SIZE : 1, NAME : "DeviceClass",
+        "0x05" : {SIZE : 2, NAME : "hardwareVersion", DIGIT: false},
+        "0x04" : {SIZE : 2, NAME : "firmwareVersion", DIGIT: false},
+        "0x03" : {SIZE : 4, NAME : "deviceSerialNumber"},
+        "0x01" : {SIZE : 0, NAME : "manufacturer"}, // size to be determinated
+        "0x02" : {SIZE : 0, NAME : "deviceModel"},  // size to be determinated
+        "0x07" : {SIZE : 1, NAME : "batteryPercentage"},
+        "0x08" : {SIZE : 1, NAME : "batteryVoltage", RESOLUTION: 0.1},
+        "0x11" : {SIZE : 1, NAME : "deviceClass",
             VALUES     : {
                 "0x00" : "Class A",
                 "0x01" : "Class B",
                 "0x02" : "Class C",
             },
         },
-        "0x06" : {SIZE : 1, NAME : "PowerEvent",
+        "0x06" : {SIZE : 1, NAME : "powerEvent",
             VALUES     : {
                 "0x00" : "AC Power Off",
                 "0x01" : "AC Power On",
             },
         }
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 
@@ -44,7 +52,7 @@ var CONFIG_INFO = {
     TIMESTAMP_DATA_SIZE: 4,
     FPORT_MIN : 1,
     FPORT_MAX : 10,
-    MEASUREMENT_LIST_NAME: "ListOfMeasurements",
+    MEASUREMENT_LIST_NAME: "listOfMeasurements",
 	MODBUS_DATA_POINT_LENGTH : 9,
     MODBUS_CHANNEL_DATA_TYPE_OFFSET: 200,
     MODBUS_CHANNEL_DATA_TYPE_TOTAL: 50,
@@ -68,9 +76,9 @@ var CONFIG_INFO = {
        BYTE_ORDER_BADC : 2,
        BYTE_ORDER_DCBA : 3
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for alarm packet
@@ -79,7 +87,7 @@ var CONFIG_ALARM = {
     CHANNEL : parseInt("0xAA", 16),
     MODBUS_CHANNEL_ALARM_TYPE_MIN: 200,
     MODBUS_CHANNEL_ALARM_TYPE_MAX: 249,
-    MODBUS_CHANNEL_ALARM_NAME_GENERIC: "AlarmChannel",
+    MODBUS_CHANNEL_ALARM_NAME_GENERIC: "alarmChannel",
     MODBUS_CHANNEL_ALARM_VALUES: {
         "0x00": "normal",
         "0x01": "generic exception",
@@ -94,29 +102,29 @@ var CONFIG_ALARM = {
         "0x85": "write operation failure",
     },
     TYPES : {
-        "0xFE" : {SIZE: 4, NAME : "DeviceTimestamp"},
-        "0x00" : {SIZE: 1, NAME : "InternalTemperatureAlarm",
+        "0xFE" : {SIZE: 4, NAME : "deviceTimestamp"},
+        "0x00" : {SIZE: 1, NAME : "internalTemperatureAlarm",
             VALUES     : {
                 "0x00" : "normal",
                 "0x01" : "alarm",
             },
         },
-        "0x01" : {SIZE: 1, NAME : "LorawanWatchdogAlarm",
+        "0x01" : {SIZE: 1, NAME : "lorawanWatchdogAlarm",
             VALUES     : {
                 "0x00" : "normal",
                 "0x01" : "alarm",
             },
         },
-        "0x02" : {SIZE: 1, NAME : "SerialWatchdogAlarm",
+        "0x02" : {SIZE: 1, NAME : "serialWatchdogAlarm",
             VALUES     : {
                 "0x00" : "normal",
                 "0x01" : "alarm",
             },
         }
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 // Configuration constants for parameters reading
@@ -124,8 +132,8 @@ var CONFIG_PARAMETER = {
     FPORT : 100,
     CHANNEL : parseInt("0xFF", 16),
     TYPES : {
-        "0x12": {NAME: "ADR", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x13": {NAME: "SF", SIZE: 1, VALUES: {
+        "0x12": {NAME: "adr", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x13": {NAME: "sf", SIZE: 1, VALUES: {
                 "0x00" : "SF12BW125",
                 "0x01" : "SF11BW125",
                 "0x02" : "SF10BW125",
@@ -135,20 +143,20 @@ var CONFIG_PARAMETER = {
                 "0x06" : "SF7BW250",
             }
         },
-        "0x14": {NAME : "LorawanWatchdogFunction", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x15": {NAME : "LorawanWatchdogTimeout", SIZE: 2},
-        "0x16": {NAME : "LorawanWatchdogAlarm", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
-        "0x17": {NAME : "SerialWatchdogFunction", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
-        "0x18": {NAME : "SerialWatchdogTimeout", SIZE: 2},
-        "0x18": {NAME : "SerialWatchdogAlarm", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
-        "0x69": {NAME : "InternalCircuitTemperatureAlarm", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
-        "0x70": {NAME : "InternalCircuitTemperatureNumberOfAlarms", SIZE: 4},
-        "0x71": {NAME : "InternalCircuitTemperature", SIZE: 2, RESOLUTION: 0.01, SIGNED: true},
-        "0x72": {NAME : "InternalCircuitHumidity", SIZE: 1},
+        "0x14": {NAME : "lorawanWatchdogFunction", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x15": {NAME : "lorawanWatchdogTimeout", SIZE: 2},
+        "0x16": {NAME : "lorawanWatchdogAlarm", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
+        "0x17": {NAME : "serialWatchdogFunction", SIZE: 1, VALUES: {"0x00" : "disabled", "0x01" : "enabled",}},
+        "0x18": {NAME : "serialWatchdogTimeout", SIZE: 2},
+        "0x18": {NAME : "serialWatchdogAlarm", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
+        "0x69": {NAME : "internalCircuitTemperatureAlarm", SIZE: 1, VALUES: {"0x00" : "normal", "0x01" : "alarm",}},
+        "0x70": {NAME : "internalCircuitTemperatureNumberOfAlarms", SIZE: 4},
+        "0x71": {NAME : "internalCircuitTemperature", SIZE: 2, RESOLUTION: 0.01, SIGNED: true},
+        "0x72": {NAME : "internalCircuitHumidity", SIZE: 1},
     },
-    WARNING_NAME   : "Warning",
-    ERROR_NAME     : "Error",
-    INFO_NAME      : "Info"
+    WARNING_NAME   : "warning",
+    ERROR_NAME     : "error",
+    INFO_NAME      : "info"
 }
 
 function decodeBasicInformation(bytes)
@@ -447,31 +455,31 @@ function decodeMeasurement(bytes, baseIndex, deviceTimestamp)
 			decoded[CONFIG_PERIODIC.WARNING_NAME]  = "Unknown channel";
             return decoded;
 		}
-        decoded.ChannelId = channel - CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPE_OFFSET + 1;
+        decoded.channelId = channel - CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPE_OFFSET + 1;
         var type = bytes[index];
         index = index + 1;
-        decoded.ChannelDataType = type;
+        decoded.channelDataType = type;
         var dataInfo = getValueFromBytesBigEndianFormat(bytes, index, 3);
         index = index + 3;
-        decoded.ChannelByteOrder = dataInfo & 0x03; // Bit index [1:0]
+        decoded.channelByteOrder = dataInfo & 0x03; // Bit index [1:0]
         var numberOfDataBytes = (dataInfo >> 2) & 0x03;  // Bit index [3:2]
         // 0 ==> 4 bytes; 1 ==> 1 byte; 2 ==> 2 bytes; 3 ==> 3 bytes
         numberOfDataBytes = numberOfDataBytes ? numberOfDataBytes : 4;
         dataInfo = dataInfo >> 4;
-        decoded.ChannelLoggerTimestamp = deviceTimestamp - dataInfo;
-        decoded.ChannelBytes = [];
+        decoded.channelLoggerTimestamp = deviceTimestamp - dataInfo;
+        decoded.channelBytes = [];
         for(var i=0; i<numberOfDataBytes; i=i+1)
         {
-            decoded.ChannelBytes.push(bytes[index]);
+            decoded.channelBytes.push(bytes[index]);
             index = index + 1;
         }
         var channelBytesBigEndian = [];
-        switch (decoded.ChannelByteOrder) {
+        switch (decoded.channelByteOrder) {
             case CONFIG_PERIODIC.MODBUS_BYTE_ORDERS.BYTE_ORDER_ABCD:
             {
                 for(var i=0; i<numberOfDataBytes; i=i+1)
                 {
-                    channelBytesBigEndian.push(decoded.ChannelBytes[i]);
+                    channelBytesBigEndian.push(decoded.channelBytes[i]);
                 }
                 break;
             }
@@ -479,7 +487,7 @@ function decodeMeasurement(bytes, baseIndex, deviceTimestamp)
             {
                 for(var i=0; i<numberOfDataBytes; i=i+1)
                 {
-                    channelBytesBigEndian.push(decoded.ChannelBytes[numberOfDataBytes-1-i]);
+                    channelBytesBigEndian.push(decoded.channelBytes[numberOfDataBytes-1-i]);
                 }
                 break;
             }
@@ -487,7 +495,7 @@ function decodeMeasurement(bytes, baseIndex, deviceTimestamp)
             {
                 for(var i=0; i<numberOfDataBytes; i=i+1)
                 {
-                    channelBytesBigEndian.push(decoded.ChannelBytes[i]);
+                    channelBytesBigEndian.push(decoded.channelBytes[i]);
                 }
                 break;
             }
@@ -505,17 +513,17 @@ function decodeMeasurement(bytes, baseIndex, deviceTimestamp)
             }
             case CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPES.DATA_TYPE_HOLDING_FLOAT:
             {
-                decoded.ChannelDecodedValue = getFloatValueFromBytesBigEndianFormat(channelBytesBigEndian);
+                decoded.channelDecodedValue = getFloatValueFromBytesBigEndianFormat(channelBytesBigEndian);
                 break;
             }
             case CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPES.DATA_TYPE_HOLDING_32:
             {
-                decoded.ChannelDecodedValue = getValueFromBytesBigEndianFormat(channelBytesBigEndian, 0, numberOfDataBytes);
+                decoded.channelDecodedValue = getValueFromBytesBigEndianFormat(channelBytesBigEndian, 0, numberOfDataBytes);
                 break;
             }
             case CONFIG_PERIODIC.MODBUS_CHANNEL_DATA_TYPES.DATA_TYPE_INPUT_32:
             {
-                decoded.ChannelDecodedValue = getValueFromBytesBigEndianFormat(channelBytesBigEndian, 0, numberOfDataBytes);
+                decoded.channelDecodedValue = getValueFromBytesBigEndianFormat(channelBytesBigEndian, 0, numberOfDataBytes);
                 break;
             }
             default:
@@ -669,24 +677,31 @@ function getFloatValueFromBytesBigEndianFormat(bytes)
 // The function must return an object, e.g. {"temperature": 22.5}
 function Decode(fPort, bytes, variables) 
 {
+    var decoded = {};
     if(fPort == 0)
     {
-        return {mac: "MAC command received", fPort: fPort};
-    }
-    if(fPort == CONFIG_INFO.FPORT)
+        decoded = {mac: "MAC command received", fPort: fPort};
+    }else if(fPort == CONFIG_INFO.FPORT)
     {
-        return decodeBasicInformation(bytes);
+        decoded = decodeBasicInformation(bytes);
     }else if(fPort >= CONFIG_PERIODIC.FPORT_MIN && fPort <= CONFIG_PERIODIC.FPORT_MAX)
     {
-        return decodeDeviceData(bytes);
+        decoded = decodeDeviceData(bytes);
     }else if(fPort == CONFIG_ALARM.FPORT)
     {
-        return decodeAlarmPacket(bytes);
+        decoded = decodeAlarmPacket(bytes);
     }else if(fPort == CONFIG_PARAMETER.FPORT)
     {
-        return decodeParameters(bytes);
+        decoded = decodeParameters(bytes);
+    }else
+    {
+        decoded = {error: "Incorrect fPort", fPort : fPort};
     }
-    return {error: "Incorrect fPort", fPort : fPort};
+    decoded[VERSION_CONTROL.CODEC.NAME] = VERSION_CONTROL.CODEC.VERSION;
+    decoded[VERSION_CONTROL.DEVICE.NAME] = VERSION_CONTROL.DEVICE.MODEL;
+    decoded[VERSION_CONTROL.PRODUCT.NAME] = VERSION_CONTROL.PRODUCT.CODE;
+    decoded[VERSION_CONTROL.MANUFACTURER.NAME] = VERSION_CONTROL.MANUFACTURER.COMPANY;
+    return decoded;
 }
 
 // Decode uplink function. (ChirpStack v4 , TTN)
@@ -761,27 +776,27 @@ var CONFIG_DOWNLINK = {
 
 // Constants for device configuration 
 var CONFIG_DEVICE = {
-    PORT : 50,
+    FPORT : 50,
     REGISTER_CHANNEL : parseInt("0xFF", 16),
     PERIODIC_CHANNEL : parseInt("0xFF", 16),
     MODBUS_CHANNEL : parseInt("0xFF", 16),
     READING_TYPE : parseInt("0xCC", 16),
     DATA_MAX_SIZE : 9,
     REGISTERS : {
-        "RebootDevice": {TYPE: parseInt("0x0A", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
-        "Restart": {TYPE: parseInt("0x0B", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
-        "ADR": {TYPE: parseInt("0x12", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "SF": {TYPE: parseInt("0x13", 16), SIZE: 1, MIN: 0, MAX: 6,},
-        "LorawanWatchdogFunction": {TYPE: parseInt("0x14", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "LorawanWatchdogTimeout": {TYPE : parseInt("0x15", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "LorawanWatchdogAlarm": {TYPE: parseInt("0x16", 16), RIGHT:"READ_ONLY"},
-        "SerialWatchdogFunction": {TYPE: parseInt("0x17", 16), SIZE: 1, MIN: 0, MAX: 1,},
-        "SerialWatchdogTimeout": {TYPE : parseInt("0x18", 16), SIZE: 2, MIN: 1, MAX: 65535,},
-        "SerialWatchdogAlarm": {TYPE: parseInt("0x19", 16), RIGHT:"READ_ONLY"},
-        "InternalCircuitTemperatureAlarm": {TYPE: parseInt("0x69", 16), RIGHT:"READ_ONLY"},
-        "InternalCircuitTemperatureNumberOfAlarms": {TYPE: parseInt("0x70", 16), RIGHT:"READ_ONLY"},
-        "InternalCircuitTemperature": {TYPE: parseInt("0x71", 16), RIGHT:"READ_ONLY"},
-        "InternalCircuitHumidity": {TYPE: parseInt("0x72", 16), RIGHT:"READ_ONLY"},
+        "rebootDevice": {TYPE: parseInt("0x0A", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
+        "restart": {TYPE: parseInt("0x0B", 16), SIZE: 1, MIN: 1, MAX: 1, RIGHT:"WRITE_ONLY",},
+        "adr": {TYPE: parseInt("0x12", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "sf": {TYPE: parseInt("0x13", 16), SIZE: 1, MIN: 0, MAX: 6,},
+        "lorawanWatchdogFunction": {TYPE: parseInt("0x14", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "lorawanWatchdogTimeout": {TYPE : parseInt("0x15", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "lorawanWatchdogAlarm": {TYPE: parseInt("0x16", 16), RIGHT:"READ_ONLY"},
+        "serialWatchdogFunction": {TYPE: parseInt("0x17", 16), SIZE: 1, MIN: 0, MAX: 1,},
+        "serialWatchdogTimeout": {TYPE : parseInt("0x18", 16), SIZE: 2, MIN: 1, MAX: 65535,},
+        "serialWatchdogAlarm": {TYPE: parseInt("0x19", 16), RIGHT:"READ_ONLY"},
+        "internalCircuitTemperatureAlarm": {TYPE: parseInt("0x69", 16), RIGHT:"READ_ONLY"},
+        "internalCircuitTemperatureNumberOfAlarms": {TYPE: parseInt("0x70", 16), RIGHT:"READ_ONLY"},
+        "internalCircuitTemperature": {TYPE: parseInt("0x71", 16), RIGHT:"READ_ONLY"},
+        "internalCircuitHumidity": {TYPE: parseInt("0x72", 16), RIGHT:"READ_ONLY"},
     }
 }
 
@@ -953,5 +968,7 @@ function encodeParamtersReading(obj, variables)
     }
     return encoded;
 }
+
+
 
 
