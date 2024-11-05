@@ -8,9 +8,7 @@ Device | Name
 ---|---
 [SD-1001](SD-1001) | [230V Mains Power Smoke Detector with LoRaWAN&reg;](https://yobiiq.com/products/smoke-detector/)
 
-# Testing payload
-
 # Downlink commands
 Each directory contains some sample commands for sending downlinks to the device.
 
-# Integration guide for some platforms
+# Examples of usage

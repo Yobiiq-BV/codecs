@@ -1,7 +1,28 @@
+
 /**
- * Codec for SD-1001 device : compatible with TTN, ChirpStack v4 and v3, etc...
- * Release Date : 12 June 2023
- * Update  Date : 30 October 2024
+ *__   _____  ____ ___ ___ ___  
+ *\ \ / / _ \| __ )_ _|_ _/ _ \ 
+ * \ V / | | |  _ \| | | | | | |
+ * | || |_| | |_) | | | | |_| |
+ * |_| \___/|____/___|___\__\_\
+ *                              
+ * 
+ * YOBIIQ JS payload decoder compatible with TTN v3/v4 payload formatter and ChirpStack payload codec.
+ * 
+ * @author      Fostin Kpodar <f.kpodar@yobiiq.com>
+ * @version     1.1.0
+ * @copyright   YOBIIQ B.V. | https://www.yobiiq.com
+ * 
+ * @release     06/12/2023
+ * @update      10/30/2024
+ * 
+ * @author      Dominic Hakke <d.hakke@yobiiq.com>
+ * // Changes in header of document, naming conventions changed.
+ * 
+ *
+ * @product     P1002015 iQ SD-1001 (Smoke Detector)
+ * 
+ * 
  */
 
 // Version Control
