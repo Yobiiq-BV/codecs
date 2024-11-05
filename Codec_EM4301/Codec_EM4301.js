@@ -1,14 +1,14 @@
 /**
  * Codec for EM4301 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 11 June 2023
- * Update  Date : 04 November 2024
+ * Update  Date : 05 November 2024
  */
 
 // Version Control
 var VERSION_CONTROL = {
     CODEC : {VERSION: "1.0.0", NAME: "codecVersion"},
     DEVICE: {MODEL : "EM4301", NAME: "genericModel"},
-    PRODUCT: {CODE : "P100xxxx", NAME: "productCode"},
+    PRODUCT: {CODE : "P1002011", NAME: "productCode"},
     MANUFACTURER: {COMPANY : "YOBIIQ B.V.", NAME: "manufacturer"},
 }
 
