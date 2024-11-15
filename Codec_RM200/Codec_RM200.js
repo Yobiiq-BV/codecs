@@ -1,7 +1,7 @@
 /**
  * Codec for RM200 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 11 January 2024
- * Update  Date : 04 November 2024
+ * Update  Date : 15 November 2024
  */
 
 // Version Control
@@ -152,7 +152,7 @@ var CONFIG_PARAMETER = {
             }
         },
         "0x14" : {SIZE: 1, NAME : "lorawanWatchdogFunction", VALUES: {"0x00" : "disabled", "0x01" : "enabled",},},
-        "0x15" : {SIZE: 2, NAME : "LorawanWatchdogTimeout",},
+        "0x15" : {SIZE: 2, NAME : "lorawanWatchdogTimeout",},
         "0x16" : {SIZE: 1, NAME : "lorawanWatchdogAlarm", VALUES: {"0x00" : "normal", "0x01" : "alarm",},},
         "0x64" : {SIZE: 1, NAME : "defaultState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
         "0x65" : {SIZE: 1, NAME : "timeoutState", VALUES: {"0x00":RELAY.OFF_NAME, "0x01":RELAY.ON_NAME, "0x02":RELAY.RETAIN_NAME}},
