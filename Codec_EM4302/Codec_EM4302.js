@@ -1,5 +1,5 @@
 /**
- * Codec for EM4301-CT device : compatible with TTN, ChirpStack v4 and v3, etc...
+ * Codec for EM4302 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 07 March 2024
  * Update  Date : 18 November 2024
  */
