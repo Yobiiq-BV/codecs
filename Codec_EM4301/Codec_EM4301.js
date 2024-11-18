@@ -6,7 +6,7 @@
 
 // Version Control
 var VERSION_CONTROL = {
-    CODEC : {VERSION: "1.0.0", NAME: "codecVersion"},
+    CODEC : {VERSION: "1.0.1", NAME: "codecVersion"},
     DEVICE: {MODEL : "EM4301", NAME: "genericModel"},
     PRODUCT: {CODE : "P1002011", NAME: "productCode"},
     MANUFACTURER: {COMPANY : "YOBIIQ B.V.", NAME: "manufacturer"},
@@ -110,7 +110,6 @@ function decodeBasicInformation(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
-    var security = Object.keys(CONFIG_INFO.TYPES).length;
     if(LENGTH == 1)
     {
         if(bytes[0] == 0)
@@ -125,9 +124,8 @@ function decodeBasicInformation(bytes)
     }
     try
     {
-        while(index < LENGTH && security != 0)
+        while(index < LENGTH)
         {
-            security = security - 1;
             channel = bytes[index];
             index = index + 1;
             if(channel == CONFIG_INFO.CHANNEL)
@@ -141,7 +139,7 @@ function decodeBasicInformation(bytes)
                 var value = 0;
                 if(size != 0)
                 {
-                    if("DIGIT" in info)
+                    if(info.DIGIT || info.DIGIT == false)
                     {
                         if(info.DIGIT == false)
                         {
@@ -156,7 +154,7 @@ function decodeBasicInformation(bytes)
                         }
                     }else
                     {
-                        if("VALUES" in info)
+                        if(info.VALUES)
                         {
                             // Decode into STRING (VALUES specified in CONFIG_INFO)
                             value = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
@@ -172,7 +170,7 @@ function decodeBasicInformation(bytes)
                 }else
                 {
                     // Device Model (End of decoding)
-                    size = LENGTH - index;
+                    size = getSizeBasedOnChannel(bytes, index, channel);
                     decoded[info.NAME] = getStringFromBytesBigEndianFormat(bytes, index, size);
                     index = index + size;
                 }
@@ -194,7 +192,6 @@ function decodeDeviceData(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
-    var security = 11;
     if(LENGTH == 1)
     {
         if(bytes[0] == 0)
@@ -209,22 +206,28 @@ function decodeDeviceData(bytes)
     }
     try
     {
-        while(index < LENGTH && security != 0)
+        while(index < LENGTH)
         {
-            security = security - 1;
             channel = bytes[index];
             index = index + 1;
             // Type of device measurement
             type = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
             index = index + 1;
 
-            // No channel checking
+            // channel checking
+            if(channel == 11 && type == "0x0A")
+            {
+                // Modbus error code decoding
+                decoded.modbusErrorCode = bytes[index];
+                index = index + 1;
+                continue; // next channel
+            }
 
             var measurement = CONFIG_MEASUREMENT.TYPES[type];
             size = measurement.SIZE;
             // Decoding
             var value = 0;
-            if("DIGIT" in measurement)
+            if(measurement.DIGIT || measurement.DIGIT == false)
             {
                 if(measurement.DIGIT == false)
                 {
@@ -242,16 +245,16 @@ function decodeDeviceData(bytes)
                 // Decode into DECIMAL format
                 value = getValueFromBytesBigEndianFormat(bytes, index, size);
             }
-            if("SIGNED" in measurement)
+            if(measurement.SIGNED)
             {
                 value = getSignedIntegerFromInteger(value, size);
             }
-            if("RESOLUTION" in measurement)
+            if(measurement.RESOLUTION)
             {
-                value = value * measurement["RESOLUTION"];
+                value = value * measurement.RESOLUTION;
                 value = parseFloat(value.toFixed(2));
             }
-            if("UNIT" in measurement)
+            if(measurement.UNIT)
             {
                 decoded[measurement.NAME] = {};
                 decoded[measurement.NAME]["data"] = value;
@@ -340,6 +343,16 @@ function toEvenHEX(hex)
     return "0"+hex;
   }
   return hex;
+}
+
+function getSizeBasedOnChannel(bytes, index, channel)
+{
+    var size = 0;
+    while(index + size < bytes.length && bytes[index + size] != channel)
+    {
+        size = size + 1;
+    }
+    return size;
 }
 
 function getSignedIntegerFromInteger(integer, size) 
