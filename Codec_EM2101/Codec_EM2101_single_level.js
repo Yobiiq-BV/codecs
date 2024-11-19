@@ -1,12 +1,12 @@
 /**
  * Codec for EM2101 device : compatible with TTN, ChirpStack v4 and v3, etc...
  * Release Date : 16 June 2023
- * Update  Date : 05 November 2024
+ * Update  Date : 18 November 2024
  */
 
 // Version Control
 var VERSION_CONTROL = {
-    CODEC : {VERSION: "1.0.0", NAME: "codecVersion"},
+    CODEC : {VERSION: "1.0.1", NAME: "codecVersion"},
     DEVICE: {MODEL : "EM2101", NAME: "genericModel"},
     PRODUCT: {CODE : "P1002009", NAME: "productCode"},
     MANUFACTURER: {COMPANY : "YOBIIQ B.V.", NAME: "manufacturer"},
@@ -176,7 +176,6 @@ function decodeBasicInformation(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
-    var security = Object.keys(CONFIG_INFO.TYPES).length;
     if(LENGTH == 1)
     {
         if(bytes[0] == 0)
@@ -191,9 +190,8 @@ function decodeBasicInformation(bytes)
     }
     try
     {
-        while(index < LENGTH && security != 0)
+        while(index < LENGTH)
         {
-            security = security - 1;
             channel = bytes[index];
             index = index + 1;
             // No channel checking
@@ -206,7 +204,7 @@ function decodeBasicInformation(bytes)
             var value = 0;
             if(size != 0)
             {
-                if("DIGIT" in info)
+                if(info.DIGIT || info.DIGIT == false)
                 {
                     if(info.DIGIT == false)
                     {
@@ -220,7 +218,7 @@ function decodeBasicInformation(bytes)
                         value = value.toString();
                     }
                 }
-                else if("VALUES" in info)
+                else if(info.VALUES)
                 {
                     // Decode into STRING (VALUES specified in CONFIG_INFO)
                     value = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
@@ -230,12 +228,12 @@ function decodeBasicInformation(bytes)
                     // Decode into DECIMAL format
                     value = getValueFromBytesBigEndianFormat(bytes, index, size);
                 }
-                if("RESOLUTION" in info)
+                if(info.RESOLUTION)
                 {
                     value = value * info.RESOLUTION;
                     value = parseFloat(value.toFixed(2));
                 }
-                if("UNIT" in info)
+                if(info.UNIT)
                 {
                     // decoded[info.NAME] = {};
                     // decoded[info.NAME]["data"] = value;
@@ -270,7 +268,6 @@ function decodeDeviceData(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
-    var security = 11;
     if(LENGTH == 1)
     {
         if(bytes[0] == 0)
@@ -285,22 +282,28 @@ function decodeDeviceData(bytes)
     }
     try
     {
-        while(index < LENGTH && security != 0)
+        while(index < LENGTH)
         {
-            security = security - 1;
             channel = bytes[index];
             index = index + 1;
             // Type of device measurement
             type = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
             index = index + 1;
-
-            // No channel checking
+            
+            // channel checking
+            if(channel == 11 && type == "0x0A")
+            {
+                // Modbus error code decoding
+                decoded.modbusErrorCode = bytes[index];
+                index = index + 1;
+                continue; // next channel
+            }
 
             var measurement = CONFIG_MEASUREMENT.TYPES[type];
             size = measurement.SIZE;
             // Decoding
             var value = 0;
-            if("DIGIT" in measurement)
+            if(measurement.DIGIT || measurement.DIGIT == false)
             {
                 if(measurement.DIGIT == false)
                 {
@@ -318,16 +321,16 @@ function decodeDeviceData(bytes)
                 // Decode into DECIMAL format
                 value = getValueFromBytesBigEndianFormat(bytes, index, size);
             }
-            if("SIGNED" in measurement)
+            if(measurement.SIGNED)
             {
                 value = getSignedIntegerFromInteger(value, size);
             }
-            if("RESOLUTION" in measurement)
+            if(measurement.RESOLUTION)
             {
                 value = value * measurement.RESOLUTION;
                 value = parseFloat(value.toFixed(2));
             }
-            if("UNIT" in measurement)
+            if(measurement.UNIT)
             {
                 // decoded[measurement.NAME] = {};
                 // decoded[measurement.NAME]["data"] = value;
@@ -355,7 +358,6 @@ function decodeChangeState(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
-    var security = Object.keys(CONFIG_STATE.TYPES).length;
     if(LENGTH == 1)
     {
         if(bytes[0] == 0)
@@ -370,9 +372,8 @@ function decodeChangeState(bytes)
     }
     try
     {
-        while(index < LENGTH && security != 0)
+        while(index < LENGTH)
         {
-            security = security - 1;
             channel = bytes[index];
             index = index + 1;
             // Type of change of state
@@ -385,7 +386,7 @@ function decodeChangeState(bytes)
             var value = 0;
             if(size != 0)
             {
-                if("VALUES" in state)
+                if(state.VALUES)
                 {
                     // Decode into STRING (VALUES specified in CONFIG_STATE)
                     value = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
@@ -411,7 +412,6 @@ function decodeEventLogging(bytes)
     var channel = 0;
     var type = "";
     var size = 0;
-    var security = Object.keys(CONFIG_LOGGING.TYPES).length;
     if(LENGTH == 1)
     {
         if(bytes[0] == 0)
@@ -441,7 +441,7 @@ function decodeEventLogging(bytes)
             var value = 0;
             if(size != 0)
             {
-                if("VALUES" in logging)
+                if(logging.VALUES)
                 {
                     // Decode into STRING (VALUES specified in CONFIG_LOGGING)
                     value = "0x" + toEvenHEX(bytes[index].toString(16).toUpperCase());
@@ -673,7 +673,7 @@ var CONFIG_DEVICE = {
 
 // Constants for Dynamic limit control
 var CONFIG_DYNAMIC = {
-    PORT : 50,
+    FPORT : 50,
     CHANNEL : parseInt("0x01", 16),
     TYPES : {
         "currentLimit" : {TYPE : parseInt("0x32", 16), SIZE : 2, MIN : 0, MAX : 9999,},
@@ -690,7 +690,7 @@ var CONFIG_DYNAMIC = {
 
 // Constants for Relay control
 var CONFIG_RELAY = {
-    PORT : 50,
+    FPORT : 50,
     CHANNEL : parseInt("0x07", 16),
     TYPES : {
         "reset" : {TYPE : parseInt("0x46", 16), SIZE : 1, MIN : 1, MAX : 1,},
@@ -742,8 +742,11 @@ var CONFIG_PERIODIC = {
 
 // Constants for request settings
 var CONFIG_REQUEST = {
+    FPORT: 50,
     CHANNEL : parseInt("0x02", 16),
     TYPE : parseInt("0x0B", 16),
+    MIN: 1,
+    MAX: 10,
     SETTINGS : {
         currentLimitFallback : "0x3C",
         voltageLimitFallback : "0x3D",

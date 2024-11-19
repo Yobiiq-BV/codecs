@@ -156,3 +156,53 @@ offsetCurrentDynamic
 offsetDelayDynamic
 resetTimeDynamic
 resetAmountDynamic
+
+
+12. Configure 15 min periodic unconfirmed uplink
+
+{
+    "Type": "Measure",
+    "Measure": {
+        "Interval": 15,
+        "Mode": 0,
+        "Status": 1,
+        "Measurement": ["voltageL1N", "currentL1", "activePowerL1", "frequency", "powerFactorL1", "phaseAngleL1", "activeEnergyImportL1T2"]
+    }
+}
+
+Note : Please limit to 10 measurements per fPort (fPort between 1 to 10)
+- Interval : uplink interval in minutes (always greater than 0)
+- Mode : 0 => unconfirmed uplink; 1 => confirmed uplink
+- Status : 0 => fPort disabled; 1 => fPort enabled
+- Measurement : list of measurements
+
+******************  List of measurements ********************
+
+index,
+timestamp
+dataloggerTimestamp
+activeEnergyImportL1T1
+activeEnergyImportL1T2
+activeEnergyExportL1T1
+activeEnergyExportL1T2
+reactiveEnergyImportL1T1
+reactiveEnergyImportL1T2
+reactiveEnergyExportL1T1
+reactiveEnergyExportL1T2
+voltageL1N
+currentL1
+activePowerL1
+reactivePowerL1
+apparentPowerL1
+powerFactorL1
+phaseAngleL1
+frequency
+totalSystemActivePower
+totalSystemReactivePower
+totalSystemApparentPower
+maximumL1CurrentDemand
+AveragePower
+midYearOfCertification
+manufacturedYear
+firmwareVersion
+hardwareVersion
