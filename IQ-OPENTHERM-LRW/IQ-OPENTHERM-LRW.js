@@ -1292,3 +1292,12 @@ function encodeParamtersReading(obj, variables)
 
 
 
+input = {fPort:11};
+input.bytes = Array.from(
+    Buffer.from(
+        "aafe65cce50eaa0002",
+        "hex"
+    )
+);
+console.log(input);
+console.log(decodeUplink(input));
