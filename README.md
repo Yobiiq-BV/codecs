@@ -6,7 +6,7 @@ Please browse the devices in the corresponding directories:
 
 Device | Name
 ---|---
-[SD-1001](SD-1001) | [230V Mains Power Smoke Detector with LoRaWAN&reg;](https://yobiiq.com/products/smoke-detector/)
+[SD-1001](IQ-SD1001) | [230V Mains Power Smoke Detector with LoRaWAN&reg;](https://yobiiq.com/products/smoke-detector/)
 
 # Downlink commands
 Each directory contains some sample commands for sending downlinks to the device.
