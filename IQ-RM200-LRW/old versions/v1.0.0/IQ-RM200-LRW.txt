@@ -1,10 +1,9 @@
 1. To restart the LoRaWAN Interface
 
 {
-    "fPort" : 50,
     "Type" : "Config",
     "Config" : [{
-        "Param" : "restartLoRaWAN",
+        "Param" : "restart",
         "Value" : 1
     }]
 }
@@ -13,7 +12,6 @@
 2. To reboot the device
 
 {
-    "fPort" : 50,
     "Type" : "Config",
     "Config" : [{
         "Param" : "rebootDevice",
@@ -25,7 +23,6 @@
 3. To configure ADR and SF (2 parameters)
 
 {
-    "fPort" : 50,
     "Type": "Config",
     "Config": [{
         "Param": "adr",
@@ -37,10 +34,9 @@
 }
 
 
-4. To configure periodic package on fPort 2 (Registers = list of register)
+4. To configure periodic package (Registers = list of register)
 
 {
-    "fPort" : 2,
     "Type": "Periodic",
     "Periodic": {
         "UplinkInterval": 15,
@@ -54,7 +50,6 @@
 5. To set relay 1 ON
 
 {
-    "fPort" : 50,
     "Type" : "Config",
     "Config" : [{
         "Param" : "channel1Control",
@@ -65,7 +60,6 @@
 7. To set relay 2 OFF
 
 {
-    "fPort" : 50,
     "Type" : "Config",
     "Config" : [{
         "Param" : "channel2Control",
@@ -74,13 +68,12 @@
 }
 
 
-9. To reset button override of channel 1
+9. To reset button override modes
 
 {
-    "fPort" : 50,
     "Type" : "Config",
     "Config" : [{
-        "Param" : "channel1ButtonOverrideReset",
+        "Param" : "buttonOverrideReset",
         "Value" : 1
     }]
 }
