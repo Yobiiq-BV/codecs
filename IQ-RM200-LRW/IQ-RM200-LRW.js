@@ -895,7 +895,7 @@ function encodeParametersReading(cmdArray)
             return []; // error
         }
         reg = DEVICE.REGISTERS[regName];
-        if(config.RW == "W"){
+        if(reg.RW == "W"){
             DEVICE[DEVICE.ERROR_NAME] = DEVICE.ERRORS.CMD_REGISTER_NOT_READABLE +
                 ": please check " + regName + " in the command";
             return [];  // error
