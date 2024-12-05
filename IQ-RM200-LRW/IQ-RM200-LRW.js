@@ -120,20 +120,21 @@ var DEVICE_GENERIC_REGISTERS = {
     "0xA0" : {SIZE: 1, NAME: "adr", 
         VALUES: {"0x00" : "DISABLED", "0x01" : "ENABLED",}
     },
-    "0xA1" : {SIZE: 1, NAME: "sf", SIZE: 1, 
+    "0xA1" : {SIZE: 1, NAME: "sf", 
         VALUES: { "0x00" : "SF12BW125", "0x01" : "SF11BW125", "0x02" : "SF10BW125",
             "0x03" : "SF9BW125", "0x04" : "SF8BW125", "0x05" : "SF7BW125", "0x06" : "SF7BW250",}
     },
     "0xA3" : {SIZE: 1, NAME: "radioMode", SIZE: 1, 
         VALUES: { "0x00" : "LoRaWAN", "0x01" : "iQ D2D", "0x02" : "LoRaWAN & iQ D2D",}
     },
-    "0xA4" : {SIZE: 1, NAME: "rejoinMode", SIZE: 1, 
+    "0xA4" : {SIZE: 1, NAME: "rejoinMode", 
         VALUES: { "0x00" : "DISABLED", "0x01" : "ENABLED",}
     },
-    "0xA5" : {SIZE: 1, NAME: "dataRetransmission", SIZE: 1, 
+    "0xA5" : {SIZE: 2, NAME: "linkCheckTimeframe",},
+    "0xA6" : {SIZE: 1, NAME: "dataRetransmission", 
         VALUES: { "0x00" : "DISABLED", "0x01" : "ENABLED",}
     },
-    "0xA6" : {SIZE: 1, NAME: "lorawanWatchdogAlarm", SIZE: 1, 
+    "0xA7" : {SIZE: 1, NAME: "lorawanWatchdogAlarm", 
         VALUES: { "0x00" : "NORMAL", "0x01" : "ALARM",}
     },
 };
@@ -629,8 +630,9 @@ var DEVICE = {
         "restartLoRaWAN": {TYPE: 162, /* 0xA2 */ SIZE: 1, MIN: 1, MAX: 1, RW:"W",},
         "radioMode": {TYPE: 163, /* 0xA3 */ SIZE: 1, MIN: 0, MAX: 2, RW:"RW",},
         "rejoinMode": {TYPE: 164, /* 0xA4 */ SIZE: 1, MIN: 0, MAX: 1, RW:"RW",},
-        "dataRetransmission": {TYPE: 165, /* 0xA5 */ SIZE: 1, MIN: 0, MAX: 1, RW:"RW",},
-        "lorawanWatchdogAlarm": {TYPE: 166, /* 0xA6 */ SIZE: 1, MIN: 0, MAX: 1, RW:"R",},
+        "linkCheckTimeframe": {TYPE: 164, /* 0xA5 */ SIZE: 2, MIN: 1, MAX: 65535, RW:"RW",},
+        "dataRetransmission": {TYPE: 165, /* 0xA6 */ SIZE: 1, MIN: 0, MAX: 1, RW:"RW",},
+        "lorawanWatchdogAlarm": {TYPE: 166, /* 0xA7 */ SIZE: 1, MIN: 0, MAX: 1, RW:"R",},
 
         /* specific registers */
         "channel1State": {TYPE: 26, /* 0x1A */ RW:"R",},
