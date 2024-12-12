@@ -15,7 +15,7 @@
  * @copyright   YOBIIQ B.V. | https://www.yobiiq.com
  * 
  * @release     2024-01-11
- * @update      2024-12-04
+ * @update      2024-12-11
  * 
  * @product     P1002003 iQ RM200 (iQ Digital Controller)
  * 
@@ -127,9 +127,7 @@ var DEVICE_GENERIC_REGISTERS = {
     "0xA3" : {SIZE: 1, NAME: "radioMode", SIZE: 1, 
         VALUES: { "0x00" : "LoRaWAN", "0x01" : "iQ D2D", "0x02" : "LoRaWAN & iQ D2D",}
     },
-    "0xA4" : {SIZE: 1, NAME: "rejoinMode", 
-        VALUES: { "0x00" : "DISABLED", "0x01" : "ENABLED",}
-    },
+    "0xA4" : {SIZE: 1, NAME: "numberOfJoinAttempts"},
     "0xA5" : {SIZE: 2, NAME: "linkCheckTimeframe",},
     "0xA6" : {SIZE: 1, NAME: "dataRetransmission", 
         VALUES: { "0x00" : "DISABLED", "0x01" : "ENABLED",}
@@ -537,7 +535,7 @@ function Decode(fPort, bytes, variables)
     return decoded;
 }
 
-// Decode uplink function. (ChirpStack v4 , TTN)
+// Decode uplink function. (ChirpStack v4, TTN, TTI, LORIOT, ThingPark)
 //
 // Input is an object with the following fields:
 // - bytes = Byte array containing the uplink payload, e.g. [255, 230, 255, 0]
@@ -629,7 +627,7 @@ var DEVICE = {
         "sf": {TYPE: 161, /* 0xA1 */ SIZE: 1, MIN: 0, MAX: 6, RW:"RW",},
         "restartLoRaWAN": {TYPE: 162, /* 0xA2 */ SIZE: 1, MIN: 1, MAX: 1, RW:"W",},
         "radioMode": {TYPE: 163, /* 0xA3 */ SIZE: 1, MIN: 0, MAX: 2, RW:"RW",},
-        "rejoinMode": {TYPE: 164, /* 0xA4 */ SIZE: 1, MIN: 0, MAX: 1, RW:"RW",},
+        "numberOfJoinAttempts": {TYPE: 164, /* 0xA4 */ SIZE: 1, MIN: 0, MAX: 255, RW:"RW",},
         "linkCheckTimeframe": {TYPE: 164, /* 0xA5 */ SIZE: 2, MIN: 1, MAX: 65535, RW:"RW",},
         "dataRetransmission": {TYPE: 165, /* 0xA6 */ SIZE: 1, MIN: 0, MAX: 1, RW:"RW",},
         "lorawanWatchdogAlarm": {TYPE: 166, /* 0xA7 */ SIZE: 1, MIN: 0, MAX: 1, RW:"R",},
@@ -692,18 +690,18 @@ function Encode(fPort, obj, variables) {
         }
         return encodeUplinkConfiguration(obj[DEVICE.DOWNLINK.PERIODIC]);
     }else if(obj[DEVICE.DOWNLINK.TYPE] == DEVICE.DOWNLINK.READING){
-        if(fPort < DEVICE.READING.FPORT){
+        if(fPort != DEVICE.READING.FPORT){
             DEVICE[DEVICE.ERROR_NAME] = DEVICE.ERRORS.CMD_FPORT_INVALID;
             return []; // error
         }
-        return encodeParametersReading(obj[DEVICE.DOWNLINK.READING]);
+        return encodeParameterReading(obj[DEVICE.DOWNLINK.READING]);
     }
     DEVICE[DEVICE.ERROR_NAME] = DEVICE.ERRORS.CMD_INVALID + 
         ": please check " + obj[DEVICE.DOWNLINK.TYPE] + " in the command";
     return []; // error
 }
 
-// Encode downlink function. (ChirpStack v4 , TTN, LORIOT, ThingPark)
+// Encode downlink function. (ChirpStack v4 , TTN, TTI, LORIOT, ThingPark)
 //
 // Input is an object with the following fields:
 // - data = Object representing the payload that must be encoded.
@@ -868,7 +866,7 @@ function encodeUplinkConfiguration(cmdObj)
     return encoded;
 }
 
-function encodeParametersReading(cmdArray)
+function encodeParameterReading(cmdArray)
 {
     var encoded = [];
     var reg = {};
